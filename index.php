@@ -1,3 +1,36 @@
+<!-- Código PHP -->
+<?php
+session_start();
+//Datos para realizar la conexión la BD
+$hostname = 'localhost';
+$username = 'root';
+$password = '123456';
+$dbname = 'trabajo_final_php';
+$conn = @mysqli_connect($hostname, $username);
+if($conn){
+    if(mysqli_select_db($conn, $dbname) === TRUE){
+        
+    }
+}
+else {
+    echo 'La conexión ha sido fallida';
+ }
+//Consulta para recopilar los datos de las noticias de la tabla noticias
+$sql = "SELECT * FROM noticias ";
+$resultado = mysqli_query($conn, $sql);
+// Verificar si hay resultados y mostrar los datos
+if ($resultado->num_rows > 0) {
+    while($fila = $resultado->fetch_assoc()) {
+        // Aquí puedes mostrar los datos como desees
+        $titulo = $fila['titulo'];
+    }
+} else {
+    echo "No se encontraron resultados.";
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -70,7 +103,7 @@
                     <div class="card" style="width: 18rem;">
                         <img src="..." class="card-img-top" alt="...">
                         <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
+                            <h5 class="card-title"><?php echo "$titulo"?></h5>
                             <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
                             <a href="#" class="btn btn-primary">Go somewhere</a>
                         </div>

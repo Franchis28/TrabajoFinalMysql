@@ -38,7 +38,13 @@ session_start();
                         VALUES ('$last_inserted_id', '$usuario', '$contraseña', 'user')";
                     
                     if(mysqli_query($conn, $sql_users_login)){
-                        header("Location: index.php");
+                        // header("Location: index.php");
+                        // Después de que los datos se hayan almacenado correctamente
+                        echo '<script type="text/javascript">';
+                        echo 'window.onload = function(){';
+                        echo '    $("#exampleModal").modal("show");'; // Activar la modal de inicio de sesión
+                        echo '}';
+                        echo '</script>';
                         exit();
                     }else{
                         echo 'Error al registrarse';
@@ -91,6 +97,8 @@ session_start();
     <!-- Enlaces a los estilos de Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
+
 </head>
 <body>
     <!-- Colocar todo el encabezado de la pagina -->
@@ -147,7 +155,7 @@ session_start();
                                         <input  type="password" class="form-control" name="contraseña" placeholder="Contraseña"> 
                                     </div>
                                     <div class="modal-footer">
-                                        <input type="submit" class="btn btn-primary" data-bs-toggle="modal" name="submit" value="Iniciar sesión">
+                                        <input type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" name="submit" value="Iniciar sesión">
                                     </div>
                                 </form>
                             </div>
@@ -252,6 +260,7 @@ session_start();
     <footer></footer>
     <!-- Enlaces a JavaScript -->
     <!-- Bootstrap Datepicker JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <!-- IniciaLización de datepicker -->
     <script>
