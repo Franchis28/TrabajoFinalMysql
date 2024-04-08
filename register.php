@@ -1,82 +1,7 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <!-- Enlaces a los estilos de Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-</head>
-<body>
-    <!-- Colocar todo el encabezado de la pagina -->
-
-
-    <header>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="index.php">FranPage</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                    <a class="nav-link " href="index.php">Index</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link" href="noticias.php">Noticias</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="register.php">Registro</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-                    </li>
-                </ul>
-                <!-- Botón para abrir el modal -->
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#loginModal">
-                Iniciar Sesión
-                </button>
-                <!-- Modal -->
-                <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="loginModalLabel">Inicio de Sesión</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <!-- Formulario de inicio de sesión -->
-                                <form action="index.php" method="post">
-                                    <div class="form-group">
-                                        <label for="usuario">Usuario</label>
-                                        <input type="text" class="form-control" id="usuario" name="usuario" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="contraseña">Contraseña</label>
-                                        <input type="password" class="form-control" id="contraseña" name="contraseña" required>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary" name="submit">Iniciar Sesión</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form> -->
-                </div>
-            </div>
-        </nav>        
-    </header>
-    <main>
-        <p class="fs-4">En caso de que hayas rellenado ya el registro <a href="login.php" class="link-success link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">haz click aquí</a></p>
-        <?php
-        // unset($_SESSION['contador']);
-        
+<?php
+session_start();
         //Parte del registro de un nuevo usuario en la base de datos (users_login)
-            if(isset($_POST['submit']))
+            if(isset($_POST['submit']) && isset($_POST['apellidos']))
             {
                 $nombre = $_POST['nombre'];
                 $apellidos = $_POST['apellidos'];
@@ -105,22 +30,140 @@
                 VALUES ('$nombre', '$apellidos', '$email', '$telefono', '$fenac', '$direccion', '$sexo')";
 
                 if(mysqli_query($conn, $sql_users_data)) {
-                // Obtener el ID generado
-                $last_inserted_id = mysqli_insert_id($conn);
+                    // Obtener el ID generado
+                    $last_inserted_id = mysqli_insert_id($conn);
 
-                // Insertar datos en users_login utilizando el ID obtenido
-                $sql_users_login = "INSERT INTO users_login (idUser, usuario, contraseña, rol)
-                    VALUES ('$last_inserted_id', '$usuario', '$contraseña', 'user')";
+                    // Insertar datos en users_login utilizando el ID obtenido
+                    $sql_users_login = "INSERT INTO users_login (idUser, usuario, contraseña, rol)
+                        VALUES ('$last_inserted_id', '$usuario', '$contraseña', 'user')";
+                    
+                    if(mysqli_query($conn, $sql_users_login)){
+                        header("Location: index.php");
+                        exit();
+                    }else{
+                        echo 'Error al registrarse';
+                    }
+                }
                 
-                if(mysqli_query($conn, $sql_users_login)){
+            }
+
+            //Parte del registro de un nuevo usuario en la base de datos (users_login)
+            if(isset($_POST['submit']))
+            {
+                $usuario = $_POST['usuario'];
+                $contraseña = $_POST['contraseña'];
+                $hostname = 'localhost';
+                $username = 'root';
+                $password = '123456';
+                $dbname = 'trabajo_final_php';
+                $conn = @mysqli_connect($hostname, $username);
+                if($conn){
+                    if(mysqli_select_db($conn, $dbname) === TRUE){
+                        echo 'Funciona la conexión';
+                    }
+                }
+                else {
+                    echo 'La conexión ha sido fallida';
+                }
+                // Consulta datos en users_login
+                $sql = "SELECT * FROM users_login WHERE Usuario = '$usuario' AND Contraseña = '$contraseña'";
+                $result = mysqli_query($conn, $sql);
+                
+                if(mysqli_num_rows($result) == 1){
+                    echo '<br>';
+                    echo 'Inicio de sesión realizado correctamente';
+                    $_SESSION['usuario'] = $usuario;
                     header("Location: index.php");
-                    exit();
                 }else{
-                    echo 'Error al registrarse';
+                    $error_msg = 'Nombre de usuario o contraseña incorrectos';
                 }
             }
-        }
-        ?> 
+               
+?> 
+
+                
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro</title>
+    <!-- Enlaces a los estilos de Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</head>
+<body>
+    <!-- Colocar todo el encabezado de la pagina -->
+
+
+    <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="index.php">FranPage</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link " href="index.php">Portada</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="noticias.php">Noticias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="register.php">Registro</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                    </li>
+                </ul>
+                <?php
+                        // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
+                        if(isset($_SESSION['usuario'])) {
+                            echo  $_SESSION['usuario'] ;
+                        } else {
+                            echo '<p class="fs-4">Ningún usuario está conectado actualmente</p>';
+                        } 
+                        ?>
+                <!-- Modal para inicio de sesión -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Iniciar Sesión</button>
+                <!-- Desarrollo de la interfaz de la modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Inicio de Sesion</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="" method="post">
+                                    <div class="mb-3">
+                                        <label for="recipient-name" class="col-form-label" name="usuario">Usuario:</label> 
+                                        <input type="text" class="form-control" name="usuario" placeholder="Usuario">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="message-text" class="col-form-label" name="constraseña">Contraseña:</label>
+                                        <input  type="password" class="form-control" name="contraseña" placeholder="Contraseña"> 
+                                    </div>
+                                    <div class="modal-footer">
+                                        <input type="submit" class="btn btn-primary" data-bs-toggle="modal" name="submit" value="Iniciar sesión">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <!-- <form class="d-flex" role="search">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form> -->
+                </div>
+            </div>
+        </nav>        
+    </header>
+    <main>
         <!-- Diseño de la página de Registro datos de usuarios -->
         <form class="row g-3 needs-validation" novalidate action="" method="post">
             <div class="col-md-4">
@@ -208,9 +251,6 @@
     </main>
     <footer></footer>
     <!-- Enlaces a JavaScript -->
-    <!-- Bootstrap JS -->    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <!-- IniciaLización de datepicker -->
@@ -221,6 +261,26 @@
                 autoclose: true
             });
         });
+
+        //Código para la modal del Inicio de sesión
+        const exampleModal = document.getElementById('exampleModal')
+        if (exampleModal) {
+        exampleModal.addEventListener('show.bs.modal', event => {
+            // Button that triggered the modal
+            const button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            const recipient = button.getAttribute('data-bs-whatever')
+            // If necessary, you could initiate an Ajax request here
+            // and then do the updating in a callback.
+
+            // Update the modal's content.
+            const modalTitle = exampleModal.querySelector('.modal-title')
+            const modalBodyInput = exampleModal.querySelector('.modal-body input')
+
+            modalTitle.textContent = `New message to ${recipient}`
+            modalBodyInput.value = recipient
+        })
+        }
     </script>
 </body>
 </html>

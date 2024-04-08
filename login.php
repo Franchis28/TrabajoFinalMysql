@@ -1,3 +1,44 @@
+<!-- Código PHP -->
+<?php
+    session_start();
+    if(isset($_POST['submit']))
+    {
+        $usuario = $_POST['usuario'];
+        $contraseña = $_POST['contraseña'];
+        $hostname = 'localhost';
+        $username = 'root';
+        $dbname = 'trabajo_final_php';
+        $conn = @mysqli_connect($hostname, $username);
+        if($conn){
+            if(mysqli_select_db($conn, $dbname) === TRUE){
+                echo 'Funciona la conexión';
+            }
+        }
+        else {
+            echo 'La conexión ha sido fallida';
+        }
+        $sql = "SELECT * FROM users_login WHERE Usuario = '$usuario' AND Contraseña = '$contraseña'";
+        $result = mysqli_query($conn, $sql);
+        
+        if(mysqli_num_rows($result) == 1){
+            echo '<br>';
+            echo 'Inicio de sesión realizado correctamente';
+            $_SESSION['usuario'] = $usuario;
+            header("Location: login.php");
+            exit();
+        }else{
+            $error_msg = 'Nombre de usuario o contraseña incorrectos';
+        }
+        
+    }
+    // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
+    if(isset($_SESSION['usuario'])) {
+        echo '<p class="fs-6">El usuario que está conectado ahora mismo es ' . $_SESSION['usuario'] . '</p>';
+    } else {
+        echo '<p class="fs-4">Ningún usuario está conectado actualmente</p>';
+    }
+    ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -39,46 +80,8 @@
             </div>
         </nav>        
     </header>
-    <?php
-    session_start();
-    if(isset($_POST['submit']))
-    {
-        $usuario = $_POST['usuario'];
-        $contraseña = $_POST['contraseña'];
-        $hostname = 'localhost';
-        $username = 'root';
-        $dbname = 'trabajo_final_php';
-        $conn = @mysqli_connect($hostname, $username);
-        if($conn){
-            if(mysqli_select_db($conn, $dbname) === TRUE){
-                echo 'Funciona la conexión';
-            }
-        }
-        else {
-            echo 'La conexión ha sido fallida';
-        }
-        $sql = "SELECT * FROM users_login WHERE Usuario = '$usuario' AND Contraseña = '$contraseña'";
-        $result = mysqli_query($conn, $sql);
-        
-        if(mysqli_num_rows($result) == 1){
-            echo '<br>';
-            echo 'Inicio de sesión realizado correctamente';
-            $_SESSION['usuario'] = $usuario;
-            header("Location: login.php");
-            exit();
-        }else{
-            $error_msg = 'Nombre de usuario o contraseña incorrectos';
-        }
-        
-    }
-        // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
-        if(isset($_SESSION['usuario'])) {
-            echo '<p class="fs-6">El usuario que está conectado ahora mismo es ' . $_SESSION['usuario'] . '</p>';
-        } else {
-            echo '<p class="fs-4">Ningún usuario está conectado actualmente</p>';
-        }
-    ?>
-        <!-- <p class="fs-4">El usuario que está conectado ahora mismo es <?php echo $_SESSION['usuario']; ?></p> -->
+    
+     <!-- <p class="fs-4">El usuario que está conectado ahora mismo es <?php echo $_SESSION['usuario']; ?></p> -->
     <form action="" method="post">
         <legend><h3>Inicio de Sesion</h3>
         <input type="text" name="usuario" placeholder="Usuario"><br><br>
