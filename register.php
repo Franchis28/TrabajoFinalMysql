@@ -1,3 +1,4 @@
+<!-- Código PHP -->
 <?php
 session_start();
         //Parte del registro de un nuevo usuario en la base de datos (users_login)
@@ -95,17 +96,21 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
     <!-- Enlaces a los estilos de Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>    
+    <!-- Enlaces a JavaScript -->
+    <!-- Bootstrap Datepicker JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="./js/script.js"></script>
     
 
 </head>
 <body>
     <!-- Colocar todo el encabezado de la pagina -->
 
-
     <header>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <nav class="navbar navbar-expand-lg bg-light">
             <div class="container-fluid">
                 <a class="navbar-brand" href="index.php">FranPage</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -122,46 +127,50 @@ session_start();
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="register.php">Registro</a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                    </li> -->
+                    <!-- Modal para inicio de sesión -->
+                    <li class="nav-item">
+                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
                     </li>
-                </ul>
-                <?php
-                        // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
-                        if(isset($_SESSION['usuario'])) {
-                            echo  $_SESSION['usuario'] ;
-                        } else {
-                            echo '<p class="fs-4">Ningún usuario está conectado actualmente</p>';
-                        } 
-                        ?>
-                <!-- Modal para inicio de sesión -->
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Iniciar Sesión</button>
-                <!-- Desarrollo de la interfaz de la modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Inicio de Sesion</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form action="" method="post">
-                                    <div class="mb-3">
-                                        <label for="recipient-name" class="col-form-label" name="usuario">Usuario:</label> 
-                                        <input type="text" class="form-control" name="usuario" placeholder="Usuario">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="message-text" class="col-form-label" name="constraseña">Contraseña:</label>
-                                        <input  type="password" class="form-control" name="contraseña" placeholder="Contraseña"> 
-                                    </div>
-                                    <div class="modal-footer">
-                                        <input type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" name="submit" value="Iniciar sesión">
-                                    </div>
-                                </form>
+                    <!-- Desarrollo de la interfaz de la modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Inicio de Sesion</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form action="" method="post">
+                                        <div class="mb-3">
+                                            <label for="recipient-name" class="col-form-label" name="usuario">Usuario:</label> 
+                                            <input type="text" class="form-control" name="usuario" placeholder="Usuario">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="message-text" class="col-form-label" name="constraseña">Contraseña:</label>
+                                            <input  type="password" class="form-control" name="contraseña" placeholder="Contraseña"> 
+                                        </div>
+                                        <div class="modal-footer">
+                                            <input type="submit" class="btn btn-primary"  name="submit" value="Iniciar sesión">
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </ul>
+                <div class=" px-2">
+                <?php
+                    // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
+                    if(isset($_SESSION['usuario'])) {
+                        echo  $_SESSION['usuario'] ;
+                    } else {
+                        echo '<p class="fs-4">Ningún usuario está conectado actualmente</p>';
+                    } 
+                ?>
+            </div>
             </div>
                 <!-- <form class="d-flex" role="search">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -258,38 +267,6 @@ session_start();
         </form>
     </main>
     <footer></footer>
-    <!-- Enlaces a JavaScript -->
-    <!-- Bootstrap Datepicker JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <!-- IniciaLización de datepicker -->
-    <script>
-        $(document).ready(function(){
-            $('#datepicker').datepicker({
-                format: 'yyyy-mm-dd',
-                autoclose: true
-            });
-        });
-
-        //Código para la modal del Inicio de sesión
-        const exampleModal = document.getElementById('exampleModal')
-        if (exampleModal) {
-        exampleModal.addEventListener('show.bs.modal', event => {
-            // Button that triggered the modal
-            const button = event.relatedTarget
-            // Extract info from data-bs-* attributes
-            const recipient = button.getAttribute('data-bs-whatever')
-            // If necessary, you could initiate an Ajax request here
-            // and then do the updating in a callback.
-
-            // Update the modal's content.
-            const modalTitle = exampleModal.querySelector('.modal-title')
-            const modalBodyInput = exampleModal.querySelector('.modal-body input')
-
-            modalTitle.textContent = `New message to ${recipient}`
-            modalBodyInput.value = recipient
-        })
-        }
-    </script>
+    
 </body>
 </html>
