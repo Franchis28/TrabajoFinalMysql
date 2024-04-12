@@ -1,22 +1,7 @@
 <!-- Código PHP -->
 <?php
-    session_start();
-    if(isset($_POST['submit']))
-    {
-        $usuario = $_POST['usuario'];
-        $contraseña = $_POST['contraseña'];
-        $hostname = 'localhost';
-        $username = 'root';
-        $dbname = 'trabajo_final_php';
-        $conn = @mysqli_connect($hostname, $username);
-        if($conn){
-            if(mysqli_select_db($conn, $dbname) === TRUE){
-                echo 'Funciona la conexión';
-            }
-        }
-        else {
-            echo 'La conexión ha sido fallida';
-        }
+    //Include para realizar la conexión con la base de datos
+    include 'conexion.php';
         $sql = "SELECT * FROM users_login WHERE Usuario = '$usuario' AND Contraseña = '$contraseña'";
         $result = mysqli_query($conn, $sql);
         
@@ -30,13 +15,13 @@
             $error_msg = 'Nombre de usuario o contraseña incorrectos';
         }
         
-    }
-    // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
-    if(isset($_SESSION['usuario'])) {
-        echo '<p class="fs-6">El usuario que está conectado ahora mismo es ' . $_SESSION['usuario'] . '</p>';
-    } else {
-        echo '<p class="fs-4">Ningún usuario está conectado actualmente</p>';
-    }
+    
+    // // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
+    // if(isset($_SESSION['usuario'])) {
+    //     echo '<p class="fs-6">El usuario que está conectado ahora mismo es ' . $_SESSION['usuario'] . '</p>';
+    // } else {
+    //     echo '<p class="fs-4">Ningún usuario está conectado actualmente</p>';
+    // }
     ?>
 
 <!DOCTYPE html>
