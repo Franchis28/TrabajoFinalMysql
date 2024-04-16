@@ -1,38 +1,18 @@
 <!-- Código PHP -->
 <?php
-session_start();
-//Parte del registro de un nuevo usuario en la base de datos (users_login)
-if(isset($_POST['submit']))
-{
-    $usuario = $_POST['usuario'];
-    $contraseña = $_POST['contraseña'];
-    $hostname = 'localhost';
-    $username = 'root';
-    $password = '123456';
-    $dbname = 'trabajo_final_php';
-    $conn = @mysqli_connect($hostname, $username);
-    if($conn){
-        if(mysqli_select_db($conn, $dbname) === TRUE){
-            echo 'Funciona la conexión';
-        }
-    }
-    else {
-        echo 'La conexión ha sido fallida';
-    }
-    // Consulta datos en users_login
-    $sql = "SELECT * FROM users_login WHERE Usuario = '$usuario' AND Contraseña = '$contraseña'";
-    $result = mysqli_query($conn, $sql);
-    
-    if(mysqli_num_rows($result) == 1){
-        echo '<br>';
-        echo 'Inicio de sesión realizado correctamente';
-        $_SESSION['usuario'] = $usuario;
-        header("Location: index.php");
-    }else{
-        $error_msg = 'Nombre de usuario o contraseña incorrectos';
-    }
-}
-
+//Include para realizar la conexión con la base de datos
+include 'database.php';
+//Include para recuperar los datos para la conexión a la BD
+include '.env.php';
+// Datos para realizar la conexión a la BD
+$hostname = $SERVIDOR;
+$username = $USUARIO;
+$password = $PASSWORD;
+$dbname = $BD;
+// Conectar a la base de datos
+$conn = conectarDB($hostname, $username, $dbname);
+//Login usuario
+$loginUser = logearUser($conn);
 ?>
 
 

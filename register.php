@@ -1,9 +1,18 @@
 <!-- Código PHP -->
 <?php
-    //Include para realizar la conexión con la base de datos
-    include './php/conexion.php';
-    //Include para el nuevo registro de usuario
-    include './php/NewUser.php'; 
+//Include para realizar la conexión con la base de datos
+include 'database.php';
+//Include para recuperar los datos para la conexión a la BD
+include '.env.php';
+// Datos para realizar la conexión a la BD
+$hostname = $SERVIDOR;
+$username = $USUARIO;
+$password = $PASSWORD;
+$dbname = $BD;
+// Conectar a la base de datos
+$conn = conectarDB($hostname, $username, $dbname);
+//Include para el nuevo registro de usuario
+include './php/NewUser.php'; 
 ?> 
 
                 

@@ -7,6 +7,7 @@ $hostname = $SERVIDOR;
 $username = $USUARIO;
 $password = $PASSWORD;
 $dbname = $BD;
+
 $conn = @mysqli_connect($hostname, $username);
 if($conn){
     if(mysqli_select_db($conn, $dbname) === TRUE){

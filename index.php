@@ -1,57 +1,21 @@
 <!-- Código PHP para conectar con la base de datos y hacer modificaciones en ella -->
 <?php
 //Include para realizar la conexión con la base de datos
-include './php/conexion.php';
-//Consulta para recopilar los datos de las noticias de la tabla noticias
-$sql = "SELECT * FROM noticias";
-$resultado = mysqli_query($conn, $sql);
-// Verificar si hay resultados y mostrar los datos
-if ($resultado->num_rows > 0) {
-    while($fila = $resultado->fetch_assoc()) {
-        // Aquí puedes mostrar los datos como desees
-        $titulo = $fila['titulo'];
-        $texto = $fila['texto'];
-        $imagen = $fila['imagen'];
-        // Obtener la imagen binaria de alguna manera (supongamos que ya la tienes)
-        $imagen_binaria = $fila['imagen']; // Suponiendo que obtienes la imagen de la base de datos y la almacenas en esta variable
-        // Decodificar la imagen binaria
-        $imagen_decodificada = base64_encode($imagen_binaria);
-    }
-} else {
-    echo "No se encontraron resultados.";
-}
+include 'database.php';
+//Include para recuperar los datos para la conexión a la BD
+include '.env.php';
+// Datos para realizar la conexión a la BD
+$hostname = $SERVIDOR;
+$username = $USUARIO;
+$password = $PASSWORD;
+$dbname = $BD;
+// Conectar a la base de datos
+$conn = conectarDB($hostname, $username, $dbname);
+// Obtener las noticias
+$noticias = obtenerNoticias($conn);
+//Login usuario
+$loginUser = logearUser($conn);
 
-//Parte del registro de un nuevo usuario en la base de datos (users_login)
-if(isset($_POST['submit']))
-{
-    $usuario = $_POST['usuario'];
-    $contraseña = $_POST['contraseña'];
-    $hostname = 'localhost';
-    $username = 'root';
-    $password = '123456';
-    $dbname = 'trabajo_final_php';
-    $conn = @mysqli_connect($hostname, $username);
-    if($conn){
-        if(mysqli_select_db($conn, $dbname) === TRUE){
-            echo 'Funciona la conexión';
-        }
-    }
-    else {
-        echo 'La conexión ha sido fallida';
-    }
-    // Consulta datos en users_login
-    $sql = "SELECT * FROM users_login WHERE Usuario = '$usuario' AND Contraseña = '$contraseña'";
-    $result = mysqli_query($conn, $sql);
-    
-    if(mysqli_num_rows($result) == 1){
-        echo '<br>';
-        echo 'Inicio de sesión realizado correctamente';
-        $_SESSION['usuario'] = $usuario;
-        header("Location: index.php");
-    }else{
-        $error_msg = 'Nombre de usuario o contraseña incorrectos';
-    }
-}
 
 ?>
 <!DOCTYPE html>
@@ -163,36 +127,18 @@ if(isset($_POST['submit']))
                 <h3>Algo de lo que vas a encontrar en FranPage</h3>
                 <div class="container text-center my-4">
                     <div class="row">
+                        <?php foreach ($noticias as $noticia): ?>
                         <div class="col">
                             <div class="card" style="width: 18rem;">
-                                <img src="..." class="card-img-top" alt="...">
+                                <img src="<?php echo $noticia['imagen']; ?>" class="card-img-top" alt="Imagen Noticia">
                                 <div class="card-body">
-                                    <h5 class="card-title"><?php echo "$titulo"?></h5>
-                                    <p class="card-text"><?php echo "$texto"?></p>
+                                    <h5 class="card-title"><?php echo $noticia['titulo']; ?></h5>
+                                    <p class="card-text"><?php echo $noticia['texto']; ?></p>
                                     <a href="noticias.php" class="btn btn-primary">Leer la noticia completa</a>
                                 </div>
                             </div>
                         </div>
-                        <div class="col">
-                            <div class="card" style="width: 18rem;">
-                                <img src="..." class="card-img-top" alt="...">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col">
-                            <div class="card" style="width: 18rem;">
-                                <img src="..." class="card-img-top" alt="...">
-                                <div class="card-body">
-                                    <h5 class="card-title">Card title</h5>
-                                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                                </div>
-                            </div>
-                        </div>
+                        <?php endforeach; ?>
                     </div>
                 </div> 
             </div>

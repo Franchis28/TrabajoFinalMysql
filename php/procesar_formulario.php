@@ -1,24 +1,21 @@
 <?php
 // Conexión a la base de datos
-// $conexion = new mysqli("localhost", "usuario", "contraseña", "basededatos");
-    $hostname = 'localhost';
-    $username = 'root';
-    $password = '123456';
-    $dbname = 'trabajo_final_php';
-    $conexion = @mysqli_connect($hostname, $username);
-    if($conexion){
-        if(mysqli_select_db($conexion, $dbname) === TRUE){
-            echo 'Funciona la conexión';
-        }
-    }
-    else {
-        echo 'La conexión ha sido fallida';
-    }
+//Include para realizar la conexión con la base de datos
+include 'database.php';
+//Include para recuperar los datos para la conexión a la BD
+include '.env.php';
+// Datos para realizar la conexión a la BD
+$hostname = $SERVIDOR;
+$username = $USUARIO;
+$password = $PASSWORD;
+$dbname = $BD;
+// Conectar a la base de datos
+$conn = conectarDB($hostname, $username, $dbname);
 
-// Verificar la conexión
-if ($conexion->connect_error) {
-    die("Error de conexión: " . $conexion->connect_error);
-}
+// // Verificar la conexión
+// if ($conexion->connect_error) {
+//     die("Error de conexión: " . $conexion->connect_error);
+// }
 
 // Verificar si se ha enviado una imagen
 if (isset($_FILES['imagen'])) {
