@@ -1,9 +1,9 @@
 <!-- Código PHP -->
 <?php
 //Include para realizar la conexión con la base de datos
-include 'database.php';
+require '../php/database.php';
 //Include para recuperar los datos para la conexión a la BD
-include '.env.php';
+require '../.env.php';
 // Datos para realizar la conexión a la BD
 $hostname = $SERVIDOR;
 $username = $USUARIO;
@@ -11,8 +11,11 @@ $password = $PASSWORD;
 $dbname = $BD;
 // Conectar a la base de datos
 $conn = conectarDB($hostname, $username, $dbname);
+// Obtener las noticias
+$noticias = obtenerNoticias($conn);
 //Login usuario
-$loginUser = logearUser($conn);
+$page = 'noticias';
+$loginUser = logearUser($conn,$page);
 ?>
 
 
@@ -30,20 +33,20 @@ $loginUser = logearUser($conn);
 
     <nav class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="index.php">FranPage</a>
+            <a class="navbar-brand" href="../index.php">FranPage</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                <a class="nav-link " href="index.php">Portada</a>
+                <a class="nav-link " href=" ../index.php">Portada</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="noticias.php">Noticias</a>
+                <a class="nav-link active" aria-current="page" href="./noticias.php">Noticias</a>
                 </li>
                 <li class="nav-item">
-                <a class="nav-link "  href="register.php">Registro</a>
+                <a class="nav-link "  href="./register.php">Registro</a>
                 </li>
                 <!-- <li class="nav-item">
                 <a class="nav-link disabled" aria-disabled="true">Disabled</a>
@@ -70,7 +73,16 @@ $loginUser = logearUser($conn);
                                         <label for="message-text" class="col-form-label" name="constraseña">Contraseña:</label>
                                         <input  type="password" class="form-control" name="contraseña" placeholder="Contraseña"> 
                                     </div>
+                                      <div class="position-relative">
+                                        <button type="button" class="btn btn-primary position-relative start-0">
+                                        Mails <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-secondary">+99 <span class="visually-hidden">unread messages</span></span>
+                                        </button>
+                                    </div>  
+                                    
                                     <div class="modal-footer">
+                                    
+                                    
+                                        <!-- <p class="my-2">Si aún no tiene cuenta,<a href="register.php" class="nav-link">haz click aquí</a></p> -->
                                         <input type="submit" class="btn btn-primary"  name="submit" value="Iniciar sesión">
                                     </div>
                                 </form>
@@ -102,7 +114,7 @@ $loginUser = logearUser($conn);
     <section>
         <article>
             <div class="container">
-                <form class="row g-3 needs-validation" action="procesar_formulario.php" method="post" enctype="multipart/form-data">
+                <form class="row g-3 needs-validation" action="../php/procesar_formulario.php" method="post" enctype="multipart/form-data">
                     <label for="imagen">Selecciona una imagen:</label>
                     <input type="file" id="imagen" name="imagen" accept="image/*">
                     <input type="submit" value="Subir Imagen">
@@ -110,6 +122,27 @@ $loginUser = logearUser($conn);
             </div>
         </article>
     </section>
+    <section>
+            <div class="container">
+                <h3>Las últimas Noticias</h3>
+                <div class="container text-center my-4">
+                    <div class="row">
+                        <?php foreach ($noticias as $noticia): ?>
+                        <div class="col">
+                            <div class="card" style="width: 18rem;">
+                                <img src="<?php echo $noticia['imagen']; ?>" class="card-img-top" alt="Imagen Noticia">
+                                <div class="card-body">
+                                    <h5 class="card-title"><?php echo $noticia['titulo']; ?></h5>
+                                    <p class="card-text"><?php echo $noticia['texto']; ?></p>
+                                    <a href="views/noticias.php" class="btn btn-primary">Leer la noticia completa</a>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div> 
+            </div>
+        </section>
 </main>
 <div class="container">
    

@@ -1,9 +1,9 @@
 <!-- Código PHP -->
 <?php
-//Include para realizar la conexión con la base de datos
-include 'database.php';
-//Include para recuperar los datos para la conexión a la BD
-include '.env.php';
+//require para realizar la conexión con la base de datos
+require '../php/database.php';
+//require para recuperar los datos para la conexión a la BD
+require '../.env.php';
 // Datos para realizar la conexión a la BD
 $hostname = $SERVIDOR;
 $username = $USUARIO;
@@ -11,8 +11,11 @@ $password = $PASSWORD;
 $dbname = $BD;
 // Conectar a la base de datos
 $conn = conectarDB($hostname, $username, $dbname);
-//Include para el nuevo registro de usuario
-include './php/NewUser.php'; 
+//Consulta para añadir un nuevo usuario a la base de datos
+$newUser = registerNewUser($conn);
+//Login usuario
+$page = 'register';
+$loginUser = logearUser($conn,$page);
 ?> 
 
                 
@@ -29,7 +32,7 @@ include './php/NewUser.php';
     <!-- Bootstrap Datepicker JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <script src="./js/script.js"></script>
+    <script src="../js/script.js"></script>
     
 
 </head>
@@ -39,20 +42,20 @@ include './php/NewUser.php';
     <header>
         <nav class="navbar navbar-expand-lg bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="index.php">FranPage</a>
+                <a class="navbar-brand" href="../index.php">FranPage</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link " href="index.php">Portada</a>
+                        <a class="nav-link " href="../index.php">Portada</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="noticias.php">Noticias</a>
+                        <a class="nav-link" href="./noticias.php">Noticias</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="register.php">Registro</a>
+                        <a class="nav-link active" aria-current="page" href="./register.php">Registro</a>
                     </li>
                     <!-- <li class="nav-item">
                         <a class="nav-link disabled" aria-disabled="true">Disabled</a>
@@ -80,6 +83,7 @@ include './php/NewUser.php';
                                             <input  type="password" class="form-control" name="contraseña" placeholder="Contraseña"> 
                                         </div>
                                         <div class="modal-footer">
+                                            <p class="my-2">Si aún no tiene cuenta,<a href="register.php" class="nav-link">haz clink aquí</a></p>
                                             <input type="submit" class="btn btn-primary"  name="submit" value="Iniciar sesión">
                                         </div>
                                     </form>

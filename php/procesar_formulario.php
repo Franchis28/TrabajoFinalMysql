@@ -1,9 +1,9 @@
 <?php
 // Conexión a la base de datos
 //Include para realizar la conexión con la base de datos
-include 'database.php';
+include './database.php';
 //Include para recuperar los datos para la conexión a la BD
-include '.env.php';
+include '../.env.php';
 // Datos para realizar la conexión a la BD
 $hostname = $SERVIDOR;
 $username = $USUARIO;
@@ -11,11 +11,6 @@ $password = $PASSWORD;
 $dbname = $BD;
 // Conectar a la base de datos
 $conn = conectarDB($hostname, $username, $dbname);
-
-// // Verificar la conexión
-// if ($conexion->connect_error) {
-//     die("Error de conexión: " . $conexion->connect_error);
-// }
 
 // Verificar si se ha enviado una imagen
 if (isset($_FILES['imagen'])) {
@@ -30,7 +25,7 @@ if (isset($_FILES['imagen'])) {
     $clave_externa = 5;
     // Insertar la imagen en la base de datos
     $sql = "INSERT INTO noticias (idUser,imagen) VALUES (?,?)";
-    $stmt = $conexion->prepare($sql);
+    $stmt = $conn->prepare($sql);
     $stmt->bind_param("ib", $clave_externa, $imagen_binaria);
     $stmt->execute();
 
@@ -43,7 +38,7 @@ if (isset($_FILES['imagen'])) {
 
     // Consulta para verificar si hay alguna imagen almacenada en el atributo de imagen de tu tabla
     $sql = "SELECT imagen FROM noticias LIMIT 3"; // Selecciona solo una fila para mejorar el rendimiento
-    $resultado = mysqli_query($conexion, $sql);
+    $resultado = mysqli_query($conn, $sql);
 
     // Verificar si hay resultados
     if ($resultado) {
@@ -54,11 +49,11 @@ if (isset($_FILES['imagen'])) {
             echo "No hay ninguna imagen almacenada en el atributo de imagen de tu tabla.";
         }
     } else {
-        echo "Error al realizar la consulta: " . mysqli_error($conexion);
+        echo "Error al realizar la consulta: " . mysqli_error($conn);
     }
 
     // Cerrar la declaración y la conexión
     $stmt->close();
-    $conexion->close();
+    $conn->close();
 }
 ?>

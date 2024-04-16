@@ -1,9 +1,9 @@
 <!-- Código PHP para conectar con la base de datos y hacer modificaciones en ella -->
 <?php
-//Include para realizar la conexión con la base de datos
-include 'database.php';
-//Include para recuperar los datos para la conexión a la BD
-include '.env.php';
+//require para realizar la conexión con la base de datos
+require './php/database.php';
+//require para recuperar los datos para la conexión a la BD
+require '.env.php';
 // Datos para realizar la conexión a la BD
 $hostname = $SERVIDOR;
 $username = $USUARIO;
@@ -14,7 +14,8 @@ $conn = conectarDB($hostname, $username, $dbname);
 // Obtener las noticias
 $noticias = obtenerNoticias($conn);
 //Login usuario
-$loginUser = logearUser($conn);
+$page = 'index';
+$loginUser = logearUser($conn,$page);
 
 
 ?>
@@ -41,10 +42,10 @@ $loginUser = logearUser($conn);
                     <a class="nav-link active" aria-current="page" href="index.php">Portada</a>
                     </li>
                     <li class="nav-item">
-                    <a class="nav-link" href="noticias.php">Noticias</a>
+                    <a class="nav-link" href="./views/noticias.php">Noticias</a>
                     </li>
                     <li class="nav-item">
-                    <a class="nav-link" href="register.php">Registro</a>
+                    <a class="nav-link" href="./views/register.php">Registro</a>
                     </li>
                     <!-- <li class="nav-item">
                     <a class="nav-link">Disabled</a>
@@ -90,11 +91,6 @@ $loginUser = logearUser($conn);
                         } 
                     ?>
                 </div>
-                
-                <!-- <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form> -->
                 </div>
             </div>
         </nav>        
@@ -117,12 +113,12 @@ $loginUser = logearUser($conn);
             </p>
             <div class="container">
                 <h5>Esto es una prueba de mostrar una imagen recuperada de la BD  </h5>
-                <img src="data:image/jpg;base64, <?= $imagen_decodificada ?> " alt="Imagen">
+                
             </div>
         </div>
         
         </section>
-        <section>
+        <!-- <section>
             <div class="container">
                 <h3>Algo de lo que vas a encontrar en FranPage</h3>
                 <div class="container text-center my-4">
@@ -134,7 +130,7 @@ $loginUser = logearUser($conn);
                                 <div class="card-body">
                                     <h5 class="card-title"><?php echo $noticia['titulo']; ?></h5>
                                     <p class="card-text"><?php echo $noticia['texto']; ?></p>
-                                    <a href="noticias.php" class="btn btn-primary">Leer la noticia completa</a>
+                                    <a href="views/noticias.php" class="btn btn-primary">Leer la noticia completa</a>
                                 </div>
                             </div>
                         </div>
@@ -143,7 +139,31 @@ $loginUser = logearUser($conn);
                 </div> 
             </div>
             
-        </section>
+        </section> -->
+        <section>
+    <div class="container">
+        <h3>Algo de lo que vas a encontrar en FranPage</h3>
+        <div class="container text-center my-4">
+            <div class="row">
+                <?php foreach ($noticias as $noticia): ?>
+                <div class="col">
+                    <div class="card" style="width: 18rem;">
+                        <!-- Mostrar la imagen si está presente -->
+                        <?php if(isset($noticia['imagen'])): ?>
+                            <img src="data:image/jpeg;base64, <?php echo base64_encode($noticia['imagen']); ?>" class="card-img-top" alt="Imagen Noticia">
+                        <?php endif; ?>
+                        <div class="card-body">
+                            <h5 class="card-title"><?php echo $noticia['titulo']; ?></h5>
+                            <p class="card-text"><?php echo $noticia['texto']; ?></p>
+                            <a href="views/noticias.php" class="btn btn-primary">Leer la noticia completa</a>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+        </div> 
+    </div>
+</section>
     </main>
 
 </body>
