@@ -1,7 +1,6 @@
 <!-- Código PHP -->
 <?php
 session_start();
-
 //Parte del registro de un nuevo usuario en la base de datos (users_login)
 if(isset($_POST['submit']))
 {

@@ -1,9 +1,9 @@
 <!-- Código PHP -->
 <?php
     //Include para realizar la conexión con la base de datos
-    include './assets/php/conexion.php';
+    include './php/conexion.php';
     //Include para el nuevo registro de usuario
-    include './assets/php/NewUser.php'; 
+    include './php/NewUser.php'; 
 ?> 
 
                 

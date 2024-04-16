@@ -1,7 +1,7 @@
 <!-- Código PHP para conectar con la base de datos y hacer modificaciones en ella -->
 <?php
 //Include para realizar la conexión con la base de datos
-include './assets/php/conexion.php';
+include './php/conexion.php';
 //Consulta para recopilar los datos de las noticias de la tabla noticias
 $sql = "SELECT * FROM noticias";
 $resultado = mysqli_query($conn, $sql);
