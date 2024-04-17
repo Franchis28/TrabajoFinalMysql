@@ -11,6 +11,28 @@ $password = $PASSWORD;
 $dbname = $BD;
 // Conectar a la base de datos
 $conn = conectarDB($hostname, $username, $dbname);
+// Manejar la carga de la imagen
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Verificar si se ha enviado una imagen
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+        // Leer la imagen en bytes
+        $imagen = file_get_contents($_FILES['imagen']['tmp_name']);
+        // Escapar los caracteres especiales
+        $imagen = $conn->real_escape_string($imagen);
+        // Insertar la imagen en la base de datos junto con otros detalles de la noticia
+        $titulo = $_POST['titulo'];
+        $texto = $_POST['texto'];
+        $fePublic = $_POST['fePublic'];
+        $query = "INSERT INTO noticias (titulo, imagen, texto, fecha, idUser) VALUES ('$titulo', '$imagen', '$texto', '$fePublic', 1)";
+        if ($conn->query($query) === TRUE) {
+            echo "La noticia se ha agregado correctamente.";
+        } else {
+            echo "Error al agregar la noticia: " . $conn->error;
+        }
+    } else {
+        echo "Error al cargar la imagen.";
+    }
+}
 // Obtener las noticias
 $noticias = obtenerNoticias($conn);
 //Login usuario
@@ -27,6 +49,10 @@ $loginUser = logearUser($conn,$page);
     <title>Noticias</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>    
+    <!-- Bootstrap Datepicker JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="../js/script.js"></script>
 </head>
 <body>
 <header>
@@ -111,38 +137,49 @@ $loginUser = logearUser($conn,$page);
     </nav>        
 </header>
 <main>
-    <section>
-        <article>
-            <div class="container">
-                <form class="row g-3 needs-validation" action="../php/procesar_formulario.php" method="post" enctype="multipart/form-data">
-                    <label for="imagen">Selecciona una imagen:</label>
-                    <input type="file" id="imagen" name="imagen" accept="image/*">
-                    <input type="submit" value="Subir Imagen">
-                </form>
-            </div>
-        </article>
-    </section>
-    <section>
-            <div class="container">
-                <h3>Las últimas Noticias</h3>
-                <div class="container text-center my-4">
-                    <div class="row">
-                        <?php foreach ($noticias as $noticia): ?>
-                        <div class="col">
-                            <div class="card" style="width: 18rem;">
-                                <img src="<?php echo $noticia['imagen']; ?>" class="card-img-top" alt="Imagen Noticia">
-                                <div class="card-body">
-                                    <h5 class="card-title"><?php echo $noticia['titulo']; ?></h5>
-                                    <p class="card-text"><?php echo $noticia['texto']; ?></p>
-                                    <a href="views/noticias.php" class="btn btn-primary">Leer la noticia completa</a>
-                                </div>
+<section>
+        <div class="container my-4">
+            <h3>Las últimas Noticias</h3>
+            <!-- Formulario para cargar una nueva noticia con imagen -->
+            <!-- <form action="" method="post" enctype="multipart/form-data">
+                <div class="col-mb-3">
+                    <label for="titulo" class="form-label">Título:</label>
+                    <input type="text" class="form-control" id="titulo" name="titulo">
+                </div>
+                <div class="col-mb-3">
+                    <label for="texto" class="form-label">Texto:</label>
+                    <textarea class="form-control" id="texto" name="texto"></textarea>
+                </div>
+                <div class="col-mb-3">
+                    <label for="imagen" class="form-label">Imagen:</label>
+                    <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*">
+                </div>
+                <div class="col-md-3 mb-2">
+                    <label for="datepicker" class="form-label">Fecha de Publicación:</label>
+                    <input type="text" name="fePublic" class="form-control" id="datepicker" placeholder="Fecha de Publicación" autocomplete="off">
+                </div>
+                <button type="submit" class="btn btn-primary">Subir Noticia</button>
+            </form> -->
+            <!-- Mostrar las noticias -->
+            <div class="container text-center my-4">
+                <div class="row gap-3">
+                    <?php foreach ($noticias as $noticia): ?>
+                    <div class="col">
+                        <div class="card" style="width: 18rem;">
+                            <!-- Mostrar la imagen de la noticia -->
+                            <img src="data:image/jpeg;base64,<?php echo base64_encode($noticia['imagen']); ?>" class="card-img-top" alt="Imagen Noticia">
+                            <div class="card-body">
+                                <h5 class="card-title"><?php echo $noticia['titulo']; ?></h5>
+                                <p class="card-text"><?php echo $noticia['nombre_autor']; ?>/<?php echo $noticia['fecha']; ?></p>
+                                <p class="card-text"><?php echo $noticia['texto']; ?></p>
                             </div>
                         </div>
-                        <?php endforeach; ?>
                     </div>
-                </div> 
-            </div>
-        </section>
+                    <?php endforeach; ?>
+                </div>
+            </div> 
+        </div>
+    </section>
 </main>
 <div class="container">
    

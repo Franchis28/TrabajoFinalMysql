@@ -102,19 +102,11 @@ $loginUser = logearUser($conn,$page);
         <div class="container my-4">
             <h3>¿Qué es FranPage?</h3>
             <p>Bienvenido a FranPage, tu destino definitivo para mantenerte al tanto de las últimas noticias, pero con un giro único: ¡tú eres el creador de contenido!<br><br>
-
                 Imagina un espacio donde la información fluye desde la comunidad misma. En FranPage, no solo consumes noticias, sino que también las produces. ¿Cómo funciona? Es simple: los usuarios registrados tienen el privilegio de contribuir con sus propias historias, reportajes y eventos, convirtiéndose en periodistas de su propia comunidad.<br><br>
-
                 ¿Por qué limitarse a consumir contenido cuando puedes ser parte de su creación? FranPage ofrece una plataforma donde tus opiniones, investigaciones y descubrimientos pueden ser compartidos con el mundo entero. Ya no estás limitado a ser un mero espectador; aquí, tienes la oportunidad de ser el narrador.<br><br>
-
                 En FranPage, la diversidad de perspectivas es celebrada. No importa de dónde vengas o cuáles sean tus intereses, siempre encontrarás contenido que te interese. Desde noticias locales hasta eventos globales, desde política hasta cultura pop, FranPage es tu ventana al mundo, construida por y para la comunidad.<br><br>
-
                 En resumen, FranPage es mucho más que una simple plataforma de noticias. Es una comunidad dinámica donde la participación y la colaboración son los pilares fundamentales. Únete a nosotros hoy y sé parte de una experiencia informativa como ninguna otra. FranPage: donde todos tienen una historia que contar.
             </p>
-            <div class="container">
-                <h5>Esto es una prueba de mostrar una imagen recuperada de la BD  </h5>
-                
-            </div>
         </div>
         
         </section>
@@ -144,7 +136,7 @@ $loginUser = logearUser($conn,$page);
     <div class="container">
         <h3>Algo de lo que vas a encontrar en FranPage</h3>
         <div class="container text-center my-4">
-            <div class="row">
+            <div class="row gap-3">
                 <?php foreach ($noticias as $noticia): ?>
                 <div class="col">
                     <div class="card" style="width: 18rem;">
@@ -154,6 +146,7 @@ $loginUser = logearUser($conn,$page);
                         <?php endif; ?>
                         <div class="card-body">
                             <h5 class="card-title"><?php echo $noticia['titulo']; ?></h5>
+                            <p class="card-text"><?php echo $noticia['nombre_autor']; ?>/<?php echo $noticia['fecha']; ?></p>
                             <p class="card-text"><?php echo $noticia['texto']; ?></p>
                             <a href="views/noticias.php" class="btn btn-primary">Leer la noticia completa</a>
                         </div>

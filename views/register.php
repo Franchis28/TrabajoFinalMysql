@@ -62,35 +62,51 @@ $loginUser = logearUser($conn,$page);
                     </li> -->
                     <!-- Modal para inicio de sesión -->
                     <li class="nav-item">
-                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
                     </li>
-                    <!-- Desarrollo de la interfaz de la modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Inicio de Sesion</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="" method="post">
-                                        <div class="mb-3">
-                                            <label for="recipient-name" class="col-form-label" name="usuario">Usuario:</label> 
-                                            <input type="text" class="form-control" name="usuario" placeholder="Usuario">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="message-text" class="col-form-label" name="constraseña">Contraseña:</label>
-                                            <input  type="password" class="form-control" name="contraseña" placeholder="Contraseña"> 
-                                        </div>
-                                        <div class="modal-footer">
-                                            <p class="my-2">Si aún no tiene cuenta,<a href="register.php" class="nav-link">haz clink aquí</a></p>
-                                            <input type="submit" class="btn btn-primary"  name="submit" value="Iniciar sesión">
-                                        </div>
-                                    </form>
+                    <?php
+                    // Verificar si el registro fue exitoso
+                    if (isset($_SESSION['registro_exitoso']) && $_SESSION['registro_exitoso'] === true) {
+                        // Si el registro fue exitoso, mostrar la modal
+                        
+                        unset($_SESSION['registro_exitoso']); // Limpiar la variable de sesión
+                    ?>
+                        <!-- Desarrollo de la interfaz de la modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Inicio de Sesion</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form action="" method="post">
+                                            <div class="mb-3">
+                                                <label for="recipient-name" class="col-form-label" name="usuario">Usuario:</label> 
+                                                <input type="text" class="form-control" name="usuario" placeholder="Usuario">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="message-text" class="col-form-label" name="constraseña">Contraseña:</label>
+                                                <input  type="password" class="form-control" name="contraseña" placeholder="Contraseña"> 
+                                            </div>
+                                            <div class="modal-footer">
+                                                <p class="my-2">Si aún no tiene cuenta,<a href="register.php" class="nav-link">haz clink aquí</a></p>
+                                                <input type="submit" class="btn btn-primary"  name="submit" value="Iniciar sesión">
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    <!-- JavaScript para mostrar la modal automáticamente -->
+                    <script>
+                        $(document).ready(function() {
+                            $('#exampleModal').modal('show');
+                        });
+                    </script>
+                <?php
+                }
+                ?>
                 </ul>
                 <div class=" px-2">
                 <?php
@@ -112,34 +128,32 @@ $loginUser = logearUser($conn,$page);
         </nav>        
     </header>
     <main>
+    <div class="container my-4">
+        <h3>Registro para Nuevos Usuarios</h3>
         <!-- Diseño de la página de Registro datos de usuarios -->
         <form class="row g-3 needs-validation" novalidate action="" method="post">
             <div class="col-md-4">
                 <label for="validationCustom01" class="form-label">Nombre</label>
                 <input type="text" name="nombre" class="form-control" id="validationCustom01" placeholder="Nombre" required>
                 <div class="valid-feedback">
-                    Looks good!
                 </div>
             </div>
             <div class="col-md-4">
                 <label for="validationCustom02" class="form-label">Apellidos</label>
                 <input type="text" name="apellidos" class="form-control" id="validationCustom02" placeholder="Apellido1 Apellido2" required>
                 <div class="valid-feedback">
-                    Looks good!
                 </div>
             </div>
             <div class="col-md-4">
                 <label for="validationCustom03" class="form-label">Email</label>
                 <input type="text" name="email" class="form-control" id="validationCustom03" placeholder="email@." required>
                 <div class="valid-feedback">
-                    Looks good!
                 </div>
             </div>  
             <div class="col-md-4">
                 <label for="validationCustom04" class="form-label">Teléfono</label>
                 <input type="text" name="telefono" class="form-control" id="validationCustom04" placeholder="Teléfono" required>
                 <div class="valid-feedback">
-                    Looks good!
                 </div>
             </div>
             <div class="col-md-4">
@@ -150,7 +164,6 @@ $loginUser = logearUser($conn,$page);
                 <label for="validationCustom05" class="form-label">Dirección</label>
                 <input type="text" name="direccion" class="form-control" id="validationCustom05" placeholder="Calle-Bloque-Numero" required>
                 <div class="invalid-feedback">
-                Please provide a valid city.
                 </div>
             </div>
             <div class="col-md-3">
@@ -161,7 +174,6 @@ $loginUser = logearUser($conn,$page);
                 <option>Femenino</option>
                 </select>
                 <div class="invalid-feedback">
-                Please select a valid state.
                 </div>
             </div>
             <div class="col-md-4">
@@ -169,7 +181,6 @@ $loginUser = logearUser($conn,$page);
                 <div class="input-group has-validation">
                 <input type="text" name="usuario" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
                 <div class="invalid-feedback">
-                    Please choose a username.
                 </div>
                 </div>
             </div>
@@ -177,7 +188,6 @@ $loginUser = logearUser($conn,$page);
                 <label for="validationCustom06" class="form-label">Contraseña</label>
                 <input type="password" name="contraseña" class="form-control" id="validationCustom06" placeholder="Rftghyse*!" required>
                 <div class="invalid-feedback">
-                Please provide a valid city.
                 </div>
             </div>
             
@@ -188,7 +198,6 @@ $loginUser = logearUser($conn,$page);
                     Aceptar términos y condiciones
                 </label>
                 <div class="invalid-feedback">
-                    You must agree before submitting.
                 </div>
                 </div>
             </div>
@@ -196,6 +205,7 @@ $loginUser = logearUser($conn,$page);
                 <input class="btn btn-primary" type="submit" name="submit">
             </div>
         </form>
+    </div>
     </main>
     <footer></footer>
     
