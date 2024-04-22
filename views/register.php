@@ -168,20 +168,20 @@ $loginUser = logearUser($conn,$page);
         </form>
     </div>
     </main>
-    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3  border-top bg-light text-dark">
-    <p class="col-md-4 mb-0 ">© 2024 FranPage</p>
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3  border-top bg-light">
+        <p class="col-md-4 mb-0 ">© 2024 FranPage</p>
+        
+        <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+        </a>
 
-    <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-      <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-    </a>
-
-    <ul class="nav col-md-4 justify-content-end">
-      <li class="nav-item"><a href="../index.php" class="nav-link px-2 text-body-secondary">Portada</a></li>
-      <li class="nav-item"><a href="./noticias.php" class="nav-link px-2 text-body-secondary">Noticias</a></li>
-      <li class="nav-item"><a href="./register.php" class="nav-link px-2 text-body-secondary">Registro</a></li>
-      <li class="nav-item"><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="nav-link px-2 text-body-secondary">Inicio de Seción</a></li>
-    </ul>
-  </footer>
+        <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item"><a href="../index.php" class="nav-link px-2 text-dark">Portada</a></li>
+            <li class="nav-item"><a href="./noticias.php" class="nav-link px-2 text-dark">Noticias</a></li>
+            <li class="nav-item"><a href="./register.php" class="nav-link px-2 text-dark">Registro</a></li>
+            <li class="nav-item"><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="nav-link px-2 text-dark">Inicio de Seción</a></li>
+        </ul>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>    
     <!-- Enlaces a JavaScript -->
     <script src="../js/script.js"></script>

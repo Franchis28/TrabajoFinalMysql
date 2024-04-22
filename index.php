@@ -15,8 +15,17 @@ $conn = conectarDB($hostname, $username, $dbname);
 $noticias = obtenerNoticias($conn);
 //Login usuario
 $page = 'index';
-$loginUser = logearUser($conn,$page);
+// $loginUser = logearUser($conn,$page);
+// $datosMensaje = logearUser($conn,$page);
+//Comprobación de que el array recogido de la función no viene con valores null
+// if ($datosMensaje !== null) {
+//     $mensaje = $datosMensaje["mensaje"];
+//     $tipoAlerta = $datosMensaje["tipoAlerta"];
 
+//     // Ahora puedes usar $mensaje y $tipoAlerta para mostrar el mensaje emergente
+// } else {
+//     echo "No se pudo obtener el mensaje.";
+// }
 
 ?>
 <!DOCTYPE html>
@@ -72,7 +81,15 @@ $loginUser = logearUser($conn,$page);
                                             <input  type="password" class="form-control" name="contraseña" placeholder="Contraseña"> 
                                         </div>
                                         <div class="modal-footer">
-                                            <input type="submit" class="container btn btn-primary"  name="submit" value="Iniciar sesión">
+                                            <input type="submit" class="container btn btn-primary"  name="submit" value="Iniciar sesión" <?php $page = 'index'; $datosMensaje = logearUser($conn,$page); 
+                                            if ($datosMensaje !== null) {
+                                                $mensaje = $datosMensaje["mensaje"];
+                                                $tipoAlerta = $datosMensaje["tipoAlerta"];
+                                            
+                                                // Ahora puedes usar $mensaje y $tipoAlerta para mostrar el mensaje emergente
+                                            } else {
+                                                echo "No se pudo obtener el mensaje.";
+                                            }?>>
                                             <p class="container text-center">Si aún no tienes cuenta,<a href="./views/register.php" class="nav-link text-primary">haz click aquí</a></p>
                                         </div>
                                     </form>
@@ -99,6 +116,11 @@ $loginUser = logearUser($conn,$page);
     <main>
         <!-- En este primer secction, vamos a poner  lo que se puede hacer en la web -->
         <section>
+            <!-- HTML -->
+            <div class="alert alert-<?php echo $tipoAlerta; ?> alert-dismissible fade show" role="alert">
+                <?php echo $mensaje; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
         <div class="container my-4">
             <h3>¿Qué es FranPage?</h3>
             <p>Bienvenido a FranPage, tu destino definitivo para mantenerte al tanto de las últimas noticias, pero con un giro único: ¡tú eres el creador de contenido!<br><br>
@@ -136,6 +158,20 @@ $loginUser = logearUser($conn,$page);
             </div>
         </section>
     </main>
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3  border-top bg-light">
+        <p class="col-md-4 mb-0 ">© 2024 FranPage</p>
+        
+        <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+        </a>
+
+        <ul class="nav col-md-4 justify-content-end">
+            <li class="nav-item"><a href="../index.php" class="nav-link px-2 text-dark">Portada</a></li>
+            <li class="nav-item"><a href="./noticias.php" class="nav-link px-2 text-dark">Noticias</a></li>
+            <li class="nav-item"><a href="./register.php" class="nav-link px-2 text-dark">Registro</a></li>
+            <li class="nav-item"><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="nav-link px-2 text-dark">Inicio de Seción</a></li>
+        </ul>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>   
 </body>
 </html>

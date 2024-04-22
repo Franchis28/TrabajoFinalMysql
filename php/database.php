@@ -53,9 +53,15 @@ function logearUser($conn, $page){
                 return true; // Inicio de sesión exitoso
             }
             else{
-                echo ($sql);
-                echo ($contraseña);
-                echo ('Contraseña comprobada incorrectamente');
+                $mensaje = 'Nombre de usuario o contraseña incorrectos';
+            $tipoAlerta = 'danger';
+            return array (
+                "mensaje" => $mensaje,
+                "tipoAlerta" => $tipoAlerta
+            );
+                // echo ($sql);
+                // echo ($contraseña);
+                // echo ('Contraseña comprobada incorrectamente');
             }
             
         }elseif((mysqli_num_rows($result) == 1) && ($page !== 'index')){
@@ -78,8 +84,12 @@ function logearUser($conn, $page){
         }
         else{
             
-            $error_msg = 'Nombre de usuario o contraseña incorrectos';
-            return false; // Inicio de sesión fallido
+            $mensaje = 'Nombre de usuario o contraseña incorrectos';
+            $tipoAlerta = 'danger';
+            return array (
+                "mensaje" => $mensaje,
+                "tipoAlerta" => $tipoAlerta
+            ); // Inicio de sesión fallido
         }
     }
 }
@@ -128,9 +138,5 @@ function registerNewUser($conn){
         //
     }   
 }
-
-
-
-
 
 ?>
