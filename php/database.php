@@ -28,87 +28,67 @@ function obtenerNoticias($conn) {
     }
     return $noticias;
 }
-//Consulta de usuario en la base de datos (users_login)
-// function logearUser($conn, $page){
-//     if(isset($_POST['submit']) && (!isset($_POST['nombre']))) {
-//         $usuario = mysqli_real_escape_string($conn, $_POST['usuario']);
-//         $contraseña = mysqli_real_escape_string($conn, $_POST['contraseña']);
-            
-//         // Consulta datos en users_login
-//         $sql = "SELECT contraseña FROM users_login WHERE Usuario = '$usuario'";
-//         $result = mysqli_query($conn, $sql);
-        
-//         if(mysqli_num_rows($result) == 1) {
-//             // Obtener la contraseña hasheada desde la base de datos
-//             $row = mysqli_fetch_assoc($result);
-//             $hash_contraseña = $row['contraseña'];
-            
-//             // Verificar la contraseña
-//             if(password_verify($contraseña, $hash_contraseña)) {
-//                 // Contraseña correcta, iniciar sesión
-//                 $_SESSION['usuario'] = $usuario;
-//                 if($page == 'index') {
-//                     header("Location: index.php");
-//                 } else {
-//                     // header("Location: ../index.php");
-//                 }
-//                 return true;
-//             } else {
-//                 // Contraseña incorrecta
-//                 $error_msg = 'Nombre de usuario o contraseña incorrectos';
-//                 return false;
-//             }
-//         } else {
-//             // Usuario no encontrado
-//             $error_msg = 'Nombre de usuario o contraseña incorrectos';
-//             return false;
-//         }
-//     }
-// }
-
-function logearUser($conn,$page){
+function logearUser($conn, $page){
     if(isset($_POST['submit']) && (!isset($_POST['nombre'])))
     {
         $usuario = mysqli_real_escape_string($conn, $_POST['usuario']); // Evita la inyección SQL
         $contraseña = mysqli_real_escape_string($conn, $_POST['contraseña']); // Evita la inyección SQL
-            
+        echo 'Aún no se han comprobado la conexión con la base de datos exitosa, ni la consulta';    
         // Consulta datos en users_login
         $sql = "SELECT contraseña FROM users_login WHERE Usuario = '$usuario'";
         $result = mysqli_query($conn, $sql);
-        
-        if((mysqli_num_rows($result) == 1) && ($page == 'index')){
+        //Si el registro se realiza desde la página de inicio y se redigirá a la página de index
+        if((mysqli_num_rows($result) == 1)&& ($page == 'index')){
             // Obtener la contraseña hasheada desde la base de datos
             $row = mysqli_fetch_assoc($result);
             $hash_contraseña = $row['contraseña'];
+            echo ($hash_contraseña);
             // Verificar la contraseña
             if(password_verify($contraseña, $hash_contraseña)) {
                 // Contraseña correcta, iniciar sesión
+                echo ('Contraseña comprobada correctamente');
                 $_SESSION['usuario'] = $usuario;
             // $_SESSION['usuario'] = $usuario;
                 header("Location: index.php");
                 return true; // Inicio de sesión exitoso
+            }
+            else{
+                echo ($sql);
+                echo ($contraseña);
+                echo ('Contraseña comprobada incorrectamente');
             }
             
         }elseif((mysqli_num_rows($result) == 1) && ($page !== 'index')){
             // Obtener la contraseña hasheada desde la base de datos
             $row = mysqli_fetch_assoc($result);
             $hash_contraseña = $row['contraseña'];
+            echo ($hash_contraseña);
             // Verificar la contraseña
             if(password_verify($contraseña, $hash_contraseña)) {
+            echo ('Contraseña comprobada correctamente');
             $_SESSION['usuario'] = $usuario;
             // header("Location: ../index.php");
             return true; // Inicio de sesión exitoso
             }
+            else{
+                echo ($sql);
+                echo ($contraseña);
+                echo ('Contraseña comprobada incorrectamente');
+            }
         }
         else{
+            
             $error_msg = 'Nombre de usuario o contraseña incorrectos';
             return false; // Inicio de sesión fallido
         }
     }
 }
 
-//Parte del registro de un nuevo usuario en la base de datos (users_login)
+
+
+
 function registerNewUser($conn){
+    //Parte del registro de un nuevo usuario en la base de datos (users_login)
     if(isset($_POST['submit']) && isset($_POST['nombre']))
     {
         $nombre = mysqli_real_escape_string($conn, $_POST['nombre']);
@@ -127,11 +107,11 @@ function registerNewUser($conn){
         // Insertar datos en users_data
         $sql_users_data = "INSERT INTO users_data (nombre, apellidos, email, telefono, fenac, direccion, sexo)
         VALUES ('$nombre', '$apellidos', '$email', '$telefono', '$fenac', '$direccion', '$sexo')";
-
+        // Cuando se hayan incluido los datos en la tabla de users_data, se almacenarán en la de users_login
         if(mysqli_query($conn, $sql_users_data)) {
             // Obtener el ID generado
             $last_inserted_id = mysqli_insert_id($conn);
-
+            
             // Insertar datos en users_login utilizando el ID obtenido
             $sql_users_login = "INSERT INTO users_login (idUser, usuario, contraseña, rol)
                 VALUES ('$last_inserted_id', '$usuario', '$contraseña_encriptada', 'user')";
@@ -144,6 +124,8 @@ function registerNewUser($conn){
                 echo 'Error al registrarse';
             }
         } 
+
+        //
     }   
 }
 
