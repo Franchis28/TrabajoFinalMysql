@@ -17,12 +17,10 @@ if (isset($_FILES['imagen'])) {
     // Obtener los datos de la imagen
     $nombre_imagen = $_FILES['imagen']['name'];
     $tipo_imagen = $_FILES['imagen']['type'];
-    $tamaño_imagen = $_FILES['imagen']['size'];
-    $ruta_temporal = $_FILES['imagen']['tmp_name'];
 
     // Leer el contenido binario de la imagen
-    $imagen_binaria = file_get_contents($ruta_temporal);
-    $clave_externa = 5;
+    $imagen_binaria = file_get_contents($_FILES['imagen']['tmp_name']);
+    
     // Insertar la imagen en la base de datos
     $sql = "INSERT INTO noticias (idUser,imagen) VALUES (?,?)";
     $stmt = $conn->prepare($sql);
@@ -35,25 +33,23 @@ if (isset($_FILES['imagen'])) {
     } else {
         echo "Error al subir la imagen.";
     }
-
-    // Consulta para verificar si hay alguna imagen almacenada en el atributo de imagen de tu tabla
-    $sql = "SELECT imagen FROM noticias LIMIT 3"; // Selecciona solo una fila para mejorar el rendimiento
-    $resultado = mysqli_query($conn, $sql);
-
-    // Verificar si hay resultados
-    if ($resultado) {
-        // Verificar si hay al menos una fila en el resultado
-        if (mysqli_num_rows($resultado) > 0) {
-            echo "Hay al menos una imagen almacenada en el atributo de imagen de tu tabla.";
-        } else {
-            echo "No hay ninguna imagen almacenada en el atributo de imagen de tu tabla.";
-        }
-    } else {
-        echo "Error al realizar la consulta: " . mysqli_error($conn);
-    }
-
     // Cerrar la declaración y la conexión
     $stmt->close();
     $conn->close();
+    // Consulta para verificar si hay alguna imagen almacenada en el atributo de imagen de tu tabla
+    // $sql = "SELECT imagen FROM noticias LIMIT 3"; // Selecciona solo una fila para mejorar el rendimiento
+    // $resultado = mysqli_query($conn, $sql);
+
+    // // Verificar si hay resultados
+    // if ($resultado) {
+    //     // Verificar si hay al menos una fila en el resultado
+    //     if (mysqli_num_rows($resultado) > 0) {
+    //         echo "Hay al menos una imagen almacenada en el atributo de imagen de tu tabla.";
+    //     } else {
+    //         echo "No hay ninguna imagen almacenada en el atributo de imagen de tu tabla.";
+    //     }
+    // } else {
+    //     echo "Error al realizar la consulta: " . mysqli_error($conn);
+    // }
 }
 ?>

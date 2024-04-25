@@ -13,18 +13,23 @@ $dbname = $BD;
 $conn = conectarDB($hostname, $username, $dbname);
 // Obtener las noticias
 $noticias = obtenerNoticias($conn);
-//Login usuario
 $page = 'index';
-// $loginUser = logearUser($conn,$page);
-// $datosMensaje = logearUser($conn,$page);
-//Comprobación de que el array recogido de la función no viene con valores null
-// if ($datosMensaje !== null) {
-//     $mensaje = $datosMensaje["mensaje"];
-//     $tipoAlerta = $datosMensaje["tipoAlerta"];
+$loginUser = logearUser($conn,$page);
 
+// Comprobación de que el array recogido de la función no viene con valores null
+// if (isset($_POST['submit'])) {
+//     //Login usuario
+//     $page = 'index';
+//     $loginUser = logearUser($conn,$page);
+//     $datosMensaje = logearUser($conn,$page);
+//     if($datosMensaje !== null){
+//         $mensaje = $datosMensaje["mensaje"];
+//         $tipoAlerta = $datosMensaje["tipoAlerta"]; 
+//     }
 //     // Ahora puedes usar $mensaje y $tipoAlerta para mostrar el mensaje emergente
-// } else {
+//     else {
 //     echo "No se pudo obtener el mensaje.";
+//     }
 // }
 
 ?>
@@ -81,15 +86,8 @@ $page = 'index';
                                             <input  type="password" class="form-control" name="contraseña" placeholder="Contraseña"> 
                                         </div>
                                         <div class="modal-footer">
-                                            <input type="submit" class="container btn btn-primary"  name="submit" value="Iniciar sesión" <?php $page = 'index'; $datosMensaje = logearUser($conn,$page); 
-                                            if ($datosMensaje !== null) {
-                                                $mensaje = $datosMensaje["mensaje"];
-                                                $tipoAlerta = $datosMensaje["tipoAlerta"];
+                                            <input type="submit" class="container btn btn-primary"  name="submit" value="Iniciar sesión">
                                             
-                                                // Ahora puedes usar $mensaje y $tipoAlerta para mostrar el mensaje emergente
-                                            } else {
-                                                echo "No se pudo obtener el mensaje.";
-                                            }?>>
                                             <p class="container text-center">Si aún no tienes cuenta,<a href="./views/register.php" class="nav-link text-primary">haz click aquí</a></p>
                                         </div>
                                     </form>
@@ -116,11 +114,20 @@ $page = 'index';
     <main>
         <!-- En este primer secction, vamos a poner  lo que se puede hacer en la web -->
         <section>
+        <!-- <script> console.log($mensaje);</script> -->
+
             <!-- HTML -->
-            <div class="alert alert-<?php echo $tipoAlerta; ?> alert-dismissible fade show" role="alert">
-                <?php echo $mensaje; ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+            <!-- <?php 
+                if(isset($_POST['submit'])){
+                    echo '<div class="alert alert-' . $tipoAlerta . ' alert-dismissible fade show" role="alert">';
+                    // Aquí puedes agregar el contenido dinámico si lo deseas
+                    echo $mensaje ;
+                    echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                    echo '</div>';
+                }
+            
+            ?> -->
+           
         <div class="container my-4">
             <h3>¿Qué es FranPage?</h3>
             <p>Bienvenido a FranPage, tu destino definitivo para mantenerte al tanto de las últimas noticias, pero con un giro único: ¡tú eres el creador de contenido!<br><br>
@@ -130,7 +137,6 @@ $page = 'index';
                 En resumen, FranPage es mucho más que una simple plataforma de noticias. Es una comunidad dinámica donde la participación y la colaboración son los pilares fundamentales. Únete a nosotros hoy y sé parte de una experiencia informativa como ninguna otra. FranPage: donde todos tienen una historia que contar.
             </p>
         </div>
-        
         </section>
         <section>
             <div class="container">
@@ -166,12 +172,13 @@ $page = 'index';
         </a>
 
         <ul class="nav col-md-4 justify-content-end">
-            <li class="nav-item"><a href="../index.php" class="nav-link px-2 text-dark">Portada</a></li>
-            <li class="nav-item"><a href="./noticias.php" class="nav-link px-2 text-dark">Noticias</a></li>
-            <li class="nav-item"><a href="./register.php" class="nav-link px-2 text-dark">Registro</a></li>
+            <li class="nav-item"><a href="./index.php" class="nav-link px-2 text-dark">Portada</a></li>
+            <li class="nav-item"><a href="./views/noticias.php" class="nav-link px-2 text-dark">Noticias</a></li>
+            <li class="nav-item"><a href="./views/register.php" class="nav-link px-2 text-dark">Registro</a></li>
             <li class="nav-item"><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="nav-link px-2 text-dark">Inicio de Seción</a></li>
         </ul>
     </footer>
+    <script src="./js/newScript.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>   
 </body>
 </html>

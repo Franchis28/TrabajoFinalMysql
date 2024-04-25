@@ -13,9 +13,24 @@ $dbname = $BD;
 $conn = conectarDB($hostname, $username, $dbname);
 //Consulta para añadir un nuevo usuario a la base de datos
 $newUser = registerNewUser($conn);
-//Login usuario
 $page = 'register';
 $loginUser = logearUser($conn,$page);
+
+// Comprobación de que el array recogido de la función no viene con valores null
+if (isset($_POST['submit'])) {
+    //Login usuario
+    $page = 'register';
+    $loginUser = logearUser($conn,$page);
+    $datosMensaje = logearUser($conn,$page);
+    if($datosMensaje !== null){
+        $mensaje = $datosMensaje["mensaje"];
+        $tipoAlerta = $datosMensaje["tipoAlerta"]; 
+    }
+    // Ahora puedes usar $mensaje y $tipoAlerta para mostrar el mensaje emergente
+    else {
+    echo "No se pudo obtener el mensaje.";
+    }
+}
 ?> 
 
                 
@@ -65,17 +80,19 @@ $loginUser = logearUser($conn,$page);
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form action="" method="post">
+                                    <form id="login" action="" method="post" >
                                         <div class="mb-3">
                                             <label for="recipient-name" class="col-form-label" name="usuario">Usuario:</label> 
-                                            <input type="text" class="form-control" name="usuario" placeholder="Correo Electrónico">
+                                            <input type="text" class="form-control" name="usuario" placeholder="Correo Electrónico" required>
                                         </div>
                                         <div class="mb-3">
                                             <label for="message-text" class="col-form-label" name="constraseña">Contraseña:</label>
                                             <input  type="password" class="form-control" name="contraseña" placeholder="Contraseña"> 
                                         </div>
                                         <div class="modal-footer">
-                                            <input type="submit" class="container btn btn-primary"  name="submit" value="Iniciar sesión">
+                                            <input type="submit" class="container btn btn-primary" id="mda" name="submit" value="Iniciar sesión">
+                                            <button type="button" class="btn btn-primary" id="submitLog" >Iniciar Sesión</button>
+
                                             <p class="container text-center">Si aún no tienes cuenta,<a href="register.php" class="nav-link text-primary">haz click aquí</a></p>
                                         </div>
                                     </form>
@@ -98,75 +115,120 @@ $loginUser = logearUser($conn,$page);
         </nav>        
     </header>
     <main>
-    <div class="container my-4 ">
-        <h3>Registro para Nuevos Usuarios</h3>
-        <!-- Diseño de la página de Registro datos de usuarios -->
-        <form class="row g-3 needs-validation" novalidate action="" method="post">
-            <div class="col-md-4">
-                <label for="validationCustom01" class="form-label">Nombre</label>
-                <input type="text" name="nombre" class="form-control" id="validationCustom01" placeholder="Nombre" required>
+        <!-- <script>// Limpia los valores del formulario al cargar la página
+            window.onload = function() {
+                limpiarFormulario();
+            };
+        </script> -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+            <strong class="me-auto">FranPage</strong>
+            <small>Ahora</small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                <?php echo $mensaje ?>
+            </div>
+        </div>
+        </div>
+        <!-- Función para mostrar el toast con los mensajes de login -->
+        <script>
+            const toastTrigger = document.getElementById('submitLog')
+            const toastLiveExample = document.getElementById('liveToast')
+            console.log(toastTrigger);
+            if (toastTrigger) {
                 
-            </div>
-            <div class="col-md-4">
-                <label for="validationCustom02" class="form-label">Apellidos</label>
-                <input type="text" name="apellidos" class="form-control" id="validationCustom02" placeholder="Apellido1 Apellido2" required>
-                
-            </div>
-            <div class="col-md-4">
-                <label for="validationCustom03" class="form-label">Email</label>
-                <input type="text" name="email" class="form-control" id="validationCustom03" placeholder="email@." required>
-                
-            </div>  
-            <div class="col-md-4">
-                <label for="validationCustom04" class="form-label">Teléfono</label>
-                <input type="text" name="telefono" class="form-control" id="validationCustom04" placeholder="Teléfono" required>
-                
-            </div>
-            <div class="col-md-4">
-                <label for="datepicker" class="form-label">Fecha de Nacimiento:</label>
-                <input type="text" name="fenac" class="form-control" id="datepicker" placeholder="Fecha Nacimiento" autocomplete="off">
-            </div>
-            <div class="col-md-4">
-                <label for="validationCustom05" class="form-label">Dirección</label>
-                <input type="text" name="direccion" class="form-control" id="validationCustom05" placeholder="Calle-Bloque-Numero" required>
-                
-            </div>
-            <div class="col-md-3">
-                <label for="validationCustom06" class="form-label">Sexo</label>
-                <select name="sexo" class="form-select" id="validationCustom06" required>
-                <option selected value="No indicado">No indicado</option>
-                <option value="Masculino">Masculino</option>
-                <option value="Femenino">Femenino</option>
-                </select>
-                
-            </div>
-            <div class="col-md-4">
-                <label for="validationCustomUsername" class="form-label">Nombre de Usuario</label>
-                <div class="input-group has-validation">
-                <input type="text" name="usuario" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" placeholder="Correo Electrónico" required>
-                <div class="invalid-feedback">
-                </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <label for="validationCustom06" class="form-label">Contraseña</label>
-                <input type="password" name="contraseña" class="form-control" id="validationCustom06" placeholder="Rftghyse*!" required>
-                
-            </div>
+                toastTrigger.addEventListener('click', () => {
+                    // Mostrar el toast
+                    const toast = new bootstrap.Toast(toastLiveExample)
+
+                    toast.show()
+                })
+            }
+        </script>
+        <!-- Mostrar mensaje en función del estado del login -->
+        <!-- <?php 
+            if(isset($_POST['submit'])){
+                echo '<div class="alert alert-' . $tipoAlerta . ' alert-dismissible fade show" role="alert">';
+                // Aquí puedes agregar el contenido dinámico si lo deseas
+                echo $mensaje ;
+                echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                echo '</div>';
+            }
             
-            <div class="col-12">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-                    <label class="form-check-label" for="invalidCheck">
-                        Aceptar términos y condiciones
-                    </label>
+        ?> -->
+         </section>
+        <div class="container my-4 ">
+            
+            <h3>Registro para Nuevos Usuarios</h3>
+            <!-- Diseño de la página de Registro datos de usuarios -->
+            <form class="row g-3 needs-validation" novalidate action="" method="post" id="register">
+                <div class="col-md-4">
+                    <label for="nombre" class="form-label">Nombre*</label>
+                    <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Nombre" required>
+                    
                 </div>
-            </div>
-            <div class="col-12">
-                <input class="btn btn-primary" type="submit" name="submit">
-            </div>
-        </form>
-    </div>
+                <div class="col-md-4">
+                    <label for="apellidos" class="form-label">Apellidos*</label>
+                    <input type="text" name="apellidos" class="form-control" id="apellidos" placeholder="Apellido1 Apellido2" required>
+                    
+                </div>
+                <div class="col-md-4">
+                    <label for="email" class="form-label">Email*</label>
+                    <input type="text" name="email" class="form-control" id="email" placeholder="email@." required>
+                    
+                </div>  
+                <div class="col-md-4">
+                    <label for="telefono" class="form-label">Teléfono*</label>
+                    <input type="text" name="telefono" class="form-control" id="telefono" placeholder="Teléfono" required>
+                    
+                </div>
+                <div class="col-md-4">
+                    <label for="datepicker" class="form-label">Fecha de Nacimiento:*</label>
+                    <input type="text" name="fenac" class="form-control" id="datepicker" placeholder="Fecha Nacimiento" autocomplete="off">
+                </div>
+                <div class="col-md-4">
+                    <label for="direccion" class="form-label">Dirección</label>
+                    <input type="text" name="direccion" class="form-control" id="direccion" placeholder="Calle-Bloque-Numero" required>
+                    
+                </div>
+                <div class="col-md-3">
+                    <label for="sexo" class="form-label">Sexo</label>
+                    <select name="sexo" class="form-select" id="sexo" required>
+                    <option selected value="No indicado">No indicado</option>
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    </select>
+                    
+                </div>
+                <div class="col-md-4">
+                    <label for="usuario" class="form-label">Nombre de Usuario*</label>
+                    <div class="input-group has-validation">
+                    <input type="text" name="usuario" class="form-control" id="usuario" aria-describedby="inputGroupPrepend" placeholder="Correo Electrónico" required>
+                    <div class="invalid-feedback">
+                    </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="contraseña" class="form-label">Contraseña*</label>
+                    <input type="password" name="contraseña" class="form-control" id="contraseña" placeholder="Rftghyse*!" required>
+                    
+                </div>
+                
+                <div class="col-12">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                        <label class="form-check-label" for="invalidCheck">
+                            Aceptar términos y condiciones*
+                        </label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <input class="btn btn-primary" type="submit" name="submit">
+                </div>
+            </form>
+        </div>
     </main>
     <footer class="d-flex flex-wrap justify-content-between align-items-center py-3  border-top bg-light">
         <p class="col-md-4 mb-0 ">© 2024 FranPage</p>
@@ -184,7 +246,7 @@ $loginUser = logearUser($conn,$page);
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>    
     <!-- Enlaces a JavaScript -->
-    <script src="../js/script.js"></script>
+    <script src="../js/newScript.js"></script>
     <!-- Bootstrap Datepicker JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
