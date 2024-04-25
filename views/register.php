@@ -82,16 +82,16 @@ if (isset($_POST['submit'])) {
                                 <div class="modal-body">
                                     <form id="login" action="" method="post" >
                                         <div class="mb-3">
-                                            <label for="recipient-name" class="col-form-label" name="usuario">Usuario:</label> 
-                                            <input type="text" class="form-control" name="usuario" placeholder="Correo Electrónico" required>
+                                            <label for="userLogin" class="col-form-label" name="userLogin">Usuario:</label> 
+                                            <input type="text" class="form-control" id="userLogin" name="userLogin" placeholder="Correo Electrónico" required>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="message-text" class="col-form-label" name="constraseña">Contraseña:</label>
-                                            <input  type="password" class="form-control" name="contraseña" placeholder="Contraseña"> 
+                                            <label for="contrasenaLogin" class="col-form-label" name="contrasenaLogin">Contraseña:</label>
+                                            <input  type="password" class="form-control" id="contrasenaLogin" name="contrasenaLogin" placeholder="Contraseña"> 
                                         </div>
                                         <div class="modal-footer">
-                                            <input type="submit" class="container btn btn-primary" id="mda" name="submit" value="Iniciar sesión">
-                                            <button type="button" class="btn btn-primary" id="submitLog" >Iniciar Sesión</button>
+                                            <input type="submit" class="container btn btn-primary" id="submitLog" name="submit" value="Iniciar sesión">
+                                            <!-- <button type="button" class="btn btn-primary" id="submitLog" >Iniciar Sesión</button> -->
 
                                             <p class="container text-center">Si aún no tienes cuenta,<a href="register.php" class="nav-link text-primary">haz click aquí</a></p>
                                         </div>
@@ -128,20 +128,21 @@ if (isset($_POST['submit'])) {
             <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body">
-                <?php echo $mensaje ?>
+                <div id="mensaje"> </div>
             </div>
         </div>
         </div>
         <!-- Función para mostrar el toast con los mensajes de login -->
         <script>
-            const toastTrigger = document.getElementById('submitLog')
-            const toastLiveExample = document.getElementById('liveToast')
+            const toastTrigger = document.getElementById('submitLog');
+            const toastLiveExample = document.getElementById('liveToast');
             console.log(toastTrigger);
             if (toastTrigger) {
                 
                 toastTrigger.addEventListener('click', () => {
+                    // event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
                     // Mostrar el toast
-                    const toast = new bootstrap.Toast(toastLiveExample)
+                    const toast = new bootstrap.Toast(toastLiveExample);
 
                     toast.show()
                 })
@@ -245,10 +246,11 @@ if (isset($_POST['submit'])) {
         </ul>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap Datepicker JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <!-- Enlaces a JavaScript -->
     <script src="../js/newScript.js"></script>
-    <!-- Bootstrap Datepicker JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+    <script src="../js/ajax.js"></script>
 </body>
 </html>

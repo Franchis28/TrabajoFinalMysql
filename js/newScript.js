@@ -1,5 +1,4 @@
-console.log('MSDA');
- 
+
 document.addEventListener('DOMContentLoaded', function() {
     // Evento para guardar los valores del formulario antes de enviarlo
     document.getElementById('register').addEventListener('submit', function() {
@@ -26,7 +25,6 @@ function restaurarFormulario() {
     var formulario = document.getElementById('register');
     for (var i = 0; i < formulario.elements.length; i++) {
         var elemento = formulario.elements[i];
-        console.log(formulario.elements.length);
         if (elemento.type !== 'submit') {
             var valor = localStorage.getItem(elemento.name);
             if (valor !== null) {
@@ -49,6 +47,3 @@ $(document).ready(function(){
         autoclose: true
     });
 }); 
-
-
-

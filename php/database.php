@@ -29,10 +29,11 @@ function obtenerNoticias($conn) {
     return $noticias;
 }
 // Función para comprobar el login de un usuario ya registrado
+// Se hace esta comprobación para ver si se recibe una variable submit y no se recibe una llamada nombre, para descartar que se ha enviado el formulario de registro user
 function logearUser($conn, $page){
     if(isset($_POST['submit']) && (!isset($_POST['nombre'])))
     {
-        $usuario = mysqli_real_escape_string($conn, $_POST['usuario']); // Evita la inyección SQL
+        $usuario = mysqli_real_escape_string($conn, $_POST['userLlogin']); // Evita la inyección SQL
         $contrasena_original = '$2y$11$9zdCBB8L462HyRE7rt4JHOHvziy9YS7.PpawSjkkNB2'; // Evita la inyección SQL
 
         echo 'Contraseña Recogida del formulario' . $contrasena_original . "<br>";    
