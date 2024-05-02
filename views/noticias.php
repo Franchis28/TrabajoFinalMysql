@@ -48,7 +48,7 @@ $loginUser = logearUser($conn,$page);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Noticias</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <script src="../js/newScript.js"></script>
+    
 </head>
 <body>
     <header>
@@ -188,6 +188,6 @@ $loginUser = logearUser($conn,$page);
     <!-- Bootstrap Datepicker JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>  
-    
+    <script src="../js/newScript.js"></script>
 </body>
 </html>

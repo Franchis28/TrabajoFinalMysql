@@ -11,26 +11,9 @@ $password = $PASSWORD;
 $dbname = $BD;
 // Conectar a la base de datos
 $conn = conectarDB($hostname, $username, $dbname);
-//Consulta para añadir un nuevo usuario a la base de datos
-$newUser = registerNewUser($conn);
 $page = 'register';
 $loginUser = logearUser($conn,$page);
-
-// Comprobación de que el array recogido de la función no viene con valores null
-if (isset($_POST['submit'])) {
-    //Login usuario
-    $page = 'register';
-    $loginUser = logearUser($conn,$page);
-    $datosMensaje = logearUser($conn,$page);
-    if($datosMensaje !== null){
-        $mensaje = $datosMensaje["mensaje"];
-        $tipoAlerta = $datosMensaje["tipoAlerta"]; 
-    }
-    // Ahora puedes usar $mensaje y $tipoAlerta para mostrar el mensaje emergente
-    else {
-    echo "No se pudo obtener el mensaje.";
-    }
-}
+$register = registerNewUser($conn);
 ?> 
 
                 
@@ -101,9 +84,9 @@ if (isset($_POST['submit'])) {
                         </div>
                     </div> 
                 </ul>
+                 <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
                 <div class=" px-2">
                     <?php
-                        // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
                         if(isset($_SESSION['usuario'])) {
                             echo  $_SESSION['usuario'] ;
                         } else {
@@ -115,11 +98,7 @@ if (isset($_POST['submit'])) {
         </nav>        
     </header>
     <main>
-        <!-- <script>// Limpia los valores del formulario al cargar la página
-            window.onload = function() {
-                limpiarFormulario();
-            };
-        </script> -->
+        <!-- Diseño del toast para mostrar los mensajes -->
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
         <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
@@ -132,71 +111,65 @@ if (isset($_POST['submit'])) {
             </div>
         </div>
         </div>
-        <!-- Función para mostrar el toast con los mensajes de login -->
+        <!-- Función para mostrar el toast con los mensajes de login enviados desde la función Ajax que recoge los valores desde comprobarLogin-->
         <script>
-            const toastTrigger = document.getElementById('submitLog');
-            const toastLiveExample = document.getElementById('liveToast');
-            console.log(toastTrigger);
-            if (toastTrigger) {
-                
-                toastTrigger.addEventListener('click', () => {
-                    // event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
-                    // Mostrar el toast
+            document.addEventListener('DOMContentLoaded', function() {
+                const submitLog = document.getElementById('submitLog');
+                const submitReg = document.getElementById('submitReg');
+                const toastLiveExample = document.getElementById('liveToast');
+                // Función para mostrar el toast
+                function mostrarToast() {
                     const toast = new bootstrap.Toast(toastLiveExample);
+                    toast.show();
+                }
 
-                    toast.show()
-                })
-            }
+                if (submitLog){
+                    
+                    submitLog.addEventListener('click', mostrarToast);
+                }
+                if(submitReg){
+                    submitReg.addEventListener('click', mostrarToast);
+
+                }
+            });
         </script>
-        <!-- Mostrar mensaje en función del estado del login -->
-        <!-- <?php 
-            if(isset($_POST['submit'])){
-                echo '<div class="alert alert-' . $tipoAlerta . ' alert-dismissible fade show" role="alert">';
-                // Aquí puedes agregar el contenido dinámico si lo deseas
-                echo $mensaje ;
-                echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
-                echo '</div>';
-            }
-            
-        ?> -->
          </section>
         <div class="container my-4 ">
-            
             <h3>Registro para Nuevos Usuarios</h3>
             <!-- Diseño de la página de Registro datos de usuarios -->
             <form class="row g-3 needs-validation" novalidate action="" method="post" id="register">
                 <div class="col-md-4">
                     <label for="nombre" class="form-label">Nombre*</label>
-                    <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Nombre" required>
+                    <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Nombre">
                     
                 </div>
                 <div class="col-md-4">
                     <label for="apellidos" class="form-label">Apellidos*</label>
-                    <input type="text" name="apellidos" class="form-control" id="apellidos" placeholder="Apellido1 Apellido2" required>
+                    <input type="text" name="apellidos" class="form-control" id="apellidos" placeholder="Apellido1 Apellido2">
                     
                 </div>
                 <div class="col-md-4">
                     <label for="email" class="form-label">Email*</label>
-                    <input type="text" name="email" class="form-control" id="email" placeholder="email@." required>
+                    <input type="text" name="email" class="form-control" id="email" placeholder="email@.">
                     
                 </div>  
                 <div class="col-md-4">
                     <label for="telefono" class="form-label">Teléfono*</label>
-                    <input type="text" name="telefono" class="form-control" id="telefono" placeholder="Teléfono" required>
+                    <input type="text" name="telefono" class="form-control" id="telefono" placeholder="Teléfono">
                     
                 </div>
                 <div class="col-md-4">
-                    <label for="datepicker" class="form-label">Fecha de Nacimiento:*</label>
-                    <input type="text" name="fenac" class="form-control" id="datepicker" placeholder="Fecha Nacimiento" autocomplete="off">
+                    <label for="fenac" class="form-label">Fecha de Nacimiento:*</label>
+                    <input type="text" name="fenac" class="form-control" id="fenac" placeholder="Fecha Nacimiento" autocomplete="off">
                 </div>
                 <div class="col-md-4">
                     <label for="direccion" class="form-label">Dirección</label>
-                    <input type="text" name="direccion" class="form-control" id="direccion" placeholder="Calle-Bloque-Numero" required>
+                    <input type="text" name="direccion" class="form-control" id="direccion" placeholder="Calle-Bloque-Numero">
                     
                 </div>
                 <div class="col-md-3">
                     <label for="sexo" class="form-label">Sexo</label>
-                    <select name="sexo" class="form-select" id="sexo" required>
+                    <select name="sexo" class="form-select" id="sexo">
                     <option selected value="No indicado">No indicado</option>
                     <option value="Masculino">Masculino</option>
                     <option value="Femenino">Femenino</option>
@@ -206,27 +179,27 @@ if (isset($_POST['submit'])) {
                 <div class="col-md-4">
                     <label for="usuario" class="form-label">Nombre de Usuario*</label>
                     <div class="input-group has-validation">
-                    <input type="text" name="usuario" class="form-control" id="usuario" aria-describedby="inputGroupPrepend" placeholder="Correo Electrónico" required>
+                    <input type="text" name="usuario" class="form-control" id="usuario" aria-describedby="inputGroupPrepend" placeholder="Correo Electrónico">
                     <div class="invalid-feedback">
                     </div>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <label for="contraseña" class="form-label">Contraseña*</label>
-                    <input type="password" name="contraseña" class="form-control" id="contraseña" placeholder="Rftghyse*!" required>
+                    <label for="contrasena" class="form-label">Contraseña*</label>
+                    <input type="password" name="contrasena" class="form-control" id="contrasena" placeholder="Rftghyse*!">
                     
                 </div>
                 
                 <div class="col-12">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
+                        <input class="form-check-input" type="checkbox" value="" id="invalidCheck">
                         <label class="form-check-label" for="invalidCheck">
                             Aceptar términos y condiciones*
                         </label>
                     </div>
                 </div>
                 <div class="col-12">
-                    <input class="btn btn-primary" type="submit" name="submit">
+                    <input class="btn btn-primary" type="submit"id="submitReg" name="submitReg">
                 </div>
             </form>
         </div>

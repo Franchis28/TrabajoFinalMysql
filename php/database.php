@@ -33,7 +33,7 @@ function obtenerNoticias($conn) {
 function logearUser($conn, $page){
     if(isset($_POST['submit']) && (!isset($_POST['nombre'])))
     {
-        $usuario = mysqli_real_escape_string($conn, $_POST['userLlogin']); // Evita la inyección SQL
+        $usuario = mysqli_real_escape_string($conn, $_POST['userLogin']); // Evita la inyección SQL
         $contrasena_original = '$2y$11$9zdCBB8L462HyRE7rt4JHOHvziy9YS7.PpawSjkkNB2'; // Evita la inyección SQL
 
         echo 'Contraseña Recogida del formulario' . $contrasena_original . "<br>";    
@@ -105,7 +105,7 @@ function logearUser($conn, $page){
 // Función para cuando un usuario se registra por primera vez
 function registerNewUser($conn){
     //Parte del registro de un nuevo usuario en la base de datos (users_login)
-    if(isset($_POST['submit']) && isset($_POST['nombre']))
+    if(isset($_POST['submitReg']) && isset($_POST['nombre']))
     {
         echo ($_POST['nombre']);
         echo ($_POST['apellidos']);
@@ -138,55 +138,55 @@ function registerNewUser($conn){
         $direccion = filter_input(INPUT_POST, "direccion", FILTER_VALIDATE_REGEXP, array("options" => array("regexp" => "/^[a-zA-Z0-9\s.,#ººªª\-\/]+$/")));
         $sexo = mysqli_real_escape_string($conn, $_POST['sexo']);
         $usuario = filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
-        $contraseña = mysqli_real_escape_string($conn, $_POST['contraseña']);
+        $contrasena = mysqli_real_escape_string($conn, $_POST['contrasena']);
 
-        // echo $nombre;
-        // echo $apellidos;
-        // echo $email;
-        // echo $telefono;
-        // echo $fenac;
-        // echo $direccion;
-        // echo $sexo;
-        // echo $usuario;
-        // echo $contraseña;
+//         // echo $nombre;
+//         // echo $apellidos;
+//         // echo $email;
+//         // echo $telefono;
+//         // echo $fenac;
+//         // echo $direccion;
+//         // echo $sexo;
+//         // echo $usuario;
+//         // echo $contrasena;
 
-        // Encriptar la contraseña
-        $opciones = [
-            'cost' => 11,
-        ];
-        $contrasena_encriptada = password_hash($contraseña, PASSWORD_BCRYPT, $opciones)."\n";
-        echo 'Contraseña hasheada para incluirla en DB' . $contrasena_encriptada;
+//         // Encriptar la contrasena
+//         $opciones = [
+//             'cost' => 11,
+//         ];
+//         $contrasena_encriptada = password_hash($contrasena, PASSWORD_BCRYPT, $opciones)."\n";
+//         echo 'Contraseñna hasheada para incluirla en DB' . $contrasena_encriptada;
 
-        // Insertar datos en users_data
-        // Comprobación para validar que todos los campos obligatorios son rellenados y de forma correcta
-        // $comprobacion = 0;
-        // if((empty($nombre)) || (empty($apellidos)) || (empty($email)) || (empty($telefono)) || (empty($fenac)) || (empty($usuario)) || (empty($contraseña))){
-        //     echo 'Debe completar todos los campos obligatorios (*)';
-        // }else{
-        //     $comprobacion = 1;
-        // };
-        $sql_users_data = "INSERT INTO users_data (nombre, apellidos, email, telefono, fenac, direccion, sexo)
-        VALUES ('$nombre', '$apellidos', '$email', '$telefono', '$fenac', '$direccion', '$sexo')";
-        // Cuando se hayan incluido los datos en la tabla de users_data, se almacenarán en la de users_login
-        if(mysqli_query($conn, $sql_users_data)) {
-            // Obtener el ID generado
-            $last_inserted_id = mysqli_insert_id($conn);
+//         // Insertar datos en users_data
+//         // Comprobación para validar que todos los campos obligatorios son rellenados y de forma correcta
+//         // $comprobacion = 0;
+//         // if((empty($nombre)) || (empty($apellidos)) || (empty($email)) || (empty($telefono)) || (empty($fenac)) || (empty($usuario)) || (empty($contraseña))){
+//         //     echo 'Debe completar todos los campos obligatorios (*)';
+//         // }else{
+//         //     $comprobacion = 1;
+//         // };
+//         $sql_users_data = "INSERT INTO users_data (nombre, apellidos, email, telefono, fenac, direccion, sexo)
+//         VALUES ('$nombre', '$apellidos', '$email', '$telefono', '$fenac', '$direccion', '$sexo')";
+//         // Cuando se hayan incluido los datos en la tabla de users_data, se almacenarán en la de users_login
+//         if(mysqli_query($conn, $sql_users_data)) {
+//             // Obtener el ID generado
+//             $last_inserted_id = mysqli_insert_id($conn);
             
-            // Insertar datos en users_login utilizando el ID obtenido
-            $sql_users_login = "INSERT INTO users_login (idUser, usuario, contraseña, rol)
-                VALUES ('$last_inserted_id', '$usuario', '$contrasena_encriptada', 'user')";
+//             // Insertar datos en users_login utilizando el ID obtenido
+//             $sql_users_login = "INSERT INTO users_login (idUser, usuario, contraseña, rol)
+//                 VALUES ('$last_inserted_id', '$usuario', '$contrasena_encriptada', 'user')";
             
-            if(mysqli_query($conn, $sql_users_login)){
-                // header("Location: ../index.php");
-                // Registro exitoso, establecer variable de sesión
-                $_SESSION['registro_exitoso'] = true;
-            }else{
-                echo 'Error al registrarse';
-            }
-        } 
+//             if(mysqli_query($conn, $sql_users_login)){
+//                 // header("Location: ../index.php");
+//                 // Registro exitoso, establecer variable de sesión
+//                 $_SESSION['registro_exitoso'] = true;
+//             }else{
+//                 echo 'Error al registrarse';
+//             }
+//         } 
 
         
-    }   
+     }   
 }
 
 ?>
