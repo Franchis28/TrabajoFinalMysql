@@ -11,9 +11,7 @@ $password = $PASSWORD;
 $dbname = $BD;
 // Conectar a la base de datos
 $conn = conectarDB($hostname, $username, $dbname);
-$page = 'register';
-$loginUser = logearUser($conn,$page);
-$register = registerNewUser($conn);
+
 ?> 
 
                 
@@ -30,6 +28,7 @@ $register = registerNewUser($conn);
     <!-- Colocar todo el encabezado de la pagina -->
 
     <header>
+        <!-- Menú de navegación -->
         <nav class="navbar navbar-expand-lg bg-light">
             <div class="container-fluid">
                 <a class="navbar-brand" href="../index.php">FranPage</a>
@@ -134,6 +133,7 @@ $register = registerNewUser($conn);
             });
         </script>
          </section>
+         <!-- Formulario registro nuevos usuarios -->
         <div class="container my-4 ">
             <h3>Registro para Nuevos Usuarios</h3>
             <!-- Diseño de la página de Registro datos de usuarios -->

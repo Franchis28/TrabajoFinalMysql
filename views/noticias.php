@@ -36,8 +36,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 // Obtener las noticias
 $noticias = obtenerNoticias($conn);
 //Login usuario
-$page = 'noticias';
-$loginUser = logearUser($conn,$page);
 ?>
 
 
@@ -143,8 +141,8 @@ $loginUser = logearUser($conn,$page);
                         <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*">
                     </div>
                     <div class="col-md-3 mb-2">
-                        <label for="datepicker" class="form-label">Fecha de Publicación:</label>
-                        <input type="text" name="fePublic" class="form-control" id="datepicker" placeholder="Fecha de Publicación" autocomplete="off">
+                        <label for="fePublic" class="form-label">Fecha de Publicación:</label>
+                        <input type="text" name="fePublic" class="form-control" id="fePublic" placeholder="Fecha de Publicación" autocomplete="off">
                     </div>
                     <button type="submit" class="btn btn-primary">Subir Noticia</button>
                 </form>

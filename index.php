@@ -13,8 +13,6 @@ $dbname = $BD;
 $conn = conectarDB($hostname, $username, $dbname);
 // Obtener las noticias
 $noticias = obtenerNoticias($conn);
-$page = 'index';
-$loginUser = logearUser($conn,$page);
 
 // Comprobación de que el array recogido de la función no viene con valores null
 // if (isset($_POST['submit'])) {

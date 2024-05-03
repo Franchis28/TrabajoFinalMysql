@@ -11,15 +11,12 @@ $dbname = $BD;
 // Conectar a la base de datos
 $conn = conectarDB($hostname, $username, $dbname);
 
+
 if (isset($_POST['usuario']) && isset($_POST['contrasena'])) {
-    // $usuario_valido = 'usuario';
-    // $contrasena_valida = 'contraseña';
     // Recuperamos usuario y contraseña de la BD
     $usuario = mysqli_real_escape_string($conn, $_POST['usuario']); // Evita la inyección SQL
+    // Contraseña recuperada desde ajax
     $contrasena_original = ($_POST['contrasena']); // Evita la inyección SQL
-    // Datos recibidos desde el cliente ajax
-    // $usuario = $_POST['usuario'];
-    //  $contrasena = $_POST['contrasena'];
     // Consulta datos en users_login
     $sql = "SELECT contraseña FROM users_login WHERE Usuario = '$usuario'";
     $result = mysqli_query($conn, $sql);
@@ -28,6 +25,19 @@ if (isset($_POST['usuario']) && isset($_POST['contrasena'])) {
         $row = mysqli_fetch_assoc($result);
         $hash_contrasena = $row['contraseña'];
         if($hash_contrasena !== null){
+            $contrasena_str = (string) $contrasena_original;
+            $hash_contrasena_str = (string) $hash_contrasena;
+            // Abre o crea un archivo de registro
+            $file = fopen('debug.log', 'a');
+
+            // Escribe el mensaje de debug
+            fwrite($file, "Nombre filtrado: " . $hash_contrasena_str . PHP_EOL);
+            fwrite($file, "Apellidos filtrado: " . $contrasena_str . PHP_EOL);
+            fwrite($file, "Comparación contraseñas " . password_verify($contrasena_original, $hash_contrasena). PHP_EOL);
+
+
+            // Cierra el archivo
+            fclose($file);
             // Haremos uso de la función password_verify para comparar la contraseña proporcionada por el usuario y la que se ha recogido hasheada de la BD
             if(password_verify($contrasena_original, $hash_contrasena)) {
                 // Contraseña correcta, iniciar sesión

@@ -22,14 +22,12 @@ if(isset($_POST['nombre']))
         return preg_replace("/[^a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]/", "", $valor);
     }
     $nombre_filtrado = filter_input(INPUT_POST, "nombre", FILTER_CALLBACK, array("options" => "limpiar_nombre"));
-    
-    
+    // Se realiza esta función en sustitución al filtro FILTER_SANITIZE_STRING que está en desuso
     function limpiar_apellidos($valor) {
         // Utilizar una expresión regular para permitir solo letras y espacios
         return preg_replace("/[^a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]/", "", $valor);
     }
     $apellidos_filtrados = filter_input(INPUT_POST, "apellidos", FILTER_CALLBACK, array("options" => "limpiar_apellidos"));
-
     // Filtrado de los demás campos 
     $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
     $telefono = filter_input(INPUT_POST, "telefono", FILTER_SANITIZE_NUMBER_INT);
@@ -51,30 +49,26 @@ if(isset($_POST['nombre']))
         'cost' => 11,
     ];
     $contrasena_encriptada = password_hash($contrasena, PASSWORD_BCRYPT, $opciones)."\n";
-    // Abre o crea un archivo de registro
-    // $file = fopen('debug.log', 'a');
-
-    // // Escribe el mensaje de debug
-    // fwrite($file, "Nombre filtrado: " . $nombre_filtrado . PHP_EOL);
-    // fwrite($file, "Apellidos filtrado: " . $apellidos_filtrados . PHP_EOL);
-    // fwrite($file, "Email: " . $email . PHP_EOL);
-    // fwrite($file, "Teléfono: " . $telefono . PHP_EOL);
-
-    // // Cierra el archivo
-    // fclose($file);
-    // Insertar datos en users_data
-    // Comprobación para validar que todos los campos obligatorios son rellenados y de forma correcta
-    //    
+    // Comprobación de que no hay ningún campo sin rellenar, antes de empezar a comprobar campo por campo, que todos están bien formateados
     if(!empty($nombre_filtrado) && !empty($apellidos_filtrados) && !empty($email) && !empty($telefono) && !empty($fenac) && !empty($usuario) && !empty($contrasena)) {
         $comprobacion = 0;
+        $error1 = 0;
+        $error2 = 0;
+
         // Comprobación del email, que sea correcto
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
             $comprobacion = 1;
+            $error1 = 1;
         }
         // Comprobación de que el número de telefono tiene 9 cifras 
         $telefono_str = (string) $telefono;// Convertir el número de teléfono a cadena
         if(strlen($telefono_str) !== 9 || !ctype_digit($telefono_str)){
             $comprobacion = 2;
+            $error2 = 1;
+        }
+        // Comprobación de si hay fallo en el email y el teléfono a la vez
+        if($error1 === 1 && $error2 === 1){
+            $comprobacion = 3;
         }
         // Switch para comprobar si hay algún error individual de algún campo
         switch ($comprobacion) {
@@ -88,9 +82,14 @@ if(isset($_POST['nombre']))
                 $response = array("success" => false, "message" => "Por favor revise el Teléfono");
                 echo json_encode($response);
                 break;
-            // Reservado para cuando se ingrese una contraseña muy débil(opcional)
+            // Si el valor es 3 es debido a que hay un fallo en los campos de email y teléfono a la vez
             case 3:
-                echo "La opción es 3";
+                $response = array("success" => false, "message" => "Por favor revise el Email y Teléfono");
+                echo json_encode($response);
+                break;
+            // Reservado para cuando se ingrese una contraseña muy débil(opcional)
+            case 4:
+
                 break;
             default:
             // Si no hay ningún error en algún campo se entiende que todos los campos son correctos y se deben almacenar en BD
