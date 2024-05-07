@@ -1,5 +1,5 @@
 
-// IniciaLización de datepicker para el Fecha de nacimiento
+// IniciaLización de datepicker para la Fecha de nacimiento
 $(document).ready(function(){
     $('#fenac').datepicker({
         format: 'yyyy-mm-dd',
@@ -7,7 +7,7 @@ $(document).ready(function(){
     });
 }); 
 
-// IniciaLización de datepicker
+// IniciaLización de datepicker para la fecha de publicación de la noticia
 $(document).ready(function(){
     $('#fePublic').datepicker({
         format: 'yyyy-mm-dd',

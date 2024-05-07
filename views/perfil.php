@@ -1,19 +1,3 @@
-<!-- Código PHP -->
-<?php
-//require para realizar la conexión con la base de datos
-require '../php/database.php';
-//require para recuperar los datos para la conexión a la BD
-require '../.env.php';
-// Include para la modal de inicio de sesion (login)
-include '../views/login.php';
-// Datos para realizar la conexión a la BD
-$hostname = $SERVIDOR;
-$username = $USUARIO;
-$password = $PASSWORD;
-$dbname = $BD;
-// Conectar a la base de datos
-$conn = conectarDB($hostname, $username, $dbname);
-?>  
 <!DOCTYPE html>
 <html lang="es">
 <head>

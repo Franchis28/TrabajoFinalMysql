@@ -44,13 +44,11 @@ if (isset($_FILES['imagen'])) {
 include './database.php';
 include '../.env.php';
 
-// Datos para realizar la conexión a la BD
 $hostname = $SERVIDOR;
 $username = $USUARIO;
 $password = $PASSWORD;
 $dbname = $BD;
 
-// Conectar a la base de datos
 $conn = conectarDB($hostname, $username, $dbname);
 
 // Verificar si se ha enviado una imagen
@@ -58,33 +56,54 @@ if (isset($_FILES['imagen'])) {
     // Obtener los datos de la imagen
     $nombre_imagen = $_FILES['imagen']['name'];
     $tipo_imagen = $_FILES['imagen']['type'];
-    $imagen_temporal = $_FILES['imagen']['tmp_name'];
+    $ruta_imagen_temporal = $_FILES['imagen']['tmp_name'];
 
-    // Definir el tamaño nuevo para la imagen (en píxeles)
-    $ancho_nuevo = 200;
-    $alto_nuevo = 200;
+    // Redimensionar la imagen
+    list($ancho_orig, $alto_orig) = getimagesize($ruta_imagen_temporal);
 
-    // Obtener las dimensiones originales de la imagen
-    list($ancho_original, $alto_original) = getimagesize($imagen_temporal);
+    $ancho_nuevo = 200; // Define el ancho deseado para todas las imágenes
+    $alto_nuevo = 200; // Define el alto deseado para todas las imágenes
 
-    // Crear una nueva imagen con las dimensiones nuevas
-    $nueva_imagen = imagecreatetruecolor($ancho_nuevo, $alto_nuevo);
+    $imagen_nueva = imagecreatetruecolor($ancho_nuevo, $alto_nuevo);
 
-    // Cargar la imagen original
-    $imagen_original = imagecreatefromjpeg($imagen_temporal);
+    // Determinar el tipo de imagen y cargarla
+    switch ($tipo_imagen) {
+        case 'image/jpeg':
+            $imagen_orig = imagecreatefromjpeg($ruta_imagen_temporal);
+            break;
+        case 'image/png':
+            $imagen_orig = imagecreatefrompng($ruta_imagen_temporal);
+            break;
+        case 'image/gif':
+            $imagen_orig = imagecreatefromgif($ruta_imagen_temporal);
+            break;
+        default:
+            echo "Formato de imagen no soportado.";
+            exit;
+    }
 
-    // Redimensionar la imagen original a las dimensiones nuevas
-    imagecopyresampled($nueva_imagen, $imagen_original, 0, 0, 0, 0, $ancho_nuevo, $alto_nuevo, $ancho_original, $alto_original);
+    // Redimensionar la imagen
+    imagecopyresampled($imagen_nueva, $imagen_orig, 0, 0, 0, 0, $ancho_nuevo, $alto_nuevo, $ancho_orig, $alto_orig);
 
-    // Convertir la imagen redimensionada a binario
+    // Almacenar la imagen redimensionada en un búfer de salida
     ob_start();
-    imagejpeg($nueva_imagen);
-    $imagen_redimensionada_binaria = ob_get_clean();
+    switch ($tipo_imagen) {
+        case 'image/jpeg':
+            imagejpeg($imagen_nueva);
+            break;
+        case 'image/png':
+            imagepng($imagen_nueva);
+            break;
+        case 'image/gif':
+            imagegif($imagen_nueva);
+            break;
+    }
+    $imagen_binaria = ob_get_clean(); // Obtener la imagen redimensionada del búfer de salida
 
-    // Insertar la imagen redimensionada en la base de datos
+    // Insertar la imagen en la base de datos
     $sql = "INSERT INTO noticias (idUser, imagen) VALUES (?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ib", $clave_externa, $imagen_redimensionada_binaria);
+    $stmt->bind_param("ib", $clave_externa, $imagen_binaria);
     $stmt->execute();
 
     // Verificar si se insertó correctamente
@@ -99,4 +118,5 @@ if (isset($_FILES['imagen'])) {
     $conn->close();
 }
 ?>
+
 

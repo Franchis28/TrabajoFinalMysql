@@ -57,7 +57,8 @@ $(document).ready(function() {
             direccion: $('#direccion').val(),
             sexo: $('#sexo').val(),
             usuario: $('#usuario').val(),
-            contrasena: $('#contrasena').val()
+            contrasena: $('#contrasena').val(),
+            terminosCondiciones: $('#terminosCondicionesHidden').val()
         };
 
         console.log(registerData);
@@ -74,11 +75,10 @@ $(document).ready(function() {
                 // Manejar la respuesta del servidor
                 console.log('Datos enviados al servidor');
                 if (response.success) {   
-                    console.log('Hey');
                     // Si el inicio de sesión es exitoso, mostrar un mensaje de éxito
                     $('#mensaje').text(response.message).css('color', 'green');
-                    // Si el registro es exitoso, redirigir a la página indicada en la respuesta
-                    window.location.href = response.redirect;
+                    var modal = new bootstrap.Modal(document.getElementById("exampleModal"));
+                    modal.show();
                 } else {
                     // Si el inicio de sesión falla, mostrar un mensaje de error
                     $('#mensaje').text(response.message).css('color', 'red');

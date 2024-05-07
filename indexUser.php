@@ -26,7 +26,7 @@ $noticias = obtenerNoticias($conn);
 </head>
 <body>
     <header>
-        <!-- Menú de navegación para visitantes -->
+        <!-- Menú de navegación adaptado para cuando se logee un visitante -->
         <nav class="navbar navbar-expand-lg bg-light">
             <div class="container-fluid">
                 <a class="navbar-brand" href="index.php">FranPage</a>
@@ -44,9 +44,15 @@ $noticias = obtenerNoticias($conn);
                     <li class="nav-item">
                     <a class="nav-link" href="./views/register.php">Registro</a>
                     </li>
-                    <!-- <li class="nav-item">
-                    <a class="nav-link">Disabled</a>
-                    </li> -->
+                    <li class="nav-item">
+                    <a class="nav-link">Citas</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link">Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link">Cerrar Sesión</a>
+                    </li>
                     <!-- Modal para inicio de sesión -->
                     <li class="nav-item">
                     <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
@@ -96,8 +102,22 @@ $noticias = obtenerNoticias($conn);
     </header>
     <!-- Crearemos varias secciones para mostrar un poco que es lo que contiene la página -->
     <main>
-        <!-- En este primer secction, vamos a poner  lo que se puede hacer en la web -->
+        <!-- En este primer section, vamos a poner  lo que se puede hacer en la web -->
         <section>
+        <!-- <script> console.log($mensaje);</script> -->
+
+            <!-- HTML -->
+            <!-- <?php 
+                if(isset($_POST['submit'])){
+                    echo '<div class="alert alert-' . $tipoAlerta . ' alert-dismissible fade show" role="alert">';
+                    // Aquí puedes agregar el contenido dinámico si lo deseas
+                    echo $mensaje ;
+                    echo '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                    echo '</div>';
+                }
+            
+            ?> -->
+           
         <div class="container my-4">
             <h3>¿Qué es FranPage?</h3>
             <p>Bienvenido a FranPage, tu destino definitivo para mantenerte al tanto de las últimas noticias, pero con un giro único: ¡tú eres el creador de contenido!<br><br>

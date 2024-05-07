@@ -4,6 +4,8 @@
 require '../php/database.php';
 //Include para recuperar los datos para la conexión a la BD
 require '../.env.php';
+// Include para la modal de inicio de sesion (login)
+include '../views/login.php';
 // Datos para realizar la conexión a la BD
 $hostname = $SERVIDOR;
 $username = $USUARIO;
@@ -35,10 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 // Obtener las noticias
 $noticias = obtenerNoticias($conn);
-//Login usuario
 ?>
-
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -50,7 +49,6 @@ $noticias = obtenerNoticias($conn);
 </head>
 <body>
     <header>
-
         <nav class="navbar navbar-expand-lg bg-light">
             <div class="container-fluid">
                 <a class="navbar-brand" href="../index.php">FranPage</a>
@@ -75,33 +73,6 @@ $noticias = obtenerNoticias($conn);
                     <li class="nav-item">
                     <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
                     </li>
-                    <!-- Desarrollo de la interfaz de la modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Inicio de Sesion</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="" method="post">
-                                        <div class="mb-3">
-                                            <label for="recipient-name" class="col-form-label" name="usuario">Usuario:</label> 
-                                            <input type="text" class="form-control" name="usuario" placeholder="Usuario">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="message-text" class="col-form-label" name="constraseña">Contraseña:</label>
-                                            <input  type="password" class="form-control" name="contraseña" placeholder="Contraseña"> 
-                                        </div>
-                                        <div class="modal-footer">
-                                            <input type="submit" class="container btn btn-primary"  name="submit" value="Iniciar sesión">
-                                            <p class="container text-center">Si aún no tienes cuenta,<a href="register.php" class="nav-link text-primary">haz click aquí.</a></p>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </ul>
                 <div class=" px-2">
                     <?php
@@ -181,7 +152,6 @@ $noticias = obtenerNoticias($conn);
             <li class="nav-item"><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="nav-link px-2 text-dark">Inicio de Seción</a></li>
         </ul>
     </footer>
-    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>    
     <!-- Bootstrap Datepicker JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

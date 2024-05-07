@@ -44,16 +44,33 @@ if(isset($_POST['nombre']))
     $sexo = mysqli_real_escape_string($conn, $_POST['sexo']);
     $usuario = filter_input(INPUT_POST, "usuario", FILTER_SANITIZE_EMAIL);
     $contrasena = mysqli_real_escape_string($conn, $_POST['contrasena']);
+    // Comprobar que el campo de terminos y condiciones a sido enviado, con lo cual se sabe que ha sido marcado cuando sea enviado
+    $terminosCondiciones = filter_input(INPUT_POST, "terminosCondiciones", FILTER_SANITIZE_NUMBER_INT);
+    if(isset($_POST["terminosCondiciones"]) && ($_POST["terminosCondiciones"]) == 1){
+        $terminosCondicionesOK = 1;
+    }else{
+        $terminosCondicionesOK = 0;
+    }
+     // Abre o crea un archivo de registro
+     $file = fopen('debug.log', 'a');
+
+     // Escribe el mensaje de debug
+     fwrite($file, "Términos y Condiciones " . $terminosCondicionesOK . PHP_EOL);
+
+
+     // Cierra el archivo
+     fclose($file);
     // Encriptar la contrasena usando has PASSWORD_BCRYPT
     $opciones = [
         'cost' => 11,
     ];
     $contrasena_encriptada = password_hash($contrasena, PASSWORD_BCRYPT, $opciones)."\n";
     // Comprobación de que no hay ningún campo sin rellenar, antes de empezar a comprobar campo por campo, que todos están bien formateados
-    if(!empty($nombre_filtrado) && !empty($apellidos_filtrados) && !empty($email) && !empty($telefono) && !empty($fenac) && !empty($usuario) && !empty($contrasena)) {
+    if(!empty($nombre_filtrado) && !empty($apellidos_filtrados) && !empty($email) && !empty($telefono) && !empty($fenac) && !empty($usuario) && !empty($contrasena) && ($terminosCondicionesOK === 1)) {
         $comprobacion = 0;
         $error1 = 0;
         $error2 = 0;
+        $error3 = 0;
 
         // Comprobación del email, que sea correcto
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
@@ -66,10 +83,15 @@ if(isset($_POST['nombre']))
             $comprobacion = 2;
             $error2 = 1;
         }
-        // Comprobación de si hay fallo en el email y el teléfono a la vez
-        if($error1 === 1 && $error2 === 1){
+        // Comprobación de que se ha marcado la casilla de Términos y Condiciones
+        if($terminosCondiciones !== 1){
+            $error3 = 1;
+        }
+        // Comprobación de si hay fallo en el email, el teléfono a la vez
+        if(($error1 === 1 && $error2 === 1)){
             $comprobacion = 3;
         }
+        
         // Switch para comprobar si hay algún error individual de algún campo
         switch ($comprobacion) {
             // Si el valor es 1 es debido a que el campo del correo está mal introdocido
@@ -92,22 +114,40 @@ if(isset($_POST['nombre']))
 
                 break;
             default:
-            // Si no hay ningún error en algún campo se entiende que todos los campos son correctos y se deben almacenar en BD
-            $sql_users_data = "INSERT INTO users_data (nombre, apellidos, email, telefono, fenac, direccion, sexo)
-            VALUES ('$nombre_filtrado', '$apellidos_filtrados', '$email', '$telefono', '$fenac', '$direccion', '$sexo')";
-            // Cuando se hayan incluido los datos en la tabla de users_data, se almacenarán en la de users_login
-            if(mysqli_query($conn, $sql_users_data)) {
-                // Obtener el ID generado
-                $last_inserted_id = mysqli_insert_id($conn);
-                // Insertar datos en users_login utilizando el ID obtenido
-                $sql_users_login = "INSERT INTO users_login (idUser, usuario, contraseña, rol)
-                VALUES ('$last_inserted_id', '$usuario', '$contrasena_encriptada', 'user')";
-                if(mysqli_query($conn, $sql_users_login)){
-                    $response = array("success" => true, "redirect" => "../index.php", "message" => "Registro de usuario exitoso");
+            // Comprobamos antes de nada que el email que se va a registrar no está ya registrado en la bd
+            $sql_users_data_search = "SELECT email FROM users_data WHERE email = '$email'";
+            // Si coincide el email en la bd(señal de que existe un usuario igual al suyo registrado) informamos al usuario de que ya está registrado 
+            $resultadoConsultaData = mysqli_query($conn, $sql_users_data_search);
+            if(mysqli_num_rows($resultadoConsultaData) > 0){
+                $response = array("success" => false, "message" => "Ya existe un usuario con el email proporcionado");
+                echo json_encode($response);
+            }else{
+                // Comprobamos antes de nada que el usuario que se va a registrar no está ya registrado en la bd
+                $sql_users_login_search = "SELECT usuario FROM users_login WHERE usuario = '$usuario'";
+                // Si coincide el usuario en la bd(señal de que existe un usuario igual al suyo registrado) informamos al usuario de que ya está registrado 
+                $resultadoConsultaLogin = mysqli_query($conn, $sql_users_login_search);
+                if(mysqli_num_rows($resultadoConsultaLogin) > 0){
+                    $response = array("success" => false, "message" => "Ya existe un usuario registrado");
                     echo json_encode($response);
-                }else{
-                    $response = array("success" => false, "message" => "Registro de usuario erróneo");
-                    echo json_encode($response);
+                }else{// Si en las dos consultas anteriores, no se da la casuística de que coincidan ni el email ni usuario, almacenamos en bd los datos
+                    // Si no hay ningún error en algún campo se entiende que todos los campos son correctos y se deben almacenar en BD
+                    $sql_users_data = "INSERT INTO users_data (nombre, apellidos, email, telefono, fenac, direccion, sexo)
+                    VALUES ('$nombre_filtrado', '$apellidos_filtrados', '$email', '$telefono', '$fenac', '$direccion', '$sexo')";
+                    // Cuando se hayan incluido los datos en la tabla de users_data, se almacenarán en la de users_login
+                    if(mysqli_query($conn, $sql_users_data)) {
+                        // Obtener el ID generado
+                        $last_inserted_id = mysqli_insert_id($conn);
+                        // Insertar datos en users_login utilizando el ID obtenido
+                        $sql_users_login_insert = "INSERT INTO users_login (idUser, usuario, contraseña, rol)
+                        VALUES ('$last_inserted_id', '$usuario', '$contrasena_encriptada', 'user')";
+                        if(mysqli_query($conn, $sql_users_login_insert)){
+                            $response = array("success" => true, "message" => "Registro de usuario exitoso", "inicioSesion" => 1);
+                            echo json_encode($response);
+                        }else{
+                            $response = array("success" => false, "message" => "Registro de usuario erróneo");
+                            echo json_encode($response);
+                        }
+                    }
                 }
             }
         }
