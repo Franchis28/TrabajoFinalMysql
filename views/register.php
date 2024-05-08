@@ -114,7 +114,7 @@ $conn = conectarDB($hostname, $username, $dbname);
                     <input type="text" name="direccion" class="form-control" id="direccion" placeholder="Calle-Bloque-Numero">
                     
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     <label for="sexo" class="form-label">Sexo</label>
                     <select name="sexo" class="form-select" id="sexo">
                     <option selected value="No indicado">No indicado</option>

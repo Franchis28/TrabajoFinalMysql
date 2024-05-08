@@ -1,9 +1,25 @@
+<!-- Código PHP -->
+<?php
+//require para realizar la conexión con la base de datos
+require '../php/database.php';
+//require para recuperar los datos para la conexión a la BD
+require '../.env.php';
+// Datos para realizar la conexión a la BD
+$hostname = $SERVIDOR;
+$username = $USUARIO;
+$password = $PASSWORD;
+$dbname = $BD;
+// Conectar a la base de datos
+$conn = conectarDB($hostname, $username, $dbname);
+// Llamada a la función para la obtención de los datos del usuario logeado
+$datosUser = obtenerDatos($conn);
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro</title>
+    <title>Perfil</title>
     <!-- Enlaces a los estilos de Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 </head>
@@ -52,93 +68,125 @@
     <main>
         <!-- Diseño del toast para mostrar los mensajes -->
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
-        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-            <div class="toast-header">
-            <strong class="me-auto">FranPage</strong>
-            <small>Ahora</small>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-            </div>
-            <div class="toast-body">
-                <div id="mensaje"> </div>
+            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                <strong class="me-auto">FranPage</strong>
+                <small>Ahora</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    <div id="mensaje"> </div>
+                </div>
             </div>
         </div>
-        </div>
-         </section>
-         <!-- Formulario registro nuevos usuarios -->
-        <div class="container my-4 ">
-            <h3>Registro para Nuevos Usuarios</h3>
-            <!-- Diseño de la página de Registro datos de usuarios -->
-            <form class="row g-3 needs-validation" novalidate action="" method="post" id="register">
-                <div class="col-md-4">
-                    <label for="nombre" class="form-label">Nombre*</label>
-                    <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Nombre">
-                    
-                </div>
-                <div class="col-md-4">
-                    <label for="apellidos" class="form-label">Apellidos*</label>
-                    <input type="text" name="apellidos" class="form-control" id="apellidos" placeholder="Apellido1 Apellido2">
-                    
-                </div>
-                <div class="col-md-4">
-                    <label for="email" class="form-label">Email*</label>
-                    <input type="text" name="email" class="form-control" id="email" placeholder="email@.">
-                    
-                </div>  
-                <div class="col-md-4">
-                    <label for="telefono" class="form-label">Teléfono*</label>
-                    <input type="text" name="telefono" class="form-control" id="telefono" placeholder="Teléfono">
-                    
-                </div>
-                <div class="col-md-4">
-                    <label for="fenac" class="form-label">Fecha de Nacimiento:*</label>
-                    <input type="text" name="fenac" class="form-control" id="fenac" placeholder="Fecha Nacimiento" autocomplete="off">
-                </div>
-                <div class="col-md-4">
-                    <label for="direccion" class="form-label">Dirección</label>
-                    <input type="text" name="direccion" class="form-control" id="direccion" placeholder="Calle-Bloque-Numero">
-                    
-                </div>
-                <div class="col-md-3">
-                    <label for="sexo" class="form-label">Sexo</label>
-                    <select name="sexo" class="form-select" id="sexo">
-                    <option selected value="No indicado">No indicado</option>
-                    <option value="Masculino">Masculino</option>
-                    <option value="Femenino">Femenino</option>
-                    </select>
-                    
-                </div>
-                <div class="col-md-4">
-                    <label for="usuario" class="form-label">Nombre de Usuario*</label>
-                    <div class="input-group has-validation">
-                    <input type="text" name="usuario" class="form-control" id="usuario" aria-describedby="inputGroupPrepend" placeholder="Correo Electrónico">
-                    <div class="invalid-feedback">
+        <div style="margin-top: 8px; margin-left: 30px;"><h3>Perfil</h3></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8" style="margin-top: 15px;">
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="home">
+                            <form class="row g-3 needs-validation" action="" method="post" id="perfilForm">
+                                    <!-- Nombre -->
+                                    <div class="col-md-6">
+                                        <label for="nombre">
+                                            <h4>Nombre</h4>
+                                        </label>
+                                        <input type="text" class="form-control" name="nombre" id="nombre" value="<?php echo $datosUser['nombre']; ?>"
+                                            placeholder="nombre">
+                                    </div>
+                                    <!-- Apellidos -->
+                                    <div class="col-md-6">
+                                        <label for="direccion">
+                                            <h4>Apellidos</h4>
+                                        </label>
+                                        <input type="text" class="form-control" name="apellidos" id="apellidos" value="<?php echo $datosUser['apellidos']; ?>"
+                                            placeholder="">
+                                    </div>
+                                    <!-- Email -->
+                                    <div class="col-md-6">
+                                        <label for="email">
+                                            <h4>Email</h4>
+                                        </label>
+                                        <input type="text" class="form-control" name="email" id="email" value="<?php echo $datosUser['email']; ?>"
+                                            placeholder="">
+                                    </div>
+                                    <!-- Teléfono -->
+                                    <div class="col-md-6">
+                                        <label for="telefono">
+                                            <h4>Teléfono</h4>
+                                        </label>
+                                        <input type="text" class="form-control" name="telefono" id="telefono" value="<?php echo $datosUser['telefono']; ?>"
+                                            placeholder="">
+                                    </div>
+                                    <!-- Fecha nacimiento -->
+                                    <div class="col-md-6">
+                                        <label for="fenac">
+                                            <h4>Fecha de Nacimiento</h4>
+                                        </label>
+                                        <input type="fenac" class="form-control" name="fenac" id="fenac" value="<?php echo $datosUser['fenac']; ?>"
+                                            placeholder="">
+                                    </div>
+                                    <!-- Dirección -->
+                                    <div class="col-md-6">
+                                        <label for="direccion">
+                                            <h4>Dirección</h4>
+                                        </label>
+                                        <input type="text" class="form-control" id="direccion" value="<?php echo $datosUser['direccion']; ?>" placeholder="">
+                                    </div>
+                                    <!-- Usuario -->
+                                    <div class="col-md-6">
+                                        <label for="usuario">
+                                            <h4>Usuario</h4>
+                                        </label>
+                                        <input type="text" class="form-control" name="usuario" id="usuario" value="<?php echo $datosUser['usuario']; ?>" disabled
+                                            placeholder="">
+                                    </div>
+                                    <!-- Contraseña -->
+                                    <div class="col-md-6">
+                                        <label for="password">
+                                            <h4>Contraseña</h4>
+                                        </label>
+                                        <input type="password" class="form-control" name="password" id="password" value="<?php echo $datosUser['contraseña']; ?>"
+                                            placeholder="contraseña">
+                                    </div>
+                                    <!-- Selector de Sexo -->
+                                    <div class="col-md-6">
+                                        <label for="sexo"><h4>Sexo</h4></label>
+                                        <select name="sexo" class="form-select" id="sexo">
+                                        <?php if ($datosUser['sexo'] == "Masculino"): ?>
+                                        <!-- Si el valor recogido de la base de datos es "Masculino", muestra esa opción seleccionada -->
+                                        <option value="Masculino">Masculino</option>
+                                        <option value="Femenino">Femenino</option>
+                                        <option value="No indicado">No indicado</option>
+                                        <?php elseif($datosUser['sexo'] == "Femenino"): ?>
+                                        <!-- Si el valor recogido de la base de datos no coincide con "Femenino", muestra solo estas opciones -->
+                                        <option selected value="Femenino">Femenino</option>
+                                        <option value="No indicado">No indicado</option>
+                                        <option value="Masculino">Masculino</option>
+                                        <?php else: ?>
+                                        <!-- Si el valor recogido de la base de datos no coincide con "Masculino" o "Femenino", muestra solo estas opciones -->
+                                        <option value="No indicado">No indicado</option>
+                                        <option value="Femenino">Femenino</option>
+                                        <option value="Masculino">Masculino</option>
+                                        <?php endif; ?>
+                                        </select>
+                                    </div>
+
+                                <div class="col-xs-12" style="margin-bottom : 15px;">
+                                    <br>
+                                    <button class="btn btn-success" type="submit"><i
+                                            class="glyphicon glyphicon-ok-sign"></i> Guardar</button>
+                                    <button class="btn btn-danger" type="reset"><i
+                                            class="glyphicon glyphicon-repeat"></i> Limpiar</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    </div>
                 </div>
-                <div class="col-md-4">
-                    <label for="contrasena" class="form-label">Contraseña*</label>
-                    <input type="password" name="contrasena" class="form-control" id="contrasena" placeholder="Rftghyse*!">
-                    
-                </div>
-                
-                <div class="col-12">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="1" id="terminosCondiciones" name="terminosCondiciones">
-                        <label class="form-check-label" for="terminosCondiciones">
-                        Aceptar términos y condiciones*
-                        </label>   
-                        <!-- Campo oculto adicional para enviar el valor -->
-                        <input type="hidden" id="terminosCondicionesHidden" name="terminosCondicionesHidden" value="0">
-    
-                    </div>
-                </div>
-                <div class="col-12">
-                    <input class="btn btn-primary" type="submit"id="submitReg" name="submitReg"><br><br>
-                    <p>En caso de ya estar registrad@, <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#exampleModal">haga click aquí.</a></p>
-                </div>
-            </form>
+            </div>
         </div>
     </main>
+
     <footer class="d-flex flex-wrap justify-content-between align-items-center py-3  border-top bg-light">
         <p class="col-md-4 mb-0 ">© 2024 FranPage</p>
         

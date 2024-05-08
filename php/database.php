@@ -13,7 +13,7 @@ function conectarDB($hostname, $username, $dbname)
     }
     return $conn;
 }
-//Consulta para recopilar los datos de las noticias de la tabla noticias
+//Consulta SQL para recopilar los datos de las noticias de la tabla noticias
 function obtenerNoticias($conn) {
     $sql = "SELECT noticias.*, users_data.nombre AS nombre_autor
             FROM noticias
@@ -28,8 +28,41 @@ function obtenerNoticias($conn) {
     }
     return $noticias;
 }
-// Función para comprobar el login de un usuario ya registrado
-// Se hace esta comprobación para ver si se recibe una variable submit y no se recibe una llamada nombre, para descartar que se ha enviado el formulario de registro user
+// Consulta SQL para obtener los datos de un usuario ya registrado de la tabla users_datay mostrarlos en la página de perfil
+function obtenerDatos($conn) {
+    // Simulación de un usuario logeado (para pruebas)
+    // Establecer manualmente una variable de sesión con el ID de usuario
+    $_SESSION['usuario'] = 3; // Suponiendo que el ID del usuario a simular es 4
+    // Verificar si hay algún usuario logeado
+    // if(!isset($_SESSION['usario'])){
+    //     return array();
+    
+    // }
 
+    // Si existe un usuario logeado, pasamos a realizar la consulta de los datos
+    // Preparamos la consulta SQL
+    $user_id = $_SESSION['usuario'];
+    $sql = "SELECT ul.usuario, ul.contraseña, ud. * FROM users_login ul
+    INNER JOIN users_data ud on ud.idUser = ul.idUser
+    WHERE ul.idUser = $user_id";
 
+    // Ejecutamos la consulta
+    $resultado = mysqli_query($conn, $sql);
+
+    // Verificación de si se obtuvieron resultados de la consulta
+    if($resultado && mysqli_num_rows($resultado) > 0){
+        // Retorna los datos del usuario logeado
+        return mysqli_fetch_assoc($resultado);
+    }else{
+        // Retorna un array vacío
+        return array();
+    }
+}
+
+// Consulta SQL para modificar datos del usuario en función de los que se modifiquen en la págiina perfil
+function modificarDatos($conn, $user_id){
+// Establecer los datos que se van a modificar
+$response = array("success" => true, "message" => "Debe completar todos los campos obligatorios (*)");
+echo json_encode($response);
+}
 ?>

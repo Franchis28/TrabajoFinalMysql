@@ -54,18 +54,5 @@ if (isset($_POST['usuario']) && isset($_POST['contrasena'])) {
             }
         }
     }    
-
-        
-
-        // if ($usuario === $usuario && $contrasena === $contrasena_original) {
-        //     // Si el usuario y la contraseña son correctos, devuelve una respuesta JSON con éxito
-        //     $response = array("success" => true, "message" => "Inicio de sesión exitoso");
-        //     echo json_encode($response);
-        // } else {
-        //     // Si el usuario o la contraseña son incorrectos, devuelve una respuesta JSON con error
-        //     $response = array("success" => false, "message" => "Usuario o contraseña incorrectos");
-        //     echo json_encode($response);
-        // }
-    
 }
 ?>
