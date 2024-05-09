@@ -66,7 +66,8 @@ $datosUser = obtenerDatos($conn);
         </nav>        
     </header>
     <main>
-        <!-- Diseño del toast para mostrar los mensajes -->
+        <!-- Diseño del toast para mostrar los mensajes --> 
+        <!-- Comprobar al final del documento, que la configuración del script para lanzar el toast esté correcta -->
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
             <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
@@ -75,108 +76,107 @@ $datosUser = obtenerDatos($conn);
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body">
-                    <div id="mensaje"> </div>
+                    <div id="mensajePerfil"> </div>
                 </div>
             </div>
         </div>
         <div style="margin-top: 8px; margin-left: 30px;"><h3>Perfil</h3></div>
-        <div class="container">
-            <div class="row">
+        <div class="container d-flex justify-content-center align-items-center" style="height: 80vh;">
+            <div class="row justify-content-center">
                 <div class="col-md-8" style="margin-top: 15px;">
                     <div class="tab-content">
                         <div class="tab-pane active" id="home">
-                            <form class="row g-3 needs-validation" action="" method="post" id="perfilForm">
-                                    <!-- Nombre -->
-                                    <div class="col-md-6">
-                                        <label for="nombre">
-                                            <h4>Nombre</h4>
-                                        </label>
-                                        <input type="text" class="form-control" name="nombre" id="nombre" value="<?php echo $datosUser['nombre']; ?>"
-                                            placeholder="nombre">
-                                    </div>
-                                    <!-- Apellidos -->
-                                    <div class="col-md-6">
-                                        <label for="direccion">
-                                            <h4>Apellidos</h4>
-                                        </label>
-                                        <input type="text" class="form-control" name="apellidos" id="apellidos" value="<?php echo $datosUser['apellidos']; ?>"
-                                            placeholder="">
-                                    </div>
-                                    <!-- Email -->
-                                    <div class="col-md-6">
-                                        <label for="email">
-                                            <h4>Email</h4>
-                                        </label>
-                                        <input type="text" class="form-control" name="email" id="email" value="<?php echo $datosUser['email']; ?>"
-                                            placeholder="">
-                                    </div>
-                                    <!-- Teléfono -->
-                                    <div class="col-md-6">
-                                        <label for="telefono">
-                                            <h4>Teléfono</h4>
-                                        </label>
-                                        <input type="text" class="form-control" name="telefono" id="telefono" value="<?php echo $datosUser['telefono']; ?>"
-                                            placeholder="">
-                                    </div>
-                                    <!-- Fecha nacimiento -->
-                                    <div class="col-md-6">
-                                        <label for="fenac">
-                                            <h4>Fecha de Nacimiento</h4>
-                                        </label>
-                                        <input type="fenac" class="form-control" name="fenac" id="fenac" value="<?php echo $datosUser['fenac']; ?>"
-                                            placeholder="">
-                                    </div>
-                                    <!-- Dirección -->
-                                    <div class="col-md-6">
-                                        <label for="direccion">
-                                            <h4>Dirección</h4>
-                                        </label>
-                                        <input type="text" class="form-control" id="direccion" value="<?php echo $datosUser['direccion']; ?>" placeholder="">
-                                    </div>
-                                    <!-- Usuario -->
-                                    <div class="col-md-6">
-                                        <label for="usuario">
-                                            <h4>Usuario</h4>
-                                        </label>
-                                        <input type="text" class="form-control" name="usuario" id="usuario" value="<?php echo $datosUser['usuario']; ?>" disabled
-                                            placeholder="">
-                                    </div>
-                                    <!-- Contraseña -->
-                                    <div class="col-md-6">
-                                        <label for="password">
-                                            <h4>Contraseña</h4>
-                                        </label>
-                                        <input type="password" class="form-control" name="password" id="password" value="<?php echo $datosUser['contraseña']; ?>"
-                                            placeholder="contraseña">
-                                    </div>
-                                    <!-- Selector de Sexo -->
-                                    <div class="col-md-6">
-                                        <label for="sexo"><h4>Sexo</h4></label>
-                                        <select name="sexo" class="form-select" id="sexo">
-                                        <?php if ($datosUser['sexo'] == "Masculino"): ?>
-                                        <!-- Si el valor recogido de la base de datos es "Masculino", muestra esa opción seleccionada -->
-                                        <option value="Masculino">Masculino</option>
-                                        <option value="Femenino">Femenino</option>
-                                        <option value="No indicado">No indicado</option>
-                                        <?php elseif($datosUser['sexo'] == "Femenino"): ?>
-                                        <!-- Si el valor recogido de la base de datos no coincide con "Femenino", muestra solo estas opciones -->
-                                        <option selected value="Femenino">Femenino</option>
-                                        <option value="No indicado">No indicado</option>
-                                        <option value="Masculino">Masculino</option>
-                                        <?php else: ?>
-                                        <!-- Si el valor recogido de la base de datos no coincide con "Masculino" o "Femenino", muestra solo estas opciones -->
-                                        <option value="No indicado">No indicado</option>
-                                        <option value="Femenino">Femenino</option>
-                                        <option value="Masculino">Masculino</option>
-                                        <?php endif; ?>
-                                        </select>
-                                    </div>
-
+                            <form class="row g-3 needs-validation border border-grey rounded" style="margin-bottom: 65px;" action="" method="post" id="perfilForm">
+                                <!-- Nombre -->
+                                <div class="col-md-4">
+                                    <label for="nombre">
+                                        <h5>Nombre</h5>
+                                    </label>
+                                    <input type="text" class="form-control" name="nombre" id="nombre" value="<?php echo $datosUser['nombre']; ?>"
+                                        placeholder="nombre">
+                                </div>
+                                <!-- Apellidos -->
+                                <div class="col-md-4">
+                                    <label for="direccion">
+                                        <h5>Apellidos</h5>
+                                    </label>
+                                    <input type="text" class="form-control" name="apellidos" id="apellidos" value="<?php echo $datosUser['apellidos']; ?>"
+                                        placeholder="">
+                                </div>
+                                <!-- Email -->
+                                <div class="col-md-4">
+                                    <label for="email">
+                                        <h5>Email</h5>
+                                    </label>
+                                    <input type="text" class="form-control" name="email" id="email" value="<?php echo $datosUser['email']; ?>"
+                                        placeholder="">
+                                </div>
+                                <!-- Teléfono -->
+                                <div class="col-md-4">
+                                    <label for="telefono">
+                                        <h5>Teléfono</h5>
+                                    </label>
+                                    <input type="text" class="form-control" name="telefono" id="telefono" value="<?php echo $datosUser['telefono']; ?>"
+                                        placeholder="">
+                                </div>
+                                <!-- Fecha nacimiento -->
+                                <div class="col-md-4">
+                                    <label for="fenac">
+                                        <h5>Fecha de Nacimiento</h5>
+                                    </label>
+                                    <input type="fenac" class="form-control" name="fenac" id="fenac" value="<?php echo $datosUser['fenac']; ?>"
+                                        placeholder="Fecha de Nacimiento">
+                                </div>
+                                <!-- Dirección -->
+                                <div class="col-md-4">
+                                    <label for="direccion">
+                                        <h5>Dirección</h5>
+                                    </label>
+                                    <input type="text" class="form-control" name="direccion" id="direccion" value="<?php echo $datosUser['direccion']; ?>" placeholder="Dirección">
+                                </div>
+                                <!-- Selector de Sexo -->
+                                <div class="col-md-4">
+                                    <label for="sexo"><h5>Sexo</h5></label>
+                                    <select name="sexo" class="form-select" id="sexo">
+                                    <?php if ($datosUser['sexo'] == "Masculino"): ?>
+                                    <!-- Si el valor recogido de la base de datos es "Masculino", muestra esa opción seleccionada -->
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Femenino">Femenino</option>
+                                    <option value="No indicado">No indicado</option>
+                                    <?php elseif($datosUser['sexo'] == "Femenino"): ?>
+                                    <!-- Si el valor recogido de la base de datos no coincide con "Femenino", muestra solo estas opciones -->
+                                    <option selected value="Femenino">Femenino</option>
+                                    <option value="No indicado">No indicado</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <?php else: ?>
+                                    <!-- Si el valor recogido de la base de datos no coincide con "Masculino" o "Femenino", muestra solo estas opciones -->
+                                    <option value="No indicado">No indicado</option>
+                                    <option value="Femenino">Femenino</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <?php endif; ?>
+                                    </select>
+                                </div>
+                                <!-- Usuario -->
+                                <div class="col-md-4">
+                                    <label for="usuario">
+                                        <h5>Usuario</h5>
+                                    </label>
+                                    <input type="text" class="form-control" name="usuario" id="usuario" value="<?php echo $datosUser['usuario']; ?>" disabled
+                                        placeholder="">
+                                </div>
+                                <!-- Contraseña -->
+                                <div class="col-md-4">
+                                    <label for="password">
+                                        <h5>Contraseña</h5>
+                                    </label>
+                                    <input type="password" class="form-control" name="password" id="password" value="<?php echo $datosUser['contraseña']; ?>"
+                                        placeholder="contraseña">
+                                </div>
                                 <div class="col-xs-12" style="margin-bottom : 15px;">
                                     <br>
-                                    <button class="btn btn-success" type="submit"><i
+                                    <button class="btn btn-success" type="submit" name="submitPerfil" id="submitPerfil"><i
                                             class="glyphicon glyphicon-ok-sign"></i> Guardar</button>
-                                    <button class="btn btn-danger" type="reset"><i
+                                    <button class="btn btn-danger" type="reset" name="resetPerfil" id="resetPerfil"><i
                                             class="glyphicon glyphicon-repeat"></i> Limpiar</button>
                                 </div>
                             </form>
@@ -187,7 +187,7 @@ $datosUser = obtenerDatos($conn);
         </div>
     </main>
 
-    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3  border-top bg-light">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top bg-light fixed-bottom">
         <p class="col-md-4 mb-0 ">© 2024 FranPage</p>
         
         <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
@@ -204,8 +204,7 @@ $datosUser = obtenerDatos($conn);
      <!-- Script con la Función para mostrar el toast con los mensajes de login enviados desde la función Ajax que recoge los valores desde comprobarLogin-->
      <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const submitLog = document.getElementById('submitLog');
-                const submitReg = document.getElementById('submitReg');
+                const submitPerfil = document.getElementById('submitPerfil');
                 const toastLiveExample = document.getElementById('liveToast');
                 // Función para mostrar el toast
                 function mostrarToast() {
@@ -213,31 +212,12 @@ $datosUser = obtenerDatos($conn);
                     toast.show();
                 }
 
-                if (submitLog){
-                    
-                    submitLog.addEventListener('click', mostrarToast);
-                }
-                if(submitReg){
-                    submitReg.addEventListener('click', mostrarToast);
+                if(submitPerfil){
+                    submitPerfil.addEventListener('click', mostrarToast);
 
                 }
             });
         </script>
-    <!-- Script para asignar valor al estado del checkbox de terminos y condiciones -->
-    <script>
-        // Espera a que se cargue completamente el contenido de la página
-        document.addEventListener("DOMContentLoaded", function() {
-            // Busca el elemento del checkbox y el campo oculto en el DOM
-            var checkbox = document.getElementById("terminosCondiciones");
-            var hiddenInput = document.getElementById("terminosCondicionesHidden");
-            
-            // Adjunta un controlador de eventos al checkbox para que se active cuando cambie de estado
-            checkbox.addEventListener("change", function() {
-                // Actualiza el valor del campo oculto según el estado del checkbox
-                hiddenInput.value = checkbox.checked ? "1" : "0";
-            });
-        });
-    </script>
     <!-- Enlaces con librerias externas -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

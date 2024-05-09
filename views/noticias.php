@@ -94,7 +94,7 @@ $noticias = obtenerNoticias($conn);
         </nav>        
     </header>
     <main>
-    <section>
+        <section>
             <div class="container my-4">
                 <h3>Las últimas Noticias</h3>
                 <!-- Formulario para cargar una nueva noticia con imagen -->
@@ -138,7 +138,7 @@ $noticias = obtenerNoticias($conn);
             </div>
         </section>
     </main>
-    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3  border-top bg-light">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3  border-top bg-light ">
         <p class="col-md-4 mb-0 ">© 2024 FranPage</p>
         
         <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">

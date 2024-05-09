@@ -1,6 +1,6 @@
 # Título del Proyecto
 
-Breve descripción del proyecto y su propósito.
+Desarrollo de Solución Tecnológica, para página web sobre noticias. Uso de base de datos MySQL, para almacenar datos (datos de usuario, noticias y citas)
 
 ## Instalación
 
@@ -18,9 +18,6 @@ Ejemplos de código o capturas de pantalla que muestren el proyecto en acción.
 
 Pautas para contribuir al proyecto y cómo enviar solicitudes de extracción.
 
-## Licencia
-
-Información sobre la licencia bajo la cual se distribuye el proyecto.
 
 ## Documentación Adicional
 

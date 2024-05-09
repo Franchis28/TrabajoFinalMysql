@@ -58,11 +58,3 @@ function obtenerDatos($conn) {
         return array();
     }
 }
-
-// Consulta SQL para modificar datos del usuario en función de los que se modifiquen en la págiina perfil
-function modificarDatos($conn, $user_id){
-// Establecer los datos que se van a modificar
-$response = array("success" => true, "message" => "Debe completar todos los campos obligatorios (*)");
-echo json_encode($response);
-}
-?>

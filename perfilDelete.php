@@ -40,108 +40,6 @@
                     </li>
                 </ul>
             </div>
-
-            <div class="col-sm-8" style="margin-top: 50px;">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a data-toggle="tab" href="#home">Perfil</a></li>
-                </ul>
-
-
-                <div class="tab-content">
-                    <div class="tab-pane active" id="home">
-                        <hr>
-                        <form class="form" action="##" method="post" id="registrationForm">
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <label for="nombre">
-                                        <h4>Nombre</h4>
-                                    </label>
-                                    <input type="text" class="form-control" name="nombre" id="nombre"
-                                        placeholder="nombre">
-                                </div>
-                            </div>
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <label for="last_name">
-                                        <h4>Apellidos</h4>
-                                    </label>
-                                    <input type="text" class="form-control" name="apellidos" id="apellidos"
-                                        placeholder="apellidos">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <label for="teléfono">
-                                        <h4>Teléfono</h4>
-                                    </label>
-                                    <input type="text" class="form-control" name="teléfono" id="teléfono"
-                                        placeholder="teléfono">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="col-xs-6">
-                                    <label for="mobile">
-                                        <h4>Movil</h4>
-                                    </label>
-                                    <input type="text" class="form-control" name="movil" id="movil"
-                                        placeholder="introduce tu móvil">
-                                </div>
-                            </div>
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <label for="email">
-                                        <h4>Email</h4>
-                                    </label>
-                                    <input type="email" class="form-control" name="email" id="email"
-                                        placeholder="you@email.com">
-                                </div>
-                            </div>
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <label for="ciudad">
-                                        <h4>Ciudad</h4>
-                                    </label>
-                                    <input type="text" class="form-control" id="ciudad" placeholder="ciudad">
-                                </div>
-                            </div>
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <label for="password">
-                                        <h4>Contraseña</h4>
-                                    </label>
-                                    <input type="password" class="form-control" name="password" id="password"
-                                        placeholder="contraseña">
-                                </div>
-                            </div>
-                            <div class="form-group">
-
-                                <div class="col-xs-6">
-                                    <label for="password2">
-                                        <h4>Verifica la contraseña</h4>
-                                    </label>
-                                    <input type="password" class="form-control" name="password2" id="password2"
-                                        placeholder="password2">
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-xs-12">
-                                    <br>
-                                    <button class="btn btn-success" type="submit"><i
-                                            class="glyphicon glyphicon-ok-sign"></i> Guardar</button>
-                                    <button class="btn btn-danger" type="reset"><i
-                                            class="glyphicon glyphicon-repeat"></i> Limpiar</button>
-                                </div>
-                            </div>
-                        </form>
-
                         <hr>
 
                     </div>
@@ -149,26 +47,6 @@
 
             </div>
         </div>
-
-        <script type="text/javascript">
-            $(document).ready(function () {
-                var readURL = function (input) {
-                    if (input.files && input.files[0]) {
-                        var reader = new FileReader();
-
-                        reader.onload = function (e) {
-                            $('.avatar').attr('src', e.target.result);
-                        }
-
-                        reader.readAsDataURL(input.files[0]);
-                    }
-                }
-
-                $(".file-upload").on('change', function () {
-                    readURL(this);
-                });
-            });
-        </script>
 </body>
 
 </html>

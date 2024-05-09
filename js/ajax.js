@@ -90,18 +90,16 @@ $(document).ready(function() {
         });
     });
 });
-// Ajax para comprobar el formulario de registro de usuarios
-// Incluye el archivo database.php
-
+// Ajax para comprobar el formulario de perfil de usuarios para modificar los campos que se deseen
 console.log('Funciona el ajax del Perfil');
 $(document).ready(function() {
-    console.log('Cargados los DOM del registro');
-    $('#perfilForm').submit(function(event) {
+    console.log('Cargados los DOM del Perfil');
+    $('#perfilForm').submit(function(e) {
         console.log('Formulario de perfil enviado');
-        event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
+        e.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
         console.log($('#nombre').val());
         // Obtener los datos del formulario
-        var profileData = {
+        var profileData =  {
             nombre : $('#nombre').val(),
             apellidos: $('#apellidos').val(),
             email: $('#email').val(),
@@ -109,33 +107,28 @@ $(document).ready(function() {
             fenac: $('#fenac').val(),
             direccion: $('#direccion').val(),
             sexo: $('#sexo').val(),
-            contrasena: $('#contrasena').val()
-        };
+            contrasena: $('#password').val(),
+        };//$(this).serialize();
 
         console.log(profileData);
 
         // Enviar los datos al servidor utilizando AJAX
         $.ajax({
             type: 'POST',
-            url: '../php/database.php', // Ruta al archivo PHP que maneja la comprobación del registro
-            data: {
-                action: 'modificarDatos', // Acción para identificar la operación que se debe realizar en el archivo PHP
-                profileData: profileData // Datos del perfil a modificar
-            },
+            url: '../php/modificationData.php', // Ruta al archivo PHP que maneja la modificación de los datos
+            data: profileData,
             dataType: 'json',
             success: function(response) {
                 console.log('Respuesta del servidor:', response);
 
                 // Manejar la respuesta del servidor
-                console.log('Datos enviados al servidor');
-                if (response.success) {   
+                console.log('Datos recibidos del servidor');
+                if (response.success) {  
                     // Si el inicio de sesión es exitoso, mostrar un mensaje de éxito
-                    $('#mensaje').text(response.message).css('color', 'green');
-                    var modal = new bootstrap.Modal(document.getElementById("exampleModal"));
-                    modal.show();
+                    $('#mensajePerfil').text(response.message).css('color', 'green');
                 } else {
                     // Si el inicio de sesión falla, mostrar un mensaje de error
-                    $('#mensaje').text(response.message).css('color', 'red');
+                    $('#mensajePerfil').text(response.message).css('color', 'red');
                 }
             },
             error: function(xhr, status, error) {
