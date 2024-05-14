@@ -2,17 +2,12 @@
 <?php
 //require para realizar la conexión con la base de datos
 require '../php/database.php';
-//require para recuperar los datos para la conexión a la BD
-require '../.env.php';
 // Include para la modal de inicio de sesion (login)
 include '../views/login.php';
-// Datos para realizar la conexión a la BD
-$hostname = $SERVIDOR;
-$username = $USUARIO;
-$password = $PASSWORD;
-$dbname = $BD;
+// Require para conectarse a la BD
+require '../php/conexionDB.php';
 // Conectar a la base de datos
-$conn = conectarDB($hostname, $username, $dbname);
+$conn = conectarDB();
 ?>  
 <!DOCTYPE html>
 <html lang="es">
@@ -34,33 +29,35 @@ $conn = conectarDB($hostname, $username, $dbname);
                 <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="../index.php">Portada</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./noticias.php">Noticias</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="./register.php">Registro</a>
-                    </li>
-                    <!-- <li class="nav-item">
-                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-                    </li> -->
-                    <!-- Modal para inicio de sesión -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="../views/login.php" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
-                    </li>
-                </ul>
-                 <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
-                <div class=" px-2">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../index.php">Portada</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./noticias.php">Noticias</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="./register.php">Registro</a>
+                        </li>
+                        <!-- <li class="nav-item">
+                            <a class="nav-link disabled" aria-disabled="true">Disabled</a>
+                        </li> -->
+                        <!-- Modal para inicio de sesión -->
+                        <li class="nav-item">
+                            <a class="nav-link" href="../views/login.php" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
+                        </li>
+                    </ul>
+                    <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
+                    <div class=" px-2">
                     <?php
-                        if(isset($_SESSION['usuario'])) {
-                            echo  $_SESSION['usuario'] ;
+                        // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
+                        if(!empty($_SESSION['usuarioStr'])) {
+                            echo  $_SESSION['usuarioStr'] ;
                         } else {
-                            echo '<p class="fs-5">Ningún usuario está conectado actualmente</p>';
+                            echo '<p class="fs-6">Ningún usuario está conectado actualmente</p>';
                         } 
                     ?>
+                    </div>
                 </div>
             </div>
         </nav>        
@@ -216,5 +213,14 @@ $conn = conectarDB($hostname, $username, $dbname);
     <!-- Enlaces a JavaScript -->
     <script src="../js/newScript.js"></script>
     <script src="../js/ajax.js"></script>
+
+    <!-- Script para establecer el foco en el campo nombre -->
+    <script>
+        // Espera a que se cargue completamente el contenido de la página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Busca el elemento del campo nombre en el DOM y establece el foco
+            document.getElementById("nombre").focus();
+        });
+    </script>
 </body>
 </html>

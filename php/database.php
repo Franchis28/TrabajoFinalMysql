@@ -1,18 +1,4 @@
 <?php
-function conectarDB($hostname, $username, $dbname)
-{
-    session_start();
-    $conn = mysqli_connect($hostname, $username);
-    if($conn){
-        if(mysqli_select_db($conn, $dbname) === TRUE){
-            
-        }
-    }
-    else {
-        echo 'La conexión ha sido fallida';
-    }
-    return $conn;
-}
 //Consulta SQL para recopilar los datos de las noticias de la tabla noticias
 function obtenerNoticias($conn) {
     $sql = "SELECT noticias.*, users_data.nombre AS nombre_autor
@@ -30,18 +16,14 @@ function obtenerNoticias($conn) {
 }
 // Consulta SQL para obtener los datos de un usuario ya registrado de la tabla users_datay mostrarlos en la página de perfil
 function obtenerDatos($conn) {
-    // Simulación de un usuario logeado (para pruebas)
-    // Establecer manualmente una variable de sesión con el ID de usuario
-    $_SESSION['usuario'] = 3; // Suponiendo que el ID del usuario a simular es 4
     // Verificar si hay algún usuario logeado
     // if(!isset($_SESSION['usario'])){
     //     return array();
-    
     // }
 
     // Si existe un usuario logeado, pasamos a realizar la consulta de los datos
     // Preparamos la consulta SQL
-    $user_id = $_SESSION['usuario'];
+    $user_id = $_SESSION['usuarioInt'];
     $sql = "SELECT ul.usuario, ul.contraseña, ud. * FROM users_login ul
     INNER JOIN users_data ud on ud.idUser = ul.idUser
     WHERE ul.idUser = $user_id";
@@ -57,4 +39,20 @@ function obtenerDatos($conn) {
         // Retorna un array vacío
         return array();
     }
+}
+// Consulta SQL para obtener las citas creadas por cada usuiario 
+function obtenerCitas($conn){
+    // Recuperamos el usuario que esté logeado en el momento
+    $user_id = $_SESSION['usuarioInt'];
+    $sql = "SELECT citas.* FROM citas INNER JOIN users_data ON citas.idUser = users_data.idUser
+    WHERE citas.fechaCita >= CURDATE() && citas.idUser = '$user_id'";
+    $resultado = mysqli_query($conn, $sql);
+    $citas = array();
+    if($resultado && mysqli_num_rows($resultado) > 0){
+        while($fila = mysqli_fetch_assoc($resultado)){
+            $citas[] = $fila;
+        }
+    }
+    
+    return $citas;
 }

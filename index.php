@@ -2,17 +2,12 @@
 <?php
 //require para realizar la conexión con la base de datos
 require './php/database.php';
-//require para recuperar los datos para la conexión a la BD
-require '.env.php';
 // Include para la modal de inicio de sesion (login)
 include './views/login.php';
-// Datos para realizar la conexión a la BD
-$hostname = $SERVIDOR;
-$username = $USUARIO;
-$password = $PASSWORD;
-$dbname = $BD;
+// Require para conectarse a la BD
+require './php/conexionDB.php';
 // Conectar a la base de datos
-$conn = conectarDB($hostname, $username, $dbname);
+$conn = conectarIndexDB();
 // Obtener las noticias
 $noticias = obtenerNoticias($conn);
 ?>
@@ -34,69 +29,56 @@ $noticias = obtenerNoticias($conn);
                 <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="index.php">Portada</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link" href="./views/noticias.php">Noticias</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link" href="./views/register.php">Registro</a>
-                    </li>
-                    <!-- <li class="nav-item">
-                    <a class="nav-link">Disabled</a>
-                    </li> -->
-                    <!-- Modal para inicio de sesión -->
-                    <li class="nav-item">
-                    <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
-                    </li>
-                    <!-- Desarrollo de la interfaz de la modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Inicio de Sesion</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="" method="post">
-                                        <div class="mb-3">
-                                            <label for="recipient-name" class="col-form-label" name="usuario">Usuario:</label> 
-                                            <input type="text" class="form-control" name="usuario" placeholder="Usuario">
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="message-text" class="col-form-label" name="constraseña">Contraseña:</label>
-                                            <input  type="password" class="form-control" name="contraseña" placeholder="Contraseña"> 
-                                        </div>
-                                        <div class="modal-footer">
-                                            <input type="submit" class="container btn btn-primary"  name="submit" value="Iniciar sesión">
-                                            
-                                            <p class="container text-center">Si aún no tienes cuenta,<a href="./views/register.php" class="nav-link text-primary">haz click aquí</a></p>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </ul>
-                <div class=" px-2">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.php">Portada</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="./views/noticias.php">Noticias</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="./views/register.php">Registro</a>
+                        </li>
+                        <!-- <li class="nav-item">
+                        <a class="nav-link">Disabled</a>
+                        </li> -->
+                        <!-- Modal para inicio de sesión -->
+                        <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
+                        </li>
+                    </ul>
+                    <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
+                    <div class=" px-2">
                     <?php
                         // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
-                        if(isset($_SESSION['usuario'])) {
-                            echo  $_SESSION['usuario'] ;
+                        if(!empty($_SESSION['usuarioStr'])) {
+                            echo  $_SESSION['usuarioStr'] ;
                         } else {
-                            echo '<p class="fs-4">Ningún usuario está conectado actualmente</p>';
+                            echo '<p class="fs-6">Ningún usuario está conectado actualmente</p>';
                         } 
                     ?>
-                </div>
+                    </div>
                 </div>
             </div>
         </nav>        
     </header>
     <!-- Crearemos varias secciones para mostrar un poco que es lo que contiene la página -->
     <main>
-        <!-- En este primer secction, vamos a poner  lo que se puede hacer en la web -->
+         <!-- Diseño del toast para mostrar los mensajes -->
+        <!-- Comprobar al final del documento, que la configuración del script para lanzar el toast esté correcta -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                <strong class="me-auto">FranPage</strong>
+                <small>Ahora</small>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    <div id="mensaje"> </div>
+                </div>
+            </div>
+        </div>
+        <!-- En este primer section, vamos a poner  lo que se puede hacer en la web -->
         <section>
         <div class="container my-4">
             <h3>¿Qué es FranPage?</h3>
@@ -153,6 +135,7 @@ $noticias = obtenerNoticias($conn);
     <!-- Bootstrap Datepicker JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script src="./js/newScript.js"></script>
+    <script src="./js/ajax.js"></script>
 </script>
 </body>
 </html>

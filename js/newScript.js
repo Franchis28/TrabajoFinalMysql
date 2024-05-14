@@ -14,3 +14,11 @@ $(document).ready(function(){
         autoclose: true
     });
 }); 
+
+// IniciaLización de datepicker para la fecha de creación de la cita
+$(document).ready(function(){
+    $('#fechaCita').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true
+    });
+}); 

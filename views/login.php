@@ -1,3 +1,4 @@
+
 <!-- Página de login, donde el usuario mediante una modal, que se lanzará en la página en la que se encuentre el usuario podrá logearse si está registrado -->
 <!-- Desarrollo de la interfaz de la modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -11,7 +12,8 @@
                 <form id="login" action="" method="post" >
                     <div class="mb-3">
                         <label for="userLogin" class="col-form-label" name="userLogin">Usuario:</label> 
-                        <input type="text" class="form-control" id="userLogin" name="userLogin" placeholder="Correo Electrónico" required>
+                        <input type="text" class="form-control" id="userLogin" name="userLogin" placeholder="Correo Electrónico">
+                        
                     </div>
                     <div class="mb-3">
                         <label for="contrasenaLogin" class="col-form-label" name="contrasenaLogin">Contraseña:</label>
@@ -19,11 +21,19 @@
                     </div>
                     <div class="modal-footer">
                         <input type="submit" class="container btn btn-primary" id="submitLog" name="submit" value="Iniciar sesión">
-
-                        <p class="container text-center">Si aún no tienes cuenta,<a href="register.php" class="nav-link text-primary">haz click aquí</a></p>
+                        <p class="container text-center">Si aún no tienes cuenta,<a href="../views/register.php" class="nav-link text-primary">haz click aquí</a></p>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </div> 
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $("#exampleModal").on("shown.bs.modal", function() {
+            $("#userLogin").focus();
+        });
+    });
+</script>

@@ -113,15 +113,8 @@ switch ($comprobacion) {
         u.email='$email', 
         ul.contraseña ='$contrasena_encriptada'
     WHERE ul.idUser ='$user_id'";
+    // Se ejecuta la consulta
     $result = mysqli_query($conn, $query);
-        // Abre o crea un archivo de registro
-    $file = fopen('debug.log', 'a');
-
-    // Escribe el mensaje de debug
-    fwrite($file, "Respuesta Consulta: " . $result. PHP_EOL);
-
-    // Cierra el archivo
-    fclose($file);
     if ($result) {
         // La actualización fue exitosa
         $response = array("success" => true, "message" => "Los datos han sido actualizados de forma correcta");
@@ -132,9 +125,4 @@ switch ($comprobacion) {
         echo json_encode($response);
     }
 }
-
-
-
-
-
 ?>

@@ -11,9 +11,9 @@ $(document).ready(function() {
             usuario: $('#userLogin').val(),
             contrasena: $('#contrasenaLogin').val()
         };
-
+        
         console.log(formData);
-
+        
         // Enviar los datos al servidor utilizando AJAX
         $.ajax({
             type: 'POST',
@@ -24,7 +24,7 @@ $(document).ready(function() {
                 console.log('Respuesta del servidor:', response);
                 // Manejar la respuesta del servidor
                 console.log('Datos enviados al servidor');
-                if (response.success) {   
+                if (response.success) { 
                     console.log('Hey');
                     // Si el inicio de sesión es exitoso, mostrar un mensaje de éxito
                     $('#mensaje').text(response.message).css('color', 'green');
@@ -129,6 +129,48 @@ $(document).ready(function() {
                 } else {
                     // Si el inicio de sesión falla, mostrar un mensaje de error
                     $('#mensajePerfil').text(response.message).css('color', 'red');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error en la solicitud AJAX:', xhr.responseText);
+            }
+        });
+    });
+});
+// Ajax para comprobar el formulario de citas de usuarios para crear las citas en la bd
+console.log('Funciona el ajax del citas');
+$(document).ready(function() {
+    console.log('Cargados los DOM del citas');
+    $('#citasForm').submit(function(e) {
+        console.log('Formulario de citas enviado');
+        e.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
+        // Obtener los datos del formulario
+        var citasData =  {
+            fecha_cita : $('#fechaCita').val(),
+            motivo: $('#motivo').val()
+        };
+
+        console.log(citasData);
+
+        // Enviar los datos al servidor utilizando AJAX
+        $.ajax({
+            type: 'POST',
+            url: '../php/crearCita.php', // Ruta al archivo PHP que maneja la modificación de los datos
+            data: citasData,
+            dataType: 'json',
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+
+                // Manejar la respuesta del servidor
+                console.log('Datos recibidos del servidor');
+                if (response.success) {  
+                    // Si el inicio de sesión es exitoso, mostrar un mensaje de éxito
+                    $('#mensajeCitas').text(response.message).css('color', 'green');
+                    // Redirigir al usuario a la página deseada
+                    window.location.href = '../views/citaciones.php';
+                } else {
+                    // Si el inicio de sesión falla, mostrar un mensaje de error
+                    $('#mensajeCitas').text(response.message).css('color', 'red');
                 }
             },
             error: function(xhr, status, error) {

@@ -2,15 +2,10 @@
 <?php
 //require para realizar la conexión con la base de datos
 require '../php/database.php';
-//require para recuperar los datos para la conexión a la BD
-require '../.env.php';
-// Datos para realizar la conexión a la BD
-$hostname = $SERVIDOR;
-$username = $USUARIO;
-$password = $PASSWORD;
-$dbname = $BD;
+// Require para conectarse a la BD
+require '../php/conexionDB.php';
 // Conectar a la base de datos
-$conn = conectarDB($hostname, $username, $dbname);
+$conn = conectarDB();
 // Llamada a la función para la obtención de los datos del usuario logeado
 $datosUser = obtenerDatos($conn);
 ?>
@@ -42,26 +37,29 @@ $datosUser = obtenerDatos($conn);
                         <a class="nav-link" href="./noticias.php">Noticias</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="./register.php">Registro</a>
+                        <a class="nav-link" href="./register.php">Registro</a>
                     </li>
-                    <!-- <li class="nav-item">
-                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-                    </li> -->
-                    <!-- Modal para inicio de sesión -->
                     <li class="nav-item">
-                        <a class="nav-link" href="../views/login.php" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
+                    <a class="nav-link" href="./citaciones.php">Citas</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="./perfil.php">Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link">Cerrar Sesión</a>
                     </li>
                 </ul>
-                 <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
+                <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
                 <div class=" px-2">
                     <?php
-                        if(isset($_SESSION['usuario'])) {
-                            echo  $_SESSION['usuario'] ;
+                        // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
+                        if(!empty($_SESSION['usuarioStr'])) {
+                            echo  $_SESSION['usuarioStr'] ;
                         } else {
-                            echo '<p class="fs-4">Ningún usuario está conectado actualmente</p>';
+                            echo '<p class="fs-6">Ningún usuario está conectado actualmente</p>';
                         } 
                     ?>
-                </div>
+                    </div>
             </div>
         </nav>        
     </header>

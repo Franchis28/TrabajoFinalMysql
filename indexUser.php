@@ -45,7 +45,7 @@ $noticias = obtenerNoticias($conn);
                     <a class="nav-link" href="./views/register.php">Registro</a>
                     </li>
                     <li class="nav-item">
-                    <a class="nav-link">Citas</a>
+                    <a class="nav-link" href="./views/citaciones.php">Citas</a>
                     </li>
                     <li class="nav-item">
                     <a class="nav-link">Perfil</a>
