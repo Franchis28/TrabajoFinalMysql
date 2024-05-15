@@ -5,8 +5,6 @@ require './database.php';
 require '../php/conexionDB.php';
 // Conectar a la base de datos
 $conn = conectarDB();
-// Simulación usuario conectado, borrar cuando funcione el login
-$_SESSION['usuarioStr'] = 'Franchis';
 
 if (!empty($_POST['usuario']) && !empty($_POST['contrasena'])) {
     // Recuperamos usuario y contraseña de la BD
@@ -21,7 +19,8 @@ if (!empty($_POST['usuario']) && !empty($_POST['contrasena'])) {
         $row = mysqli_fetch_assoc($result);
         $hash_contrasena = $row['contraseña'];
         $_SESSION['usuarioInt'] = $row['idUser'];
-        
+        // Simulación usuario conectado, borrar cuando funcione el login
+        $_SESSION['usuarioStr'] = $usuario;
 
         if(($hash_contrasena != null) && ($contrasena_original != null)){
             //$contrasena_str = strval($contrasena_original) ;

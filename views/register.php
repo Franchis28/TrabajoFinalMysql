@@ -131,8 +131,12 @@ $conn = conectarDB();
                     </div>
                     <div class="col-md-4">
                         <label for="contrasena" class="form-label">Contraseña*</label>
-                        <input type="password" name="contrasena" class="form-control" id="contrasena" placeholder="Rftghyse*!">
-                        
+                        <div class="input-group">
+                            <input type="password" name="contrasena" class="form-control" id="contrasena" placeholder="Rftghyse*!">
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <i class="bi bi-eye-fill">Ver</i>
+                            </button>
+                        </div>
                     </div>
                     
                     <div class="col-12">
@@ -221,6 +225,23 @@ $conn = conectarDB();
             // Busca el elemento del campo nombre en el DOM y establece el foco
             document.getElementById("nombre").focus();
         });
+    </script>
+    <!-- Script para que el usuario pueda ver la contraseña si lo desea -->
+    <script>
+        $(document).ready(function() {
+            $('#togglePassword').on('click', function() {
+                const passwordField = $('#contrasena');
+                const passwordFieldType = passwordField.attr('type');
+                if (passwordFieldType === 'password') {
+                    passwordField.attr('type', 'text');
+                    $('#togglePassword').html('<i class="bi bi-eye-slash-fill">Ocultar</i>');
+                } else {
+                    passwordField.attr('type', 'password');
+                    $('#togglePassword').html('<i class="bi bi-eye-fill">Ver</i>');
+                }
+            });
+        });
+
     </script>
 </body>
 </html>

@@ -22,3 +22,11 @@ $(document).ready(function(){
         autoclose: true
     });
 }); 
+
+// IniciaLización de datepicker para la fecha de modificacion de la cita
+$(document).ready(function(){
+    $('[id^="fechaCita_"]').datepicker({
+        format: 'yyyy-mm-dd',
+        autoclose: true
+    });
+});

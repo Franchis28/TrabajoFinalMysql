@@ -1,27 +1,13 @@
 <?php
 //require para realizar la conexión con la base de datos
 require '../php/database.php';
-//require para recuperar los datos para la conexión a la BD
-require '../.env.php';
-// Datos para realizar la conexión a la BD
-$hostname = $SERVIDOR;
-$username = $USUARIO;
-$password = $PASSWORD;
-$dbname = $BD;
+// Require para conectarse a la BD
+require '../php/conexionDB.php';
 // Conectar a la base de datos
-$conn = conectarDB($hostname, $username, $dbname);
+$conn = conectarDB();
 
 // Obtener el usuario que está conectado actualmente
-$user_id = $_SESSION['usuario'];
-
-// Abre o crea un archivo de registro
-$file = fopen('debug.log', 'a');
-
-// Escribe el mensaje de debug
-fwrite($file, "Usuario: " . $user_id . PHP_EOL);
-
-// Cierra el archivo
-fclose($file);
+$user_id = $_SESSION['usuarioInt'];
 // Obtener los datos del formulario y los filtramos
 // Validar Campos Formulario Perfil
 // Empezamos recogiendo los datos a evaluar/comprobar del formulario

@@ -20,7 +20,6 @@ function obtenerDatos($conn) {
     // if(!isset($_SESSION['usario'])){
     //     return array();
     // }
-
     // Si existe un usuario logeado, pasamos a realizar la consulta de los datos
     // Preparamos la consulta SQL
     $user_id = $_SESSION['usuarioInt'];

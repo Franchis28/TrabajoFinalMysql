@@ -9,9 +9,17 @@ $conn = conectarDB();
 // Llamada a la función para la obtención de los datos del usuario logeado
 $citasUser = obtenerDatos($conn);
 // Obtener el usuario que está conectado actualmente
-$user_id = $_SESSION['usuario'];
+$user_id = $_SESSION['usuarioInt'];
 // Llamada a la consulta que solicita las citas que tiene cada usuario creadas
 $citasPendientes = obtenerCitas($conn);
+// Función para comparar las fechas de las citas
+function compararFechas($a, $b) {
+    return strtotime($a['fechaCita']) - strtotime($b['fechaCita']);
+}
+
+// Ordenar las citas pendientes por fecha
+usort($citasPendientes, 'compararFechas');
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -123,35 +131,33 @@ $citasPendientes = obtenerCitas($conn);
             <div class="row justify-content-center">
                 <div class="container text-center my-4">
                     <div class="row">
-                        <?php foreach ($citasPendientes as $cita): ?>
-                            <div class="col-md-4">
-                                <div class="card mb-4">
-                                    <div class="card-body">
-                                        <!-- Fecha de la cita -->
-                                        <div class="form-group">
-                                            <label for="fechaCita">Fecha de la Cita</label>
-                                            <input type="text" class="form-control" id="fechaCita" 
-                                                value="<?php echo $cita['fechaCita']; ?>" >
+                        <form class="row g-3 needs-validation" style="margin-bottom: 15px;" action="" method="post" id="citasPendientesForm">
+                            <?php foreach ($citasPendientes as $cita): ?>
+                                <div class="col-md-4">
+                                    <div class="card mb-4">
+                                        <div class="card-body">
+                                            <!-- Fecha de la cita -->
+                                            <div class="form-group">
+                                                <label for="fechaCita_<?php echo $cita['idCita']; ?>">Fecha de la Cita</label>
+                                                <input type="text" class="form-control" id="fechaCita_<?php echo $cita['idCita']; ?>" value="<?php echo $cita['fechaCita']; ?>" >
+                                            </div>
+                                            <!-- Motivo de la cita -->
+                                            <div class="form-group">
+                                                <label for="motivo_<?php echo $cita['idCita']; ?>">Motivo de la Cita</label>
+                                                <textarea class="form-control" id="motivo_<?php echo $cita['idCita']; ?>"><?php echo $cita['motivoCita']; ?></textarea>
+                                            </div>
                                         </div>
-                                        <!-- Motivo de la cita -->
-                                        <div class="form-group">
-                                            <label for="motivo">Motivo de la Cita</label>
-                                            <textarea class="form-control" id="motivo" 
-                                                ><?php echo $cita['motivoCita']; ?></textarea>
-                                        </div>
+                                        <input type="checkbox" class="citaCheckbox" name="citaSeleccionada[]" value="<?php echo $cita['idCita']; ?>"> Seleccionar
+                                        <input type="hidden" name="idCita[]" value="<?php echo $cita['idCita']; ?>">
                                     </div>
-                                    <div class="card-footer"><input type="checkbox"> Seleccionar</div>
-
                                 </div>
+                            <?php endforeach; ?>
+                            <div class="card-footer">
+                                <br>
+                                <button class="btn btn-success" type="submit" name="modificarCita" id="modificarCita"><i class="glyphicon glyphicon-ok-sign"></i> Modificar</button>
+                                <button class="btn btn-danger" type="submit" name="borrarCita" id="borrarCita" disabled><i class="glyphicon glyphicon-repeat"></i> Borrar</button>
                             </div>
-                        <?php endforeach; ?>
-                        <div class="card-footer">
-                            <br>
-                            <button class="btn btn-success" type="submit" name="submitCita" id="submitCita"><i
-                                    class="glyphicon glyphicon-ok-sign"></i> Modificar</button>
-                            <button class="btn btn-danger" type="reset" name="resetCita" id="resetCita"><i
-                                    class="glyphicon glyphicon-repeat"></i> Borrar</button>
-                        </div>
+                        </form>
                     </div>
                 </div> 
             </div>
@@ -176,6 +182,9 @@ $citasPendientes = obtenerCitas($conn);
      <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const submitCita = document.getElementById('submitCita');
+                const modificarCita = document.getElementById('modificarCita');
+                const borrarCita = document.getElementById('borrarCita');
+
                 const toastLiveExample = document.getElementById('liveToast');
                 // Función para mostrar el toast
                 function mostrarToast() {
@@ -185,6 +194,14 @@ $citasPendientes = obtenerCitas($conn);
 
                 if(submitCita){
                     submitCita.addEventListener('click', mostrarToast);
+
+                }
+                if(modificarCita){
+                    modificarCita.addEventListener('click', mostrarToast);
+
+                }
+                if(borrarCita){
+                    borrarCita.addEventListener('click', mostrarToast);
 
                 }
             });
@@ -197,5 +214,24 @@ $citasPendientes = obtenerCitas($conn);
     <!-- Enlaces a JavaScript -->
     <script src="../js/newScript.js"></script>
     <script src="../js/ajax.js"></script>
+    <!-- Script para habilitar el botón de borrar cita, si al menos hay un chackbox seleccionado -->
+    <script>
+        $(document).ready(function() {
+            // Deshabilitar el botón de Borrar inicialmente
+            $('#borrarCita').prop('disabled', true);
+
+            // Agregar controlador de eventos a los checkboxes
+            $('.citaCheckbox').change(function() {
+                // Verificar si al menos uno de los checkboxes está seleccionado
+                if ($('.citaCheckbox:checked').length > 0) {
+                    // Habilitar el botón de Borrar si hay al menos uno seleccionado
+                    $('#borrarCita').prop('disabled', false);
+                } else {
+                    // Deshabilitar el botón de Borrar si no hay ningún checkbox seleccionado
+                    $('#borrarCita').prop('disabled', true);
+                }
+            });
+        });
+    </script>
 </body>
 </html>

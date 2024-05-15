@@ -1,55 +1,10 @@
-<!-- <?php
-// Conexión a la base de datos
-//Include para realizar la conexión con la base de datos
-include './database.php';
-//Include para recuperar los datos para la conexión a la BD
-include '../.env.php';
-// Datos para realizar la conexión a la BD
-$hostname = $SERVIDOR;
-$username = $USUARIO;
-$password = $PASSWORD;
-$dbname = $BD;
-// Conectar a la base de datos
-$conn = conectarDB($hostname, $username, $dbname);
-
-// Verificar si se ha enviado una imagen
-if (isset($_FILES['imagen'])) {
-    // Obtener los datos de la imagen
-    $nombre_imagen = $_FILES['imagen']['name'];
-    $tipo_imagen = $_FILES['imagen']['type'];
-
-    // Leer el contenido binario de la imagen
-    $imagen_binaria = file_get_contents($_FILES['imagen']['tmp_name']);
-    
-    // Insertar la imagen en la base de datos
-    $sql = "INSERT INTO noticias (idUser,imagen) VALUES (?,?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ib", $clave_externa, $imagen_binaria); // Añadir en la clave externa, que se almacene según el usuario que esté registrado
-    $stmt->execute();
-
-    // Verificar si se insertó correctamente
-    if ($stmt->affected_rows > 0) {
-        echo "La imagen se ha subido correctamente a la base de datos.";
-    } else {
-        echo "Error al subir la imagen.";
-    }
-    // Cerrar la declaración y la conexión
-    $stmt->close();
-    $conn->close();
-}
-?> -->
-
 <?php
 // Conexión a la base de datos
 include './database.php';
-include '../.env.php';
-
-$hostname = $SERVIDOR;
-$username = $USUARIO;
-$password = $PASSWORD;
-$dbname = $BD;
-
-$conn = conectarDB($hostname, $username, $dbname);
+// Require para conectarse a la BD
+require '../php/conexionDB.php';
+// Conectar a la base de datos
+$conn = conectarDB();
 
 // Verificar si se ha enviado una imagen
 if (isset($_FILES['imagen'])) {

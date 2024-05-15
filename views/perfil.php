@@ -167,9 +167,14 @@ $datosUser = obtenerDatos($conn);
                                     <label for="password">
                                         <h5>Contraseña</h5>
                                     </label>
-                                    <input type="password" class="form-control" name="password" id="password" value="<?php echo $datosUser['contraseña']; ?>"
-                                        placeholder="contraseña">
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" name="password" id="password" value="<?php echo $datosUser['contraseña']; ?>" placeholder="Contraseña">
+                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                            <i class="bi bi-eye-fill">Ver</i>
+                                        </button>
+                                    </div>
                                 </div>
+
                                 <div class="col-xs-12" style="margin-bottom : 15px;">
                                     <br>
                                     <button class="btn btn-success" type="submit" name="submitPerfil" id="submitPerfil"><i
@@ -224,6 +229,23 @@ $datosUser = obtenerDatos($conn);
     <!-- Enlaces a JavaScript -->
     <script src="../js/newScript.js"></script>
     <script src="../js/ajax.js"></script>
+    <!-- Script para que el usuario pueda ver la contraseña si lo desea -->
+    <script>
+        $(document).ready(function() {
+            $('#togglePassword').on('click', function() {
+                const passwordField = $('#password');
+                const passwordFieldType = passwordField.attr('type');
+                if (passwordFieldType === 'password') {
+                    passwordField.attr('type', 'text');
+                    $('#togglePassword').html('<i class="bi bi-eye-slash-fill">Ocultar</i>');
+                } else {
+                    passwordField.attr('type', 'password');
+                    $('#togglePassword').html('<i class="bi bi-eye-fill">Ver</i>');
+                }
+            });
+        });
+
+    </script>
 
 </body>
 </html>

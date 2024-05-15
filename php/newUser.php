@@ -1,15 +1,10 @@
 <?php
 // require para realizar la conexión con la base de datos
 require './database.php';
-// require para recuperar los datos para la conexión a la BD
-require '../.env.php';
-// Datos para realizar la conexión a la BD
-$hostname = $SERVIDOR;
-$username = $USUARIO;
-$password = $PASSWORD;
-$dbname = $BD;
+// Require para conectarse a la BD
+require '../php/conexionDB.php';
 // Conectar a la base de datos
-$conn = conectarDB($hostname, $username, $dbname);
+$conn = conectarDB();
 
  //Parte del registro de un nuevo usuario en la base de datos (users_login)
 if(isset($_POST['nombre']))

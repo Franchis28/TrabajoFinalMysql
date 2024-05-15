@@ -29,7 +29,7 @@ if(isset($_POST['fecha_cita']) && isset($_POST['motivo'])){
         // Cuando se ejecute la consulta de forma exitosa, se mandará un mensaje por json al cliente ajax para que muestre al usuario por el toast la info
         if(mysqli_query($conn, $sql_citas)){
             // Indicamos que la consulta ha sido realizada correctamente
-            $response = array("success" => true, "message" => "La cita a sido creada correctamente", "redirect" => "../views/citaciones.php");
+            $response = array("success" => true, "message" => "La cita a sido creada correctamente");
             echo json_encode($response);
         }else{
             // Indicamos que la consulta no ha sido realizada correctamente
