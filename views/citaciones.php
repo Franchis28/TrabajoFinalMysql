@@ -46,10 +46,7 @@ usort($citasPendientes, 'compararFechas');
                         <a class="nav-link" href="../index.php">Portada</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link" href="./views/noticias.php">Noticias</a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link" href="./register.php">Registro</a>
+                        <a class="nav-link" href="./noticias.php">Noticias</a>
                         </li>
                         <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="./views/citaciones.php">Citas</a>
@@ -58,9 +55,9 @@ usort($citasPendientes, 'compararFechas');
                         <a class="nav-link" href="./perfil.php">Perfil</a>
                         </li>
                         <li class="nav-item">
-                        <a class="nav-link">Cerrar Sesión</a>
+                            <a id="cerrarSesionLink" class="nav-link" style="cursor: pointer;">Cerrar Sesión</a>
                         </li>
-                        </ul>
+                    </ul>
                     <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
                     <div class=" px-2">
                     <?php
@@ -91,8 +88,26 @@ usort($citasPendientes, 'compararFechas');
                 </div>
             </div>
         </div>
+        <!-- Diseño del toast para mostrar los mensajes y mostrar los botones de diálogo con el usuario --> 
+        <!-- Comprobar al final del documento, que la configuración del script para lanzar el toast esté correcta -->
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div id="liveToastSesion" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <strong class="me-auto">FranPage</strong>
+                    <small>Ahora</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    <div id="mensajePerfil">Vas a cerrar la sesión, ¿quieres continuar?</div><br>
+                    <!-- Botones de confirmación y cancelación -->
+                    <button id="confirmButton" class="btn btn-success me-2">Confirmar</button>
+                    <button id="cancelButton" class="btn btn-danger">Cancelar</button>
+                </div>
+            </div>
+        </div>
         <div style="margin-top: 8px; margin-left: 30px;"><h3>Citaciones</h3></div>
         <div style="margin-top: 12px; margin-left: 60px;"><h4>Crear Nueva Cita</h4></div>
+        <!-- Formulario para crear nuevas citas -->
         <div class="container" style="margin-top: 18px;">
             <div class="row justify-content-center">
                 <div class="col-md-12" style="margin-top: 15px;">
@@ -127,6 +142,7 @@ usort($citasPendientes, 'compararFechas');
             </div>
         </div>
         <div style=" margin-left: 60px;"><h4>Citas Pendientes</h4></div>
+        <!-- Formulario para mostrar citas, modificarlas y borrarlas -->
         <div class="container border border-grey rounded" style="margin-bottom: 165px;">
             <div class="row justify-content-center">
                 <div class="container text-center my-4">
@@ -170,42 +186,76 @@ usort($citasPendientes, 'compararFechas');
         <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
         <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
         </a>
-
         <ul class="nav col-md-4 justify-content-end">
-            <li class="nav-item"><a href="../index.php" class="nav-link px-2 text-dark">Portada</a></li>
-            <li class="nav-item"><a href="./noticias.php" class="nav-link px-2 text-dark">Noticias</a></li>
-            <li class="nav-item"><a href="./register.php" class="nav-link px-2 text-dark">Registro</a></li>
-            <li class="nav-item"><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="nav-link px-2 text-dark">Inicio de Seción</a></li>
+            <li class="nav-item">
+            <a class="nav-link px-2 text-dark" href="../index.php">Portada</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link px-2 text-dark" href="./noticias.php">Noticias</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link px-2 text-dark" href="./views/citaciones.php">Citas</a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link px-2 text-dark" href="./perfil.php">Perfil</a>
+            </li>
+            <li class="nav-item">
+                <a id="cerrarSesionLink1" class="nav-link px-2 text-dark" style="cursor: pointer;">Cerrar Sesión</a>
+            </li>
         </ul>
     </footer>
      <!-- Script con la Función para mostrar el toast con los mensajes de citaciones enviados desde la función Ajax que recoge los valores desde el formulario de citas -->
      <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const submitCita = document.getElementById('submitCita');
-                const modificarCita = document.getElementById('modificarCita');
-                const borrarCita = document.getElementById('borrarCita');
+        document.addEventListener('DOMContentLoaded', function() {
+            const submitCita = document.getElementById('submitCita');
+            const modificarCita = document.getElementById('modificarCita');
+            const borrarCita = document.getElementById('borrarCita');
 
-                const toastLiveExample = document.getElementById('liveToast');
-                // Función para mostrar el toast
-                function mostrarToast() {
-                    const toast = new bootstrap.Toast(toastLiveExample);
-                    toast.show();
-                }
+            const toastLiveExample = document.getElementById('liveToast');
+            // Función para mostrar el toast
+            function mostrarToast() {
+                const toast = new bootstrap.Toast(toastLiveExample);
+                toast.show();
+            }
 
-                if(submitCita){
-                    submitCita.addEventListener('click', mostrarToast);
+            if(submitCita){
+                submitCita.addEventListener('click', mostrarToast);
 
-                }
-                if(modificarCita){
-                    modificarCita.addEventListener('click', mostrarToast);
+            }
+            if(modificarCita){
+                modificarCita.addEventListener('click', mostrarToast);
 
-                }
-                if(borrarCita){
-                    borrarCita.addEventListener('click', mostrarToast);
+            }
+            if(borrarCita){
+                borrarCita.addEventListener('click', mostrarToast);
 
-                }
-            });
-        </script>
+            }
+        });
+    </script>
+    <!-- Script pora mostrar el toast de cierre de sesión -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toastLiveExample = document.getElementById('liveToastSesion');
+            const toast = new bootstrap.Toast(toastLiveExample);
+
+            // Función para mostrar el toast
+            function mostrarToast() {
+                toast.show();
+            }
+            // Función para ocultar el toast
+            function ocultarToast() {
+                toast.hide();
+            }
+
+            // Evento para mostrar el toast cuando se hace clic en el enlace "Cerrar Sesión"
+            document.getElementById('cerrarSesionLink').addEventListener('click', mostrarToast);
+            // Evento para mostrar el toast cuando se hace clic en el enlace "Cerrar Sesión"
+            document.getElementById('cerrarSesionLink1').addEventListener('click', mostrarToast);
+            // Evento para ocultar el toast si pulsa cancelar 
+            document.getElementById('cancelButton').addEventListener('click', ocultarToast);
+           
+        });
+    </script>
     <!-- Enlaces con librerias externas -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

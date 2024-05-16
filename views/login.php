@@ -21,7 +21,24 @@
                     </div>
                     <div class="modal-footer">
                         <input type="submit" class="container btn btn-primary" id="submitLog" name="submit" value="Iniciar sesión">
-                        <p class="container text-center">Si aún no tienes cuenta,<a href="../views/register.php" class="nav-link text-primary">haz click aquí</a></p>
+                        <p class="container text-center">Si aún no tienes cuenta,<a href="#" id="registerLink" class="nav-link text-primary">haz click aquí</a></p>
+                        <!-- Comprobamos si el login se está lanzando desde la página index, par ajustar la url -->
+                        <script>
+                            // Obtener la URL de la página actual
+                            var currentPageURL = window.location.href;
+
+                            // Obtener el enlace de registro por su ID
+                            var registerLink = document.getElementById('registerLink');
+
+                            // Modificar la URL del enlace de registro en función de la página actual
+                            if (currentPageURL.includes('index.php')) {
+                                // Si la página actual es index.php, utilizar una URL específica
+                                registerLink.href = './views/register.php';
+                            } else {
+                                // Si no es index.php, utilizar otra URL predeterminada
+                                registerLink.href = '../views/register.php';
+                            }
+                        </script>
                     </div>
                 </form>
             </div>
@@ -30,6 +47,7 @@
 </div> 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Script para mantener el foco en el campo de usuario cuando se abra la modal -->
 <script>
     $(document).ready(function() {
         $("#exampleModal").on("shown.bs.modal", function() {

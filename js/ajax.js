@@ -2,6 +2,16 @@
 $(document).ready(function() {
     $('#login').submit(function(event) {
         event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
+
+         // Definir la ruta al archivo PHP en función de la ubicación de la página actual
+         var phpFile;
+         var currentPage = window.location.pathname.split('/').pop();
+         if (currentPage === 'index.php') {
+             phpFile = './php/comprobarLogin.php';
+         } else if ((currentPage === 'noticias.php') || (currentPage === 'register.php')) {
+             phpFile = '../php/comprobarLogin.php';
+         }
+
         // Obtener los datos del formulario
         var formData = {
             usuario: $('#userLogin').val(),
@@ -10,7 +20,7 @@ $(document).ready(function() {
         // Enviar los datos al servidor utilizando AJAX
         $.ajax({
             type: 'POST',
-            url: '../php/comprobarLogin.php', // Ruta al archivo PHP que maneja la comprobación del inicio de sesión
+            url: phpFile, // Ruta al archivo PHP que maneja la comprobación del inicio de sesión
             data: formData,
             dataType: 'json',
             success: function(response) {
@@ -105,6 +115,10 @@ $(document).ready(function() {
                 if (response.success) {  
                     // Si el inicio de sesión es exitoso, mostrar un mensaje de éxito
                     $('#mensajePerfil').text(response.message).css('color', 'green');
+                    // Esperar 3 segundos antes de recargar la página
+                    // setTimeout(function() {
+                    //     window.location.reload(); // Recargar la página
+                    // }, 3000); // Tiempo de espera en milisegundos (2 segundos en este caso)
                 } else {
                     // Si el inicio de sesión falla, mostrar un mensaje de error
                     $('#mensajePerfil').text(response.message).css('color', 'red');
@@ -219,11 +233,50 @@ $(document).ready(function() {
                     // Esperar 3 segundos antes de recargar la página
                     setTimeout(function() {
                         window.location.reload(); // Recargar la página
-                    }, 3000); // Tiempo de espera en milisegundos (2 segundos en este caso)
+                    }, 3000); // Tiempo de espera en milisegundos (3 segundos en este caso)
                     
                 } else {
                     // Si la eliminación de citas falla, mostrar un mensaje de error
                     $('#mensajeCitas').text(response.message).css('color', 'red');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error en la solicitud AJAX:', xhr.responseText);
+            }
+        });
+    });
+});
+// Ajax para cierre de sesión
+$(document).ready(function() {
+    $('#confirmButton').click(function(event) {
+        event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
+        
+        // Definir la ruta al archivo PHP en función de la ubicación de la página actual
+        var phpFile;
+        var currentPage = window.location.pathname.split('/').pop();
+        if (currentPage === 'index.php') {
+            phpFile = './php/cerrarSesion.php';
+        } else if ((currentPage === 'noticias.php') || (currentPage === 'citaciones.php') || (currentPage === 'perfil.php')) {
+            phpFile = '../php/cerrarSesion.php';
+        }
+        // Enviar los datos al servidor utilizando AJAX
+        $.ajax({
+            type: 'POST',
+            url: phpFile, // Ruta al archivo PHP que maneja el cierre de sesión
+            dataType: 'json',
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                // Manejar la respuesta del servidor
+                console.log('Datos enviados al servidor');
+                if (response.success) { 
+                    var currentPage = window.location.pathname.split('/').pop();
+                    if (currentPage === 'index.php') {
+                        // Si el cierre de sesión es exitoso, redirigimos a la portada
+                        window.location.href = './index.php';
+                    } else if ((currentPage === 'noticias.php') || (currentPage === 'citaciones.php') || (currentPage === 'perfil.php')) {
+                        // Si el cierre de sesión es exitoso, redirigimos a la portada
+                        window.location.href = '../index.php';
+                    }
                 }
             },
             error: function(xhr, status, error) {
