@@ -14,16 +14,16 @@ function obtenerNoticias($conn) {
     }
     return $noticias;
 }
-// Consulta SQL para obtener los datos de un usuario ya registrado de la tabla users_datay mostrarlos en la página de perfil
+// Consulta SQL para obtener los datos de un usuario ya registrado de la tabla users_data y mostrarlos en la página de perfil
 function obtenerDatos($conn) {
     // Verificar si hay algún usuario logeado
-    // if(!isset($_SESSION['usario'])){
-    //     return array();
-    // }
+    if(!isset($_SESSION['usuarioInt'])){
+        return array();
+    }
     // Si existe un usuario logeado, pasamos a realizar la consulta de los datos
     // Preparamos la consulta SQL
     $user_id = $_SESSION['usuarioInt'];
-    $sql = "SELECT ul.usuario, ul.contraseña, ud. * FROM users_login ul
+    $sql = "SELECT ul. *, ud. * FROM users_login ul
     INNER JOIN users_data ud on ud.idUser = ul.idUser
     WHERE ul.idUser = $user_id";
 
@@ -41,6 +41,10 @@ function obtenerDatos($conn) {
 }
 // Consulta SQL para obtener las citas creadas por cada usuiario 
 function obtenerCitas($conn){
+    // Verificar si hay algún usuario logeado
+    if(!isset($_SESSION['usario'])){
+        return array();
+    }
     // Recuperamos el usuario que esté logeado en el momento
     $user_id = $_SESSION['usuarioInt'];
     $sql = "SELECT citas.* FROM citas INNER JOIN users_data ON citas.idUser = users_data.idUser

@@ -1,36 +1,10 @@
 <?php
 //Include para realizar la conexión con la base de datos
 require '../php/database.php';
-// Include para la modal de inicio de sesion (login)
-include '../views/login.php';
 // Require para conectarse a la BD
 require '../php/conexionDB.php';
 // Conectar a la base de datos
 $conn = conectarDB();
-// Manejar la carga de la imagen
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Verificar si se ha enviado una imagen
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-        // Leer la imagen en bytes
-        $imagen = file_get_contents($_FILES['imagen']['tmp_name']);
-        // Escapar los caracteres especiales
-        $imagen = $conn->real_escape_string($imagen);
-        // Insertar la imagen en la base de datos junto con otros detalles de la noticia
-        $titulo = $_POST['titulo'];
-        $texto = $_POST['texto'];
-        $fePublic = $_POST['fePublic'];
-        $query = "INSERT INTO noticias (titulo, imagen, texto, fecha, idUser) VALUES ('$titulo', '$imagen', '$texto', '$fePublic', 1)";
-        if ($conn->query($query) === TRUE) {
-            echo "La noticia se ha agregado correctamente.";
-        } else {
-            echo "Error al agregar la noticia: " . $conn->error;
-        }
-    } else {
-        echo "Error al cargar la imagen.";
-    }
-}
-// Obtener las noticias
-$noticias = obtenerNoticias($conn);
 // Obtener datos del usuario que se está logeando para saber su rol
 $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
 ?>
@@ -39,12 +13,12 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Noticias</title>
+    <title>Usuarios</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     
 </head>
 <body>
-    <header style="margin-bottom: 60px;">
+    <header>
         <nav class="navbar navbar-expand-lg bg-light fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="../index.php">FranPage</a>
@@ -55,10 +29,10 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                     <!-- Menú de navegación para visitantes -->
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link "  href="../index.php">Portada</a>
+                            <a class="nav-link " href="../index.php">Portada</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="./noticias.php">Noticias</a>
+                            <a class="nav-link" href="./noticias.php">Noticias</a>
                         </li>
                         <?php if(empty($_SESSION['usuarioStr'])):?>
                             <!-- Menú para visitantes no logeados -->
@@ -83,7 +57,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                         <?php elseif ($data && $data['rol'] === 'admin'): ?>
                             <!-- Menú para administradores logeados -->
                             <li class="nav-item">
-                            <a class="nav-link" href="./usuarios-administracion.php">Usuarios</a>
+                            <a class="nav-link active" aria-current="page" href="./usuarios-administracion.php">Usuarios</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="./citas-administracion.php">Citas</a>
@@ -143,32 +117,13 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                 </div>
             </div>
         </div>
-        <section>
-            <div class="container my-4">
-                <h3>Las últimas Noticias</h3>
-                <!-- Mostrar las noticias -->
-                <div class="container text-center my-4">
-                    <div class="row gap-3">
-                        <?php foreach ($noticias as $noticia): ?>
-                        <div class="col">
-                            <div class="card" style="width: 18rem;">
-                                <!-- Mostrar la imagen de la noticia -->
-                                <img src="data:image/jpeg;base64,<?php echo base64_encode($noticia['imagen']); ?>" class="card-img-top" alt="Imagen Noticia">
-                                <div class="card-body">
-                                    <h5 class="card-title"><?php echo $noticia['titulo']; ?></h5>
-                                    <p class="card-text"><?php echo $noticia['nombre_autor']; ?>/<?php echo $noticia['fecha']; ?></p>
-                                    <p class="card-text"><?php echo $noticia['texto']; ?></p>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endforeach; ?>
-                    </div>
-                </div> 
-            </div>
-        </section>
     </main>
     <footer class="d-flex flex-wrap justify-content-between align-items-center py-3  border-top bg-light ">
         <p class="col-md-4 mb-0 ">© 2024 FranPage</p>
+        
+        <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+        </a>
         <!-- Menú de navegación para visitantes -->
         <ul class="nav col-md-4 justify-content-end d-flex">
             <li class="nav-item">

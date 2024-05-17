@@ -1,4 +1,3 @@
-<!-- Código PHP para conectar con la base de datos y hacer modificaciones en ella -->
 <?php
 //require para realizar la conexión con la base de datos
 require './php/database.php';
@@ -10,6 +9,8 @@ require './php/conexionDB.php';
 $conn = conectarIndexDB();
 // Obtener las noticias
 $noticias = obtenerNoticias($conn);
+// Obtener datos del usuario que se está logeando para saber su rol
+$data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -20,8 +21,8 @@ $noticias = obtenerNoticias($conn);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg bg-light">
+    <header style="margin-bottom: 60px;">
+        <nav class="navbar navbar-expand-lg bg-light fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="index.php">FranPage</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,27 +38,39 @@ $noticias = obtenerNoticias($conn);
                             <a class="nav-link" href="./views/noticias.php">Noticias</a>
                         </li>
                         <?php if(empty($_SESSION['usuarioStr'])):?>
-                        <!-- Menú para visitantes no logeados -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="./views/register.php">Registro</a>
-                        </li>
-                        <!-- Modal para inicio de sesión -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
-                        </li>
-                        <?php
-                        else:
-                        ?>
-                        <!-- Menú de navegación para usuarios logeados -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="./views/citaciones.php">Citas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="./views/perfil.php">Perfil</a>
-                        </li>
-                        <li class="nav-item">
-                            <a id="cerrarSesionLink" class="nav-link" style="cursor: pointer;">Cerrar Sesión</a>
-                        </li>
+                            <!-- Menú para visitantes no logeados -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="./views/register.php">Registro</a>
+                            </li>
+                            <!-- Modal para inicio de sesión -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
+                            </li>
+                        <?php elseif ($data && $data['rol'] === 'user'): ?>
+                            <!-- Menú de navegación para usuarios logeados -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="./views/citaciones.php">Citas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./views/perfil.php">Perfil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="cerrarSesionLink" class="nav-link" style="cursor: pointer;">Cerrar Sesión</a>
+                            </li>
+                        <?php elseif ($data && $data['rol'] === 'admin'): ?>
+                            <!-- Menú para administradores logeados -->
+                            <li class="nav-item">
+                            <a class="nav-link" href="./views/usuarios-administracion.php">Usuarios</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./views/citas-administracion.php">Citas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./views/noticias-administracion.php">Noticias</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="cerrarSesionLink" class="nav-link" style="cursor: pointer;">Cerrar Sesión</a>
+                            </li>
                         <?php endif; ?>
                     </ul>
                     <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
@@ -110,8 +123,8 @@ $noticias = obtenerNoticias($conn);
         </div>
         <!-- En este primer section, vamos a poner  lo que se puede hacer en la web -->
         <section>
-        <div class="container my-4">
-            <h3>¿Qué es FranPage?</h3>
+        <div class="container">
+            <h3>¿Que es FranPage</h3>
             <p>Bienvenido a FranPage, tu destino definitivo para mantenerte al tanto de las últimas noticias, pero con un giro único: ¡tú eres el creador de contenido!<br><br>
                 Imagina un espacio donde la información fluye desde la comunidad misma. En FranPage, no solo consumes noticias, sino que también las produces. ¿Cómo funciona? Es simple: los usuarios registrados tienen el privilegio de contribuir con sus propias historias, reportajes y eventos, convirtiéndose en periodistas de su propia comunidad.<br><br>
                 En resumen, FranPage es mucho más que una simple plataforma de noticias. Es una comunidad dinámica donde la participación y la colaboración son los pilares fundamentales. Únete a nosotros hoy y sé parte de una experiencia informativa como ninguna otra. FranPage: donde todos tienen una historia que contar.
@@ -144,42 +157,50 @@ $noticias = obtenerNoticias($conn);
             </div>
         </section>
     </main>
-    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top bg-light ">
+    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top bg-light">
         <p class="col-md-4 mb-0 ">© 2024 FranPage</p>
-        
-        <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-        </a>
         <!-- Menú de navegación para visitantes -->
-        <ul class="nav col-md-4 justify-content-end">
+        <ul class="nav col-md-4 justify-content-end d-flex">
             <li class="nav-item">
-                <a class="nav-link px-2 text-dark" aria-current="page" href="index.php">Portada</a>
+                <a class="nav-link px-2 text-dark" href="index.php">Portada</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link px-2 text-dark" href="./views/noticias.php">Noticias</a>
             </li>
             <?php if(empty($_SESSION['usuarioStr'])):?>
-            <!-- Menú para visitantes no logeados -->
-            <li class="nav-item">
-                <a class="nav-link px-2 text-dark" href="./views/register.php">Registro</a>
-            </li>
-            <!-- Modal para inicio de sesión -->
-            <li class="nav-item">
-                <a class="nav-link px-2 text-dark" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
-            </li>
-            <?php
-            else:
-            ?>
-            <!-- Menú de navegación para usuarios logeados -->
-            <li class="nav-item">
-                <a class="nav-link px-2 text-dark" href="./views/citaciones.php">Citas</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link px-2 text-dark" href="./views/perfil.php">Perfil</a>
-            </li>
-            <li class="nav-item">
-                <a id="cerrarSesionLink1" class="nav-link px-2 text-dark" style="cursor: pointer;">Cerrar Sesión</a>
-            </li>
+                <!-- Menú para visitantes no logeados -->
+                <li class="nav-item">
+                    <a class="nav-link px-2 text-dark" href="./views/register.php">Registro</a>
+                </li>
+                <!-- Modal para inicio de sesión -->
+                <li class="nav-item">
+                    <a class="nav-link px-2 text-dark" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
+                </li>
+            <?php elseif ($data && $data['rol'] === 'user'): ?>
+                <!-- Menú de navegación para usuarios logeados -->
+                <li class="nav-item">
+                    <a class="nav-link px-2 text-dark" href="./views/citaciones.php">Citas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-2 text-dark" href="./views/perfil.php">Perfil</a>
+                </li>
+                <li class="nav-item">
+                    <a id="cerrarSesionLink1" class="nav-link px-2 text-dark" style="cursor: pointer;">Cerrar Sesión</a>
+                </li>
+            <?php elseif ($data && $data['rol'] === 'admin'): ?>
+                <!-- Menú para administradores logeados -->
+                <li class="nav-item">
+                <a class="nav-link px-2 text-dark" href="./views/usuarios-administracion.php">Usuarios</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-2 text-dark" href="./views/citas-administracion.php">Citas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-2 text-dark" href="./views/noticias-administracion.php">Noticias</a>
+                </li>
+                <li class="nav-item">
+                    <a id="cerrarSesionLink1" class="nav-link px-2 text-dark" style="cursor: pointer;">Cerrar Sesión</a>
+                </li>
             <?php endif; ?>
         </ul>
     </footer>

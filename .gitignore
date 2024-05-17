@@ -1,2 +1,2 @@
 .env.php
-../php/debug.php
+./php/debug.php
