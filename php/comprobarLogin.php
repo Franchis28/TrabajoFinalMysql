@@ -12,31 +12,15 @@ if (!empty($_POST['usuario']) && !empty($_POST['contrasena'])) {
     // Contraseña recuperada desde ajax
     $contrasena_original = $_POST['contrasena']; // Evita la inyección SQL
     // Consulta datos en users_login
-    $sql = "SELECT ul. * FROM users_login ul WHERE Usuario = '$usuario'";
+    $sql = "SELECT ul.* FROM users_login ul WHERE Usuario = '$usuario'";
     $result = mysqli_query($conn, $sql);
     // Comprobación de registros existentes en la BD
     if((mysqli_num_rows($result) == 1)){
         $row = mysqli_fetch_assoc($result);
         $hash_contrasena = $row['contraseña'];
         $_SESSION['usuarioInt'] = $row['idUser'];
-        // Simulación usuario conectado, borrar cuando funcione el login
-        $_SESSION['usuarioStr'] = $usuario;
 
         if(($hash_contrasena != null) && ($contrasena_original != null)){
-            //$contrasena_str = strval($contrasena_original) ;
-            //$hash_contrasena_str = strval($hash_contrasena);
-            
-            // Abre o crea un archivo de registro
-            $file = fopen('debug.log', 'a', true);
-
-            // Escribe el mensaje de debug
-            fwrite($file, "Contraseña hasheada: " . $hash_contrasena);
-            fwrite($file, "Contraseña original: " . $contrasena_original . PHP_EOL);
-            fwrite($file, "Comparación contraseñas " . password_verify($contrasena_original, $hash_contrasena). PHP_EOL);
-            
-
-            // Cierra el archivo
-            fclose($file);
             // Haremos uso de la función password_verify para comparar la contraseña proporcionada por el usuario y la que se ha recogido hasheada de la BD
             if(password_verify($contrasena_original, $hash_contrasena)) {
                 // Contraseña correcta, iniciar sesión
@@ -49,7 +33,6 @@ if (!empty($_POST['usuario']) && !empty($_POST['contrasena'])) {
                 // Si el usuario o la contraseña son incorrectos, devuelve una respuesta JSON con error
                 $response = array("success" => false, "message" => "Usuario o contraseña incorrectos");
                 echo json_encode($response);
-            
             }
         }else{
             // Si el usuario o la contraseña son incorrectos, devuelve una respuesta JSON con error

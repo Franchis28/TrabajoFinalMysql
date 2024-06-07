@@ -63,7 +63,7 @@ $datosUser = obtenerDatos($conn);
     <main>
         <!-- Diseño del toast para mostrar los mensajes --> 
         <!-- Comprobar al final del documento, que la configuración del script para lanzar el toast esté correcta -->
-        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div class="toast-container position-fixed bottom-0 end-0 p-3" style="transform: translateY(-60px);">
             <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                 <strong class="me-auto">FranPage</strong>
@@ -189,9 +189,9 @@ $datosUser = obtenerDatos($conn);
                                         </button>
                                     </div>
                                 </div>
-
                                 <div class="col-xs-12" style="margin-bottom : 15px;">
                                     <br>
+                                    <!-- Comunicación con ajax para la modificación de los datos del usuario -->
                                     <button class="btn btn-success" type="submit" name="submitPerfil" id="submitPerfil"><i
                                             class="glyphicon glyphicon-ok-sign"></i> Guardar</button>
                                     <button class="btn btn-danger" type="reset" name="resetPerfil" id="resetPerfil"><i

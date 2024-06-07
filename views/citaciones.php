@@ -76,7 +76,7 @@ usort($citasPendientes, 'compararFechas');
     <main>
         <!-- Diseño del toast para mostrar los mensajes --> 
         <!-- Comprobar al final del documento, que la configuración del script para lanzar el toast esté correcta -->
-        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div class="toast-container position-fixed bottom-0  end-0 p-3" style="transform: translateY(-60px);">
             <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                 <strong class="me-auto">FranPage</strong>

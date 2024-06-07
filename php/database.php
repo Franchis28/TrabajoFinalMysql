@@ -42,7 +42,7 @@ function obtenerDatos($conn) {
 // Consulta SQL para obtener las citas creadas por cada usuiario 
 function obtenerCitas($conn){
     // Verificar si hay algún usuario logeado
-    if(!isset($_SESSION['usario'])){
+    if(!isset($_SESSION['usuarioInt'])){
         return array();
     }
     // Recuperamos el usuario que esté logeado en el momento
@@ -58,4 +58,22 @@ function obtenerCitas($conn){
     }
     
     return $citas;
+}
+//Consulta SQL para obtener los usuarios que están registrados en la BD
+function obtenerUsuarios($conn){
+    // Preparamos la consulta SQL
+    $sql = "SELECT ul. *, ud. * FROM users_login ul
+    INNER JOIN users_data ud ON ud.idUser = ul.idUser";
+    // Ejecutamos la consulta
+    $resultado = mysqli_query($conn, $sql);
+
+    // Verificación de si se obtuvieron los resultados en la consulta
+    $users = [];
+    if($resultado && mysqli_num_rows($resultado) > 0){
+        while($fila = mysqli_fetch_assoc($resultado)){
+            $users[] = $fila;
+        }
+    }
+    // Retornamos el array con los usuarios
+    return $users;
 }

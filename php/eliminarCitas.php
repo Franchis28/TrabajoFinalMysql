@@ -40,10 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Recuperar los nuevos valores de fechaCita y motivoCita
         $nuevaFechaCita = $fechaCitas[$i];
         $nuevoMotivoCita = $motivosCitas[$i];
-
-        // Aquí puedes realizar las acciones necesarias en tu base de datos
-        // Por ejemplo, podrías ejecutar una consulta SQL para actualizar los valores de fecha y motivo en la cita correspondiente
-        // Suponiendo que tienes una tabla llamada 'citas' con campos 'idCita', 'fechaCita' y 'motivoCita'
+        // Actualizamos la tabla llamada 'citas' con campos 'idCita', 'fechaCita' y 'motivoCita'
         $sql = "UPDATE citas SET fechaCita = '$nuevaFechaCita', motivoCita = '$nuevoMotivoCita' WHERE idCita = $idCita";
 
         // Ejecutar la consulta

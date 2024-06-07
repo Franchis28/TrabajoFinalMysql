@@ -7,8 +7,7 @@ require '../php/conexionDB.php';
 $conn = conectarDB();
 
  //Parte del registro de un nuevo usuario en la base de datos (users_login)
-if(isset($_POST['nombre']))
-{
+if(isset($_POST['nombre'])){
     // Validar Campos Formulario Registro Nuevo usuario
     // Empezamos recogiendo los datos a evaluar/comprobar del formulario
     // Se realiza esta función en sustitución al filtro FILTER_SANITIZE_STRING que está en desuso
@@ -46,27 +45,19 @@ if(isset($_POST['nombre']))
     }else{
         $terminosCondicionesOK = 0;
     }
-     // Abre o crea un archivo de registro
-     $file = fopen('debug.log', 'a');
-
-     // Escribe el mensaje de debug
-     fwrite($file, "Términos y Condiciones " . $terminosCondicionesOK . PHP_EOL);
-
-
-     // Cierra el archivo
-     fclose($file);
     // Encriptar la contrasena usando has PASSWORD_BCRYPT
     $opciones = [
         'cost' => 11,
     ];
     $contrasena_encriptada = password_hash($contrasena, PASSWORD_BCRYPT, $opciones)."\n";
+    // Eliminar los espacios en blanco y saltos de línea al principio y al final de la cadena
+    $contrasena_encriptada = trim($contrasena_encriptada);
     // Comprobación de que no hay ningún campo sin rellenar, antes de empezar a comprobar campo por campo, que todos están bien formateados
     if(!empty($nombre_filtrado) && !empty($apellidos_filtrados) && !empty($email) && !empty($telefono) && !empty($fenac) && !empty($usuario) && !empty($contrasena) && ($terminosCondicionesOK === 1)) {
         $comprobacion = 0;
         $error1 = 0;
         $error2 = 0;
         $error3 = 0;
-
         // Comprobación del email, que sea correcto
         if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
             $comprobacion = 1;

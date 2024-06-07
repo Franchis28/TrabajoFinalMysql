@@ -1,10 +1,10 @@
 <?php
 //Include para realizar la conexión con la base de datos
-require '../php/database.php';
+require_once '../php/database.php';
 // Include para la modal de inicio de sesion (login)
-include '../views/login.php';
+require_once '../views/login.php';
 // Require para conectarse a la BD
-require '../php/conexionDB.php';
+require_once '../php/conexionDB.php';
 // Conectar a la base de datos
 $conn = conectarDB();
 // Manejar la carga de la imagen
