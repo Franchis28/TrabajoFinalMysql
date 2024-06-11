@@ -36,7 +36,7 @@ $('#login').submit(function(event) {
                     } else if ((currentPage === 'noticias.php') || (currentPage === 'register.php')) {
                         window.location.href = '../index.php';
                     }
-                }, 3000); // 3000 milisegundos = 3 segundos
+                }, 1500); // 1500 milisegundos = 1,5 segundos
             } else {
                 // Si el inicio de sesión falla, mostrar un mensaje de error
                 $('#mensaje').text(response.message).css('color', 'red');
@@ -101,7 +101,7 @@ $('#perfilForm').submit(function(event) {
         fenac: $('#fenac').val(),
         direccion: $('#direccion').val(),
         sexo: $('#sexo').val(),
-        contrasena: $('#password').val(),
+        contrasena: $('#contrasena').val(),
     };//$(this).serialize();
     // Enviar los datos al servidor utilizando AJAX
     $.ajax({
@@ -283,41 +283,125 @@ $('#confirmButton').click(function(event) {
 // Ajax para comprobar el formulario de admin de usuarios para modificar los campos que se deseen
 $('#usersForm').submit(function(event) {
     event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
-    // Obtener los datos del formulario
-    var profileDataAdmin =  {
-        nombre : $('#nombre').val(),
-        apellidos: $('#apellidos').val(),
-        email: $('#email').val(),
-        telefono: $('#telefono').val(),
-        fenac: $('#fenac').val(),
-        direccion: $('#direccion').val(),
-        sexo: $('#sexo').val(),
-        contrasena: $('#password').val(),
-        rol: $('#rol').val(),
-        usuarioId : sessionStorage.getItem('usuarioId'),
-    };//$(this).serialize();
-    // Enviar los datos al servidor utilizando AJAX
-    $.ajax({
-        type: 'POST',
-        url: '../php/modificationDataAdmin.php', // Ruta al archivo PHP que maneja la modificación de los datos
-        data: profileDataAdmin,
-        dataType: 'json',
-        success: function(response) {
-            console.log('Respuesta del servidor:', response);
+    // Comprobación de si se ha pulsado alguno de los dos botones, para modificar los datos
+    $('#submitPerfil, #submitSavedata').on('click', function(){
+        // Obtener los datos del formulario
+        var profileDataAdmin =  {
+            nombre : $('#nombre').val(),
+            apellidos: $('#apellidos').val(),
+            email: $('#email').val(),
+            telefono: $('#telefono').val(),
+            fenac: $('#fenac').val(),
+            direccion: $('#direccion').val(),
+            sexo: $('#sexo').val(),
+            contrasena: $('#contrasena').val(),
+            rol: $('#rol').val(),
+            usuarioId : sessionStorage.getItem('usuarioId'),
+        };//$(this).serialize();
+        // Enviar los datos al servidor utilizando AJAX
+        $.ajax({
+            type: 'POST',
+            url: '../php/modificationDataAdmin.php', // Ruta al archivo PHP que maneja la modificación de los datos
+            data: profileDataAdmin,
+            dataType: 'json',
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
 
-            // Manejar la respuesta del servidor
-            console.log('Datos recibidos del servidor');
-            if (response.success) {  
-                // Si el inicio de sesión es exitoso, mostrar un mensaje de éxito
-                $('#mensajePerfil').text(response.message).css('color', 'green');
-            } else {
-                // Si el inicio de sesión falla, mostrar un mensaje de error
-                $('#mensajePerfil').text(response.message).css('color', 'red');
+                // Manejar la respuesta del servidor
+                console.log('Datos recibidos del servidor');
+                if (response.success) {  
+                    // Si el inicio de sesión es exitoso, mostrar un mensaje de éxito
+                    $('#mensajePerfil').text(response.message).css('color', 'green');
+                } else {
+                    // Si el inicio de sesión falla, mostrar un mensaje de error
+                    $('#mensajePerfil').text(response.message).css('color', 'red');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error en la solicitud AJAX:', xhr.responseText);
             }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error en la solicitud AJAX:', xhr.responseText);
-        }
+        });
+    });
+});
+// Ajax para eliminar un usuario desde la sección de administrador
+// Manejador de eventos para el botón "Eliminar Usuario"
+$('#deletePerfil').on('click', function() {
+    let usuarioId = sessionStorage.getItem('usuarioId');
+    console.log('Antes de la llamda ajax: ' + usuarioId);
+    if (usuarioId > 0) {
+        // Llamada AJAX para eliminar el usuario
+        console.log('Dentro de la llamda ajax: ' + usuarioId);
+        $.ajax({
+            type: 'POST',
+            url: '../php/eliminarUser.php',
+            data: { idUserDelete: usuarioId },
+            dataType: 'json',
+            success: function(response) {
+                // Maneja la respuesta del servidor
+                if (response.success) {
+                    console.log('Dentro de la respuesta ajax, de forma satisfactoria: ' + usuarioId);
+                    $('#mensajePerfil').text(response.message).css('color', 'green');
+                    // Recargar la página o actualizar la lista de usuarios
+                    // Esperar 2 segundos antes de recargar la página
+                    setTimeout(function() {
+                        window.location.reload(); // Recargar la página
+                    }, 2000); // Tiempo de espera en milisegundos (2 segundos en este caso)
+                } else {
+                    $('#mensajePerfil').text(response.message).css('color', 'red');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error en la llamada AJAX:', xhr);
+            }
+        });
+    }else {
+    $('#mensajePerfil').text("Seleccione un usuario válido.").css('color', 'red');
+}
+});
+// Ajax para crear un nuevo usuario desde la sección de administrador
+$('#usersForm').submit(function(event) {
+    event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
+    $('#newUser').on('click', function(){
+        // Obtener los datos del formulario
+        var registerData = {
+            nombre : $('#nombre').val(),
+            apellidos: $('#apellidos').val(),
+            email: $('#email').val(),
+            telefono: $('#telefono').val(),
+            fenac: $('#fenac').val(),
+            direccion: $('#direccion').val(),
+            sexo: $('#sexo').val(),
+            usuario: $('#usuario').val(),
+            contrasena: $('#contrasena').val(),
+            rol: $('#rol').val(),
+            terminosCondiciones: 1
+        };
+        // Enviar los datos al servidor utilizando AJAX
+        $.ajax({
+            type: 'POST',
+            url: '../php/newUser.php', // Ruta al archivo PHP que maneja la comprobación del registro
+            data: registerData,
+            dataType: 'json',
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+                // Manejar la respuesta del servidor
+                console.log('Datos enviados al servidor');
+                if (response.success) {   
+                    // Si el inicio de sesión es exitoso, mostrar un mensaje de éxito
+                    $('#mensajePerfil').text(response.message).css('color', 'green');
+                    // Esperar 2 segundos antes de recargar la página
+                    setTimeout(function() {
+                        window.location.reload(); // Recargar la página
+                    }, 2000); // Tiempo de espera en milisegundos (2 segundos en este caso)
+                } else {
+                    // Si el inicio de sesión falla, mostrar un mensaje de error
+                    $('#mensajePerfil').text(response.message).css('color', 'red');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error en la solicitud AJAX:', xhr.responseText);
+            }
+        });
     });
 });
 // Comprobación de que el DOM está cargado completamente

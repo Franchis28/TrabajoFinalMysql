@@ -6,8 +6,8 @@ require '../php/database.php';
 require '../php/conexionDB.php';
 // Conectar a la base de datos
 $conn = conectarDB();
-// Llamada a la función para la obtención de los datos del usuario logeado
-$datosUser = obtenerDatos($conn);
+// Obtener datos del usuario que se está logeando para saber su rol
+$datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -17,37 +17,85 @@ $datosUser = obtenerDatos($conn);
     <title>Perfil</title>
     <!-- Enlaces a los estilos de Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+<style>
+    .footer {
+        position: relative;
+        bottom: 0;
+        width: 100%;
+        display: flex;
+        flex-shrink: 0;
+    }
+    @media (max-width: 767.98px) {
+        .footer .container {
+            flex-direction: column;
+            align-items: center;
+        }
+        .footer ul {
+            margin-top: 1rem;
+        }
+    }
+</style>
 </head>
 <body>
     <!-- Colocar todo el encabezado de la pagina -->
     <header>
         <!-- Menú de navegación -->
-        <nav class="navbar navbar-expand-lg bg-light">
+        <nav class="navbar navbar-expand-lg bg-light fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="../index.php">FranPage</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link" href="../index.php">Portada</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./noticias.php">Noticias</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="./citaciones.php">Citas</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="./perfil.php">Perfil</a>
-                    </li>
-                    <li class="nav-item">
-                        <a id="cerrarSesionLink" class="nav-link" style="cursor: pointer;">Cerrar Sesión</a>
-                    </li>
-                </ul>
-                <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
-                <div class=" px-2">
+                    <!-- Menú de navegación para visitantes -->
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link " href="../index.php">Portada</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="./noticias.php">Noticias</a>
+                        </li>
+                        <?php if(empty($_SESSION['usuarioStr'])):?>
+                            <!-- Menú para visitantes no logeados -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="./register.php">Registro</a>
+                            </li>
+                            <!-- Modal para inicio de sesión -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
+                            </li>
+                        <?php elseif ($datosUser && $datosUser['rol'] === 'user'): ?>
+                            <!-- Menú de navegación para usuarios logeados -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="./citaciones.php">Citas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./perfil.php">Perfil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="cerrarSesionLink" class="nav-link" style="cursor: pointer;">Cerrar Sesión</a>
+                            </li>
+                        <?php elseif ($datosUser && $datosUser['rol'] === 'admin'): ?>
+                            <!-- Menú para administradores logeados -->
+                            <a class="nav-link" href="./usuarios-administracion.php">Usuarios</a>
+                            <li class="nav-item">
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link"  href="./citas-administracion.php">Citas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./noticias-administracion.php">Noticias</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="./perfil.php">Perfil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="cerrarSesionLink" class="nav-link" style="cursor: pointer;">Cerrar Sesión</a>
+                            </li>
+                        <?php endif; ?>
+                    </ul>
+                    <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
+                    <div class=" px-2">
                     <?php
                         // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
                         if(!empty($_SESSION['usuarioStr'])) {
@@ -57,8 +105,9 @@ $datosUser = obtenerDatos($conn);
                         } 
                     ?>
                     </div>
+                </div>
             </div>
-        </nav>        
+        </nav>         
     </header>
     <main>
         <!-- Diseño del toast para mostrar los mensajes --> 
@@ -179,11 +228,11 @@ $datosUser = obtenerDatos($conn);
                                 </div>
                                 <!-- Contraseña -->
                                 <div class="col-md-4">
-                                    <label for="password">
+                                    <label for="contrasena">
                                         <h5>Contraseña</h5>
                                     </label>
                                     <div class="input-group">
-                                        <input type="password" class="form-control" name="password" id="password" value="" placeholder="Contraseña">
+                                        <input type="password" class="form-control" name="contrasena" id="contrasena" value="" placeholder="Contraseña">
                                         <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                             <i class="bi bi-eye-fill">Ver</i>
                                         </button>
@@ -205,29 +254,55 @@ $datosUser = obtenerDatos($conn);
         </div>
     </main>
 
-    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top bg-light fixed-bottom">
-        <p class="col-md-4 mb-0 ">© 2024 FranPage</p>
-        
-        <a href="/" class="col-md-4 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-        </a>
-        <ul class="nav col-md-4 justify-content-end">
-            <li class="nav-item">
-                <a class="nav-link px-2 text-dark" href="../index.php">Portada</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link px-2 text-dark" href="./noticias.php">Noticias</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link px-2 text-dark" href="./citaciones.php">Citas</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link px-2 text-dark" href="./perfil.php">Perfil</a>
-            </li>
-            <li class="nav-item">
-                <a id="cerrarSesionLink1" class="nav-link px-2 text-dark" style="cursor: pointer;">Cerrar Sesión</a>
-            </li>
-        </ul>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container d-flex flex-wrap justify-content-between align-items-center">
+            <p class="col-12 col-md-6 mb-0 text-center text-md-start">© 2024 FranPage</p>
+            <ul class="nav col-12 col-md-6 justify-content-center justify-content-md-end">
+                <li class="nav-item">
+                    <a class="nav-link px-2 text-dark" href="../index.php">Portada</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-2 text-dark" href="./noticias.php">Noticias</a>
+                </li>
+                <?php if(empty($_SESSION['usuarioStr'])): ?>
+                    <!-- Menú para visitantes no logeados -->
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="./register.php">Registro</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
+                    </li>
+                <?php elseif ($datosUser && $datosUser['rol'] === 'user'): ?>
+                    <!-- Menú de navegación para usuarios logeados -->
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="./citaciones.php">Citas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="./perfil.php">Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="cerrarSesionLink1" class="nav-link px-2 text-dark" style="cursor: pointer;">Cerrar Sesión</a>
+                    </li>
+                <?php elseif ($datosUser && $datosUser['rol'] === 'admin'): ?>
+                    <!-- Menú para administradores logeados -->
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="./usuarios-administracion.php">Usuarios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="./citas-administracion.php">Citas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="./noticias-administracion.php">Noticias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="./perfil.php">Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="cerrarSesionLink1" class="nav-link px-2 text-dark" style="cursor: pointer;">Cerrar Sesión</a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </div>
     </footer>
      <!-- Script con la Función para mostrar el toast con los mensajes de login enviados desde la función Ajax que recoge los valores desde comprobarLogin-->
      <script>

@@ -44,7 +44,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         'cost' => 11,
     ];
     $contrasena_encriptada = password_hash($contrasena, PASSWORD_BCRYPT, $opciones)."\n";
-
+    // Eliminar los espacios en blanco y saltos de línea al principio y al final de la cadena
+    $contrasena_encriptada = trim($contrasena_encriptada);
     // Comprobación de los campos modificados por el usuario
     $comprobacion = 0;
     $error1 = 0;
@@ -88,30 +89,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
 
             break;
         default:
-        // Ejecutar la consulta SQL para actualizar los datos
-        $query = "UPDATE users_data u
-        INNER JOIN users_login ul ON u.idUser = ul.idUser
-        SET u.nombre='$nombre',
-            u.apellidos='$apellidos', 
-            u.email='$email', 
-            u.telefono='$telefono', 
-            u.fenac='$fenac', 
-            u.direccion='$direccion', 
-            u.sexo='$sexo',
-            u.email='$email', 
-            ul.contraseña ='$contrasena_encriptada',
-            ul.rol = '$rol'
-        WHERE ul.idUser ='$user_id'";
-        // Se ejecuta la consulta
-        $result = mysqli_query($conn, $query);
-        if ($result) {
-            // La actualización fue exitosa
-            $response = array("success" => true, "message" => "Los datos han sido actualizados de forma correcta");
+        // Comprueba que el email que se va a modificar no existe ya en la BD
+        $query_check_email = "SELECT COUNT(*) as count FROM users_data WHERE email = '$email' AND idUser != '$user_id'";
+        $result_check_email = mysqli_query($conn, $query_check_email);
+        $row = mysqli_fetch_assoc($result_check_email);
+
+        if ($row['count'] > 0) {
+            // El correo electrónico ya existe para otro usuario
+            $response = array("success" => false, "message" => "El correo electrónico ya está en uso por otro usuario");
             echo json_encode($response);
         } else {
-            // Error al ejecutar la consulta
-            $response = array("success" => false, "message" => "Los datos no han sido actualizados");
-            echo json_encode($response);
+            // Ejecutar la consulta SQL para actualizar los datos
+            $query = "UPDATE users_data u
+            INNER JOIN users_login ul ON u.idUser = ul.idUser
+            SET u.nombre='$nombre',
+                u.apellidos='$apellidos', 
+                u.email='$email', 
+                u.telefono='$telefono', 
+                u.fenac='$fenac', 
+                u.direccion='$direccion', 
+                u.sexo='$sexo',
+                u.email='$email', 
+                ul.contraseña ='$contrasena_encriptada',
+                ul.rol = '$rol'
+            WHERE ul.idUser ='$user_id'";
+            // Se ejecuta la consulta
+            $result = mysqli_query($conn, $query);
+            if ($result) {
+                // La actualización fue exitosa
+                $response = array("success" => true, "message" => "Los datos han sido actualizados de forma correcta");
+                echo json_encode($response);
+            } else {
+                // Error al ejecutar la consulta
+                $response = array("success" => false, "message" => "Los datos no han sido actualizados");
+                echo json_encode($response);
+            }
         }
     }
 }

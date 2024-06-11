@@ -24,21 +24,21 @@ if (!empty($_POST['usuario']) && !empty($_POST['contrasena'])) {
             // Haremos uso de la función password_verify para comparar la contraseña proporcionada por el usuario y la que se ha recogido hasheada de la BD
             if(password_verify($contrasena_original, $hash_contrasena)) {
                 // Contraseña correcta, iniciar sesión
-                // Si el usuario y la contraseña son correctos, devuelve una respuesta JSON con éxito
+                // Si la contraseña es correcta, devuelve una respuesta JSON con éxito
                 $response = array("success" => true, "message" => "Inicio de sesión exitoso");
                 echo json_encode($response);
                  $_SESSION['usuarioStr'] = $usuario;
             }
             else{
-                // Si el usuario o la contraseña son incorrectos, devuelve una respuesta JSON con error
-                $response = array("success" => false, "message" => "Usuario o contraseña incorrectos");
+                // Si la contraseña es incorrecta, devuelve una respuesta JSON con error
+                $response = array("success" => false, "message" => "Contraseña incorrecta");
                 echo json_encode($response);
             }
-        }else{
-            // Si el usuario o la contraseña son incorrectos, devuelve una respuesta JSON con error
-            $response = array("success" => false, "message" => "Contraseña incorrecta, revísala por favor");
-            echo json_encode($response);
         }
+    }else{
+        // Si no coincide el nombre de usuario introducido en la BD, informaremos al usuario de que revise el nombre de usuario
+        $response = array("success" => false, "message" => "Revise el nombre de usuario por favor");
+        echo json_encode($response);
     }    
 }else{
     // Indicamos al usuario que no se pueden enviar los campos vacíos

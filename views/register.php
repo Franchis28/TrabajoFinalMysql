@@ -119,7 +119,6 @@ $conn = conectarDB();
                         <option value="Masculino">Masculino</option>
                         <option value="Femenino">Femenino</option>
                         </select>
-                        
                     </div>
                     <div class="col-md-4">
                         <label for="usuario" class="form-label">Nombre de Usuario*</label>

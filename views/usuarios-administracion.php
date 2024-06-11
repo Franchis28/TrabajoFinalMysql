@@ -3,7 +3,6 @@
 require_once '../php/database.php';
 // Require para conectarse a la BD
 require_once '../php/conexionDB.php';
-include_once '../php/eliminarUser.php';
 // Conectar a la base de datos
 $conn = conectarDB();
 // Obtener datos del usuario que se está logeando para saber su rol
@@ -27,6 +26,23 @@ $users = obtenerUsuarios($conn);
         .container {
             max-width: 1300px; /* Ancho máximo opcional */
         }
+
+        .footer {
+        position: relative;
+        bottom: 0;
+        width: 100%;
+        display: flex;
+        flex-shrink: 0;
+    }
+    @media (max-width: 767.98px) {
+        .footer .container {
+            flex-direction: column;
+            align-items: center;
+        }
+        .footer ul {
+            margin-top: 1rem;
+        }
+    }
     </style>
 </head>
 <body>
@@ -76,6 +92,9 @@ $users = obtenerUsuarios($conn);
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="./noticias-administracion.php">Noticias</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./perfil.php">Perfil</a>
                             </li>
                             <li class="nav-item">
                                 <a id="cerrarSesionLink" class="nav-link" style="cursor: pointer;">Cerrar Sesión</a>
@@ -130,22 +149,25 @@ $users = obtenerUsuarios($conn);
             </div>
         </div>
         <!-- Desarrollo de la interfaz, para visualizar lo usuarios existentes, modificarlos, o crear nuevos -->
+        
         <div class="container pt-2" style="margin-bottom: 120px;">
-            <h3>Lista de usuarios</h3>
-            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#crearUsuarioModal">Crear usuario</button>
+            <div style="margin-top: 8px; margin-left: 30px;">
+                <h3>Lista de usuarios</h3>
+            </div>
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"> Usuarios </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <!-- Coloca aquí dinámicamente los usuarios -->
-            <?php if (!empty($users)): ?>
-                <?php foreach ($users as $usuario): ?>
-                    <li><a class="dropdown-item" href="#" data-usuario-id="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></a></li>
+                <!-- Colocaremos aquí dinámicamente los usuarios -->
+                <?php if (!empty($users)): ?>
+                    <?php foreach ($users as $usuario): ?>
+                        <?php if ($usuario['idUser'] !== $_SESSION['usuarioInt']): ?>
+                            <li><a class="dropdown-item" href="#" data-usuario-id="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></a></li>
+                        <?php endif; ?>
                     <?php endforeach; ?>
-            <?php else: ?>
-                <li><span class="dropdown-item">No hay usuarios registrados</span></li>
-            <?php endif; ?>
+                <?php else: ?>
+                    <li><span class="dropdown-item">No hay usuarios registrados</span></li>
+                <?php endif; ?>
             </ul>
             <!-- Formulario donde se muestran los datos del usuario -->
-            <div style="margin-top: 8px;"></div>
             <div class="container d-flex justify-content-center align-items-center" style="height: 80vh;">
                 <div class="row justify-content-center">
                     <div class="col-md-8" style="margin-top: 15px;">
@@ -155,7 +177,7 @@ $users = obtenerUsuarios($conn);
                                     <!-- Nombre -->
                                     <div class="col-md-4">
                                         <label for="nombre">
-                                            <h5>Nombre</h5>
+                                            <h5>Nombre*</h5>
                                         </label>
                                         <input type="text" class="form-control" name="nombre" id="nombre" value=""
                                             placeholder="Nombre">
@@ -163,7 +185,7 @@ $users = obtenerUsuarios($conn);
                                     <!-- Apellidos -->
                                     <div class="col-md-4">
                                         <label for="direccion">
-                                            <h5>Apellidos</h5>
+                                            <h5>Apellidos*</h5>
                                         </label>
                                         <input type="text" class="form-control" name="apellidos" id="apellidos" value=""
                                             placeholder="Apellidos">
@@ -171,7 +193,7 @@ $users = obtenerUsuarios($conn);
                                     <!-- Email -->
                                     <div class="col-md-4">
                                         <label for="email">
-                                            <h5>Email</h5>
+                                            <h5>Email*</h5>
                                         </label>
                                         <input type="text" class="form-control" name="email" id="email" value=""
                                             placeholder="Email">
@@ -179,7 +201,7 @@ $users = obtenerUsuarios($conn);
                                     <!-- Teléfono -->
                                     <div class="col-md-4">
                                         <label for="telefono">
-                                            <h5>Teléfono</h5>
+                                            <h5>Teléfono*</h5>
                                         </label>
                                         <input type="text" class="form-control" name="telefono" id="telefono" value=""
                                             placeholder="Teléfono">
@@ -187,7 +209,7 @@ $users = obtenerUsuarios($conn);
                                     <!-- Fecha nacimiento -->
                                     <div class="col-md-4">
                                         <label for="fenac">
-                                            <h5>Fecha de Nacimiento</h5>
+                                            <h5>Fecha de Nacimiento*</h5>
                                         </label>
                                         <input type="fenac" class="form-control" name="fenac" id="fenac" value=""
                                             placeholder="Fecha de Nacimiento">
@@ -224,18 +246,18 @@ $users = obtenerUsuarios($conn);
                                     <!-- Usuario -->
                                     <div class="col-md-4">
                                         <label for="usuario">
-                                            <h5>Usuario</h5>
+                                            <h5>Usuario*</h5>
                                         </label>
-                                        <input type="text" class="form-control" name="usuario" id="usuario" value="" disabled
+                                        <input type="text" class="form-control" name="usuario" id="usuario" value="" 
                                             placeholder="Usuario">
                                     </div>
                                     <!-- Contraseña -->
                                     <div class="col-md-4">
-                                        <label for="password">
-                                            <h5>Contraseña</h5>
+                                        <label for="contrasena">
+                                            <h5>Contraseña*</h5>
                                         </label>
                                         <div class="input-group">
-                                            <input type="password" class="form-control" name="password" id="password" value="" placeholder="Contraseña">
+                                            <input type="password" class="form-control" name="contrasena" id="contrasena" value="" placeholder="Contraseña">
                                             <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                                 <i class="bi bi-eye-fill">Ver</i>
                                             </button>
@@ -247,20 +269,21 @@ $users = obtenerUsuarios($conn);
                                         <label for="rol">
                                             <h5>Rol</h5>
                                         </label>
-                                        <input type="text" class="form-control" name="rol" id="rol"
-                                            placeholder="Rol">
+                                        <select class="form-control" name="rol" id="rol">
+                                            <option value="user">Usuario</option>
+                                            <option value="admin">Administrador</option>
+                                        </select>
                                     </div>
 
                                     <div class="col-xs-12" style="margin-bottom : 15px;">
-                                        <br>
-                                        <!-- Comunicación con ajax para la modificación de los datos del usuario -->
-
                                         <button class="btn btn-success" type="submit" name="submitSavedata" id="submitSavedata"><i
                                                 class="glyphicon glyphicon-ok-sign"></i> Guardar</button>
                                         <button class="btn btn-warning" type="reset" name="resetPerfil" id="resetPerfil"><i
                                                 class="glyphicon glyphicon-repeat"></i> Limpiar</button>
-                                                <button class="btn btn-danger" type="button" name="deletePerfil" id="deletePerfil"><i
+                                        <button class="btn btn-danger" type="button" name="deletePerfil" id="deletePerfil"><i
                                                 class="glyphicon glyphicon-repeat"></i> Eliminar Usuario</button>
+                                        <button class="btn btn-primary" type="submit" name="newUser" id="newUser"><i
+                                                class="glyphicon glyphicon-repeat"></i> Crear usuario</button>
                                     </div>
                                 </form>
                             </div>
@@ -271,76 +294,63 @@ $users = obtenerUsuarios($conn);
         </div>
               
     </main>
-    <!-- Modal Crear Usuario -->
-    <div class="modal fade" id="crearUsuarioModal" tabindex="-1" aria-labelledby="crearUsuarioModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="crearUsuarioModalLabel">Crear Usuario</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="crearUsuarioForm">
-                        <!-- Campos para crear un usuario -->
-                        <!-- Añade los campos necesarios aquí -->
-                        
-                        <button type="submit" id="" class="btn btn-primary">Guardar</button>
-                    </form>
-                </div>
-            </div>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container d-flex flex-wrap justify-content-between align-items-center">
+            <p class="col-12 col-md-6 mb-0 text-center text-md-start">© 2024 FranPage</p>
+            <ul class="nav col-12 col-md-6 justify-content-center justify-content-md-end">
+                <li class="nav-item">
+                    <a class="nav-link px-2 text-dark" href="../index.php">Portada</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link px-2 text-dark" href="./noticias.php">Noticias</a>
+                </li>
+                <?php if(empty($_SESSION['usuarioStr'])): ?>
+                    <!-- Menú para visitantes no logeados -->
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="./register.php">Registro</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
+                    </li>
+                <?php elseif ($data && $data['rol'] === 'user'): ?>
+                    <!-- Menú de navegación para usuarios logeados -->
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="./citaciones.php">Citas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="./perfil.php">Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="cerrarSesionLink1" class="nav-link px-2 text-dark" style="cursor: pointer;">Cerrar Sesión</a>
+                    </li>
+                <?php elseif ($data && $data['rol'] === 'admin'): ?>
+                    <!-- Menú para administradores logeados -->
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="./usuarios-administracion.php">Usuarios</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="./citas-administracion.php">Citas</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="./noticias-administracion.php">Noticias</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link px-2 text-dark" href="./perfil.php">Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a id="cerrarSesionLink1" class="nav-link px-2 text-dark" style="cursor: pointer;">Cerrar Sesión</a>
+                    </li>
+                <?php endif; ?>
+            </ul>
         </div>
-    </div>
-    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3  border-top bg-light fixed-bottom">
-        <p class="col-md-4 mb-0 ">© 2024 FranPage</p>
-        <!-- Menú de navegación para visitantes -->
-        <ul class="nav col-md-4 justify-content-end d-flex">
-            <li class="nav-item">
-                <a class="nav-link px-2 text-dark "  href="../index.php">Portada</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link px-2 text-dark" href="./noticias.php">Noticias</a>
-            </li>
-            <?php if(empty($_SESSION['usuarioStr'])):?>
-                <!-- Menú para visitantes no logeados -->
-                <li class="nav-item">
-                    <a class="nav-link px-2 text-dark" href="./register.php">Registro</a>
-                </li>
-                <!-- Modal para inicio de sesión -->
-                <li class="nav-item">
-                    <a class="nav-link px-2 text-dark" href="#" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>
-                </li>
-            <?php elseif ($data && $data['rol'] === 'user'): ?>
-                <!-- Menú de navegación para usuarios logeados -->
-                <li class="nav-item">
-                    <a class="nav-link px-2 text-dark" href="./citaciones.php">Citas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link px-2 text-dark" href="./perfil.php">Perfil</a>
-                </li>
-                <li class="nav-item">
-                    <a id="cerrarSesionLink1" class="nav-link px-2 text-dark" style="cursor: pointer;">Cerrar Sesión</a>
-                </li>
-            <?php elseif ($data && $data['rol'] === 'admin'): ?>
-                <!-- Menú para administradores logeados -->
-                <li class="nav-item">
-                <a class="nav-link px-2 text-dark" href="./usuarios-administracion.php">Usuarios</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link px-2 text-dark" href="./citas-administracion.php">Citas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link px-2 text-dark" href="./noticias-administracion.php">Noticias</a>
-                </li>
-                <li class="nav-item">
-                    <a id="cerrarSesionLink1" class="nav-link px-2 text-dark" style="cursor: pointer;">Cerrar Sesión</a>
-                </li>
-            <?php endif; ?>
-        </ul>
     </footer>
     <!-- Script con la Función para mostrar el toast con los mensajes de login enviados desde la función Ajax que recoge los valores desde comprobarLogin-->
     <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const submitSavedata = document.getElementById('submitSavedata');
+                const deletePerfil = document.getElementById('deletePerfil');
+                const newUser = document.getElementById('newUser');
+
                 const toastLiveExample = document.getElementById('liveToast');
                 // Función para mostrar el toast
                 function mostrarToast() {
@@ -351,6 +361,16 @@ $users = obtenerUsuarios($conn);
                 if (submitSavedata){
                     
                     submitSavedata.addEventListener('click', mostrarToast);
+                }
+
+                if (deletePerfil){
+                    
+                    deletePerfil.addEventListener('click', mostrarToast);
+                }
+
+                if (newUser){
+                    
+                    newUser.addEventListener('click', mostrarToast);
                 }
             });
     </script>
@@ -388,76 +408,57 @@ $users = obtenerUsuarios($conn);
     <!-- Script para mostrar los datos del usuario en función del que haya sido seleccionado -->
     <script>
         $(document).ready(function() {
-            $('.dropdown-item').on('click', function() {
-                let usuarioId = $(this).data('usuario-id');
-                sessionStorage.setItem('usuarioId', usuarioId);
-                // Aquí puedes hacer una llamada AJAX o cualquier otra lógica para mostrar los datos del usuario
-                
-                // Ejemplo de llamada AJAX
-                $.ajax({
-                    url: '../php/get_user_data.php',
-                    type: 'POST',
-                    data: { id: usuarioId },
-                    success: function(response) {
-                       // Maneja la respuesta y llena el formulario con los datos del usuario
-                let userData = JSON.parse(response);
-                if (!userData.error) {
-                    $('#nombre').val(userData.nombre);
-                    $('#apellidos').val(userData.apellidos);
-                    $('#email').val(userData.email);
-                    $('#telefono').val(userData.telefono);
-                    $('#fenac').val(userData.fenac);
-                    $('#direccion').val(userData.direccion);
-                    $('#sexo').val(userData.sexo);
-                    $('#usuario').val(userData.usuario);
-                    $('#rol').val(userData.rol);
-                } else {
-                    alert('Error: ' + userData.error);
-                }
+        $('.dropdown-item').on('click', function() {
+            let usuarioId = $(this).data('usuario-id');
+            sessionStorage.setItem('usuarioId', usuarioId);
+            
+            // Deshabilitar el campo de usuario
+            $('#usuario').prop('disabled', true);
+
+            // Llamada AJAX para mostrar los datos del usuario
+            $.ajax({
+                url: '../php/get_user_data.php',
+                type: 'POST',
+                data: { id: usuarioId },
+                success: function(response) {
+                    let userData = JSON.parse(response);
+                    if (!userData.error) {
+                        $('#nombre').val(userData.nombre);
+                        $('#apellidos').val(userData.apellidos);
+                        $('#email').val(userData.email);
+                        $('#telefono').val(userData.telefono);
+                        $('#fenac').val(userData.fenac);
+                        $('#direccion').val(userData.direccion);
+                        $('#sexo').val(userData.sexo);
+                        $('#usuario').val(userData.usuario);
+                        $('#rol').val(userData.rol);
+                    } else {
+                        alert('Error: ' + userData.error);
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error('Error al obtener los datos del usuario:', error);
-                
-                    }
-                });
-            });
-        });
-    </script>
-    <!-- Script para hacer la llamada a la función que eliminará al usuasrio -->
-    <script>
-    // Manejador de eventos para el botón "Eliminar Usuario"
-    $('#deletePerfil').on('click', function() {
-        let usuarioId = sessionStorage.getItem('usuarioId');
-        if (usuarioId) {
-            // Llamada AJAX para eliminar el usuario
-            $.ajax({
-                url: '../php/eliminarUser.php',
-                type: 'POST',
-                data: { idUserDelete: usuarioId },
-                ataType: 'json',
-                success: function(response) {
-                    // Maneja la respuesta del servidor
-                    if (response.success) {
-                        $('#mensajePerfil').text(response.message).css('color', 'green');
-                        // Opcional: recargar la página o actualizar la lista de usuarios
-                    } else {
-                        $('#mensajePerfil').text(response.message).css('color', 'red');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error en la llamada AJAX:', error);
                 }
             });
-        } else {
-            alert('Selecciona un usuario primero.');
+        });
+
+        // Habilitar el campo de usuario cuando no haya ningún usuario seleccionado
+        if (!sessionStorage.getItem('usuarioId')) {
+            $('#usuario').prop('disabled', false);
         }
+
+        // Restablecer el estado al inicial
+        $('#resetPerfil').on('click', function() {
+            sessionStorage.removeItem('usuarioId');
+            $('#usuario').prop('disabled', false);
+        });
     });
     </script>
     <!-- Script para que el usuario pueda ver la contraseña si lo desea -->
     <script>
         $(document).ready(function() {
             $('#togglePassword').on('click', function() {
-                const passwordField = $('#password');
+                const passwordField = $('#contrasena');
                 const passwordFieldType = passwordField.attr('type');
                 if (passwordFieldType === 'password') {
                     passwordField.attr('type', 'text');

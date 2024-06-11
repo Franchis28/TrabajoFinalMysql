@@ -6,7 +6,7 @@ require '../php/conexionDB.php';
 // Conectar a la base de datos
 $conn = conectarDB();
 
- //Parte del registro de un nuevo usuario en la base de datos (users_login)
+ // Registro de un nuevo usuario en la base de datos (users_login)
 if(isset($_POST['nombre'])){
     // Validar Campos Formulario Registro Nuevo usuario
     // Empezamos recogiendo los datos a evaluar/comprobar del formulario
@@ -102,7 +102,7 @@ if(isset($_POST['nombre'])){
             default:
             // Comprobamos antes de nada que el email que se va a registrar no está ya registrado en la bd
             $sql_users_data_search = "SELECT email FROM users_data WHERE email = '$email'";
-            // Si coincide el email en la bd(señal de que existe un usuario igual al suyo registrado) informamos al usuario de que ya está registrado 
+            // Si coincide el email en la bd (señal de que existe un usuario igual al suyo registrado) informamos al usuario de que ya está registrado 
             $resultadoConsultaData = mysqli_query($conn, $sql_users_data_search);
             if(mysqli_num_rows($resultadoConsultaData) > 0){
                 $response = array("success" => false, "message" => "Ya existe un usuario con el email proporcionado");
@@ -116,22 +116,38 @@ if(isset($_POST['nombre'])){
                     $response = array("success" => false, "message" => "Ya existe un usuario registrado");
                     echo json_encode($response);
                 }else{// Si en las dos consultas anteriores, no se da la casuística de que coincidan ni el email ni usuario, almacenamos en bd los datos
-                    // Si no hay ningún error en algún campo se entiende que todos los campos son correctos y se deben almacenar en BD
+                    // Si no hay ningún error en algún campo, se entiende que todos los campos son correctos y se deben almacenar en BD
                     $sql_users_data = "INSERT INTO users_data (nombre, apellidos, email, telefono, fenac, direccion, sexo)
                     VALUES ('$nombre_filtrado', '$apellidos_filtrados', '$email', '$telefono', '$fenac', '$direccion', '$sexo')";
                     // Cuando se hayan incluido los datos en la tabla de users_data, se almacenarán en la de users_login
                     if(mysqli_query($conn, $sql_users_data)) {
                         // Obtener el ID generado
                         $last_inserted_id = mysqli_insert_id($conn);
-                        // Insertar datos en users_login utilizando el ID obtenido
-                        $sql_users_login_insert = "INSERT INTO users_login (idUser, usuario, contraseña, rol)
-                        VALUES ('$last_inserted_id', '$usuario', '$contrasena_encriptada', 'user')";
-                        if(mysqli_query($conn, $sql_users_login_insert)){
-                            $response = array("success" => true, "message" => "Registro de usuario exitoso", "inicioSesion" => 1);
-                            echo json_encode($response);
+                        // Si la consulta viene a ejecutarse desde usuarios-administración
+                        if(isset($_POST['rol'])){
+                            // Recogemos el Rol 
+                            $rol = mysqli_real_escape_string($conn, $_POST['rol']);
+                            // Insertar datos en users_login utilizando el ID obtenido
+                            $sql_users_login_insert_admin = "INSERT INTO users_login (idUser, usuario, contraseña, rol)
+                            VALUES ('$last_inserted_id', '$usuario', '$contrasena_encriptada', '$rol')";
+                            if(mysqli_query($conn, $sql_users_login_insert_admin)){
+                                $response = array("success" => true, "message" => "Registro de usuario exitoso");
+                                echo json_encode($response);
+                            }else{
+                                $response = array("success" => false, "message" => "Registro de usuario erróneo");
+                                echo json_encode($response);
+                            }
                         }else{
-                            $response = array("success" => false, "message" => "Registro de usuario erróneo");
-                            echo json_encode($response);
+                            // Insertar datos en users_login utilizando el ID obtenido
+                            $sql_users_login_insert = "INSERT INTO users_login (idUser, usuario, contraseña, rol)
+                            VALUES ('$last_inserted_id', '$usuario', '$contrasena_encriptada', 'user')";
+                            if(mysqli_query($conn, $sql_users_login_insert)){
+                                $response = array("success" => true, "message" => "Registro de usuario exitoso");
+                                echo json_encode($response);
+                            }else{
+                                $response = array("success" => false, "message" => "Registro de usuario erróneo");
+                                echo json_encode($response);
+                            }
                         }
                     }
                 }
