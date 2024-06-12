@@ -1,4 +1,3 @@
-
 <!-- Página de login, donde el usuario mediante una modal, que se lanzará en la página en la que se encuentre el usuario podrá logearse si está registrado -->
 <!-- Desarrollo de la interfaz de la modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

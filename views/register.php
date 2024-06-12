@@ -1,4 +1,3 @@
-<!-- Código PHP -->
 <?php
 //require para realizar la conexión con la base de datos
 require '../php/database.php';

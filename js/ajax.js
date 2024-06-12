@@ -281,46 +281,46 @@ $('#confirmButton').click(function(event) {
     });
 });
 // Ajax para comprobar el formulario de admin de usuarios para modificar los campos que se deseen
-$('#usersForm').submit(function(event) {
-    event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
-    // Comprobación de si se ha pulsado alguno de los dos botones, para modificar los datos
-    $('#submitPerfil, #submitSavedata').on('click', function(){
-        // Obtener los datos del formulario
-        var profileDataAdmin =  {
-            nombre : $('#nombre').val(),
-            apellidos: $('#apellidos').val(),
-            email: $('#email').val(),
-            telefono: $('#telefono').val(),
-            fenac: $('#fenac').val(),
-            direccion: $('#direccion').val(),
-            sexo: $('#sexo').val(),
-            contrasena: $('#contrasena').val(),
-            rol: $('#rol').val(),
-            usuarioId : sessionStorage.getItem('usuarioId'),
-        };//$(this).serialize();
-        // Enviar los datos al servidor utilizando AJAX
-        $.ajax({
-            type: 'POST',
-            url: '../php/modificationDataAdmin.php', // Ruta al archivo PHP que maneja la modificación de los datos
-            data: profileDataAdmin,
-            dataType: 'json',
-            success: function(response) {
-                console.log('Respuesta del servidor:', response);
+// $('#usersForm').submit(function(event) {
+//     event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
+// });
+// Comprobación de si se ha pulsado alguno de los dos botones, para modificar los datos
+$('#submitPerfil, #submitSavedata').on('click', function(){
+    // Obtener los datos del formulario
+    var profileDataAdmin =  {
+        nombre : $('#nombre').val(),
+        apellidos: $('#apellidos').val(),
+        email: $('#email').val(),
+        telefono: $('#telefono').val(),
+        fenac: $('#fenac').val(),
+        direccion: $('#direccion').val(),
+        sexo: $('#sexo').val(),
+        contrasena: $('#contrasena').val(),
+        rol: $('#rol').val(),
+        usuarioId : sessionStorage.getItem('usuarioId'),
+    };//$(this).serialize();
+    // Enviar los datos al servidor utilizando AJAX
+    $.ajax({
+        type: 'POST',
+        url: '../php/modificationDataAdmin.php', // Ruta al archivo PHP que maneja la modificación de los datos
+        data: profileDataAdmin,
+        dataType: 'json',
+        success: function(response) {
+            console.log('Respuesta del servidor:', response);
 
-                // Manejar la respuesta del servidor
-                console.log('Datos recibidos del servidor');
-                if (response.success) {  
-                    // Si el inicio de sesión es exitoso, mostrar un mensaje de éxito
-                    $('#mensajePerfil').text(response.message).css('color', 'green');
-                } else {
-                    // Si el inicio de sesión falla, mostrar un mensaje de error
-                    $('#mensajePerfil').text(response.message).css('color', 'red');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error en la solicitud AJAX:', xhr.responseText);
+            // Manejar la respuesta del servidor
+            console.log('Datos recibidos del servidor');
+            if (response.success) {  
+                // Si el inicio de sesión es exitoso, mostrar un mensaje de éxito
+                $('#mensajePerfil').text(response.message).css('color', 'green');
+            } else {
+                // Si el inicio de sesión falla, mostrar un mensaje de error
+                $('#mensajePerfil').text(response.message).css('color', 'red');
             }
-        });
+        },
+        error: function(xhr, status, error) {
+            console.error('Error en la solicitud AJAX:', xhr.responseText);
+        }
     });
 });
 // Ajax para eliminar un usuario desde la sección de administrador

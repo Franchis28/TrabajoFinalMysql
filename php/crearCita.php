@@ -1,4 +1,5 @@
 <?php
+session_start();
 //require para realizar la conexión con la base de datos
 require '../php/database.php';
 // Require para conectarse a la BD
@@ -7,7 +8,6 @@ require '../php/conexionDB.php';
 $conn = conectarDB();
 // Obtener el usuario que está conectado actualmente
 $user_id = $_SESSION['usuarioInt'];
-
 // Comprobación de que existen las variables a trabajar enviadas desde ajax
 if(isset($_POST['fecha_cita']) && isset($_POST['motivo'])){
    // Recoger datos de ajax

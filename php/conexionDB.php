@@ -8,7 +8,6 @@ function conectarDB(){
     $username = $USUARIO;
     $password = $PASSWORD;
     $dbname = $BD;
-    session_start();
         $conn = mysqli_connect($hostname, $username);
         if($conn){
             if(mysqli_select_db($conn, $dbname) === TRUE){
@@ -29,7 +28,6 @@ function conectarIndexDB(){
     $username = $USUARIO;
     $password = $PASSWORD;
     $dbname = $BD;
-    session_start();
         $conn = mysqli_connect($hostname, $username);
         if($conn){
             if(mysqli_select_db($conn, $dbname) === TRUE){

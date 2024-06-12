@@ -1,8 +1,8 @@
 <?php
+// Iniciar la sesión al inicio del script principal
+session_start();
 //require para realizar la conexión con la base de datos
 require './php/database.php';
-// Include para la modal de inicio de sesion (login)
-include './views/login.php';
 // Require para conectarse a la BD
 require './php/conexionDB.php';
 // Conectar a la base de datos
@@ -160,6 +160,8 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
             </div>
         </section>
     </main>
+    <!-- Incluye la modal de inicio de sesión (login) -->
+    <?php include './views/login.php'; ?>
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container d-flex flex-wrap justify-content-between align-items-center">
             <p class="col-12 col-md-6 mb-0 text-center text-md-start">© 2024 FranPage</p>

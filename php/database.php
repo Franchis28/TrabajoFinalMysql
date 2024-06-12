@@ -16,20 +16,14 @@ function obtenerNoticias($conn) {
 }
 // Consulta SQL para obtener los datos de un usuario ya registrado de la tabla users_data y mostrarlos en la página de perfil
 function obtenerDatos($conn) {
-    // Verificar si hay algún usuario logeado
-    if(!isset($_SESSION['usuarioInt'])){
-        return array();
-    }
     // Si existe un usuario logeado, pasamos a realizar la consulta de los datos
     // Preparamos la consulta SQL
     $user_id = $_SESSION['usuarioInt'];
     $sql = "SELECT ul. *, ud. * FROM users_login ul
     INNER JOIN users_data ud on ud.idUser = ul.idUser
     WHERE ul.idUser = $user_id";
-
     // Ejecutamos la consulta
     $resultado = mysqli_query($conn, $sql);
-
     // Verificación de si se obtuvieron resultados de la consulta
     if($resultado && mysqli_num_rows($resultado) > 0){
         // Retorna los datos del usuario logeado
@@ -41,10 +35,6 @@ function obtenerDatos($conn) {
 }
 // Consulta SQL para obtener las citas creadas por cada usuiario 
 function obtenerCitas($conn){
-    // Verificar si hay algún usuario logeado
-    if(!isset($_SESSION['usuarioInt'])){
-        return array();
-    }
     // Recuperamos el usuario que esté logeado en el momento
     $user_id = $_SESSION['usuarioInt'];
     $sql = "SELECT citas.* FROM citas INNER JOIN users_data ON citas.idUser = users_data.idUser
@@ -56,7 +46,6 @@ function obtenerCitas($conn){
             $citas[] = $fila;
         }
     }
-    
     return $citas;
 }
 //Consulta SQL para obtener los usuarios que están registrados en la BD
@@ -66,7 +55,6 @@ function obtenerUsuarios($conn){
     INNER JOIN users_data ud ON ud.idUser = ul.idUser";
     // Ejecutamos la consulta
     $resultado = mysqli_query($conn, $sql);
-
     // Verificación de si se obtuvieron los resultados en la consulta
     $users = [];
     if($resultado && mysqli_num_rows($resultado) > 0){
@@ -77,3 +65,4 @@ function obtenerUsuarios($conn){
     // Retornamos el array con los usuarios
     return $users;
 }
+?>
