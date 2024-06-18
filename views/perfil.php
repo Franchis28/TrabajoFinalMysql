@@ -70,21 +70,21 @@ $datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                                 <a class="nav-link" href="./citaciones.php">Citas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./perfil.php">Perfil</a>
+                                <a class="nav-link active" aria-current="page" href="./perfil.php">Perfil</a>
                             </li>
                             <li class="nav-item">
                                 <a id="cerrarSesionLink" class="nav-link" style="cursor: pointer;">Cerrar Sesión</a>
                             </li>
                         <?php elseif ($datosUser && $datosUser['rol'] === 'admin'): ?>
                             <!-- Menú para administradores logeados -->
-                            <a class="nav-link" href="./usuarios-administracion.php">Usuarios</a>
+                            <a class="nav-link" href="./usuarios-administracion.php">Usuarios-Administración</a>
                             <li class="nav-item">
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link"  href="./citas-administracion.php">Citas</a>
+                                    <a class="nav-link"  href="./citas-administracion.php">Citas-Administración</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./noticias-administracion.php">Noticias</a>
+                                <a class="nav-link" href="./noticias-administracion.php">Noticias-Administración</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link active" aria-current="page" href="./perfil.php">Perfil</a>
@@ -142,7 +142,7 @@ $datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
             </div>
         </div>
         <!-- Formulario donde se muestran los datos del usuario -->
-        <div style="margin-top: 8px; margin-left: 30px;"><h3>Perfil</h3></div>
+        <div style="margin-top: 60px; margin-left: 120px;"><h3>Perfil</h3></div>
         <div class="container d-flex justify-content-center align-items-center" style="height: 80vh;">
             <div class="row justify-content-center">
                 <div class="col-md-8" style="margin-top: 15px;">
@@ -286,13 +286,13 @@ $datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                 <?php elseif ($datosUser && $datosUser['rol'] === 'admin'): ?>
                     <!-- Menú para administradores logeados -->
                     <li class="nav-item">
-                        <a class="nav-link px-2 text-dark" href="./usuarios-administracion.php">Usuarios</a>
+                        <a class="nav-link px-2 text-dark" href="./usuarios-administracion.php">Usuarios-Administración</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-2 text-dark" href="./citas-administracion.php">Citas</a>
+                        <a class="nav-link px-2 text-dark" href="./citas-administracion.php">Citas-Administración</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-2 text-dark" href="./noticias-administracion.php">Noticias</a>
+                        <a class="nav-link px-2 text-dark" href="./noticias-administracion.php">Noticias-Administración</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link px-2 text-dark" href="./perfil.php">Perfil</a>

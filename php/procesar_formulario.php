@@ -5,7 +5,6 @@ include './database.php';
 require '../php/conexionDB.php';
 // Conectar a la base de datos
 $conn = conectarDB();
-
 // Verificar si se ha enviado una imagen
 if (isset($_FILES['imagen'])) {
     // Obtener los datos de la imagen

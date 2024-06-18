@@ -48,6 +48,21 @@ function obtenerCitas($conn){
     }
     return $citas;
 }
+// Consulta SQL para obtener las citas creadas por cada usuiario 
+function obtenerCitasAdmin($conn, $user){
+    // Recuperamos el usuario que esté logeado en el momento
+    $user_id = $user;
+    $sql = "SELECT citas.* FROM citas INNER JOIN users_data ON citas.idUser = users_data.idUser
+    WHERE citas.fechaCita >= CURDATE() && citas.idUser = '$user_id'";
+    $resultado = mysqli_query($conn, $sql);
+    $citas = array();
+    if($resultado && mysqli_num_rows($resultado) > 0){
+        while($fila = mysqli_fetch_assoc($resultado)){
+            $citas[] = $fila;
+        }
+    }
+    return $citas;
+}
 //Consulta SQL para obtener los usuarios que están registrados en la BD
 function obtenerUsuarios($conn){
     // Preparamos la consulta SQL

@@ -38,9 +38,6 @@ $conn = conectarDB();
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="./register.php">Registro</a>
                         </li>
-                        <!-- <li class="nav-item">
-                            <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-                        </li> -->
                         <!-- Modal para inicio de sesión -->
                         <li class="nav-item">
                             <a class="nav-link" href="../views/login.php" data-bs-toggle="modal" data-bs-target="#exampleModal">Inicio de Sesión</a>

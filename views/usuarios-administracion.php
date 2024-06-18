@@ -86,13 +86,13 @@ $users = obtenerUsuarios($conn);
                         <?php elseif ($data && $data['rol'] === 'admin'): ?>
                             <!-- Menú para administradores logeados -->
                             <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="./usuarios-administracion.php">Usuarios</a>
+                            <a class="nav-link active" aria-current="page" href="./usuarios-administracion.php">Usuarios-Administración</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./citas-administracion.php">Citas</a>
+                                <a class="nav-link" href="./citas-administracion.php">Citas-Administración</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./noticias-administracion.php">Noticias</a>
+                                <a class="nav-link" href="./noticias-administracion.php">Noticias-Administración</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="./perfil.php">Perfil</a>
@@ -149,150 +149,152 @@ $users = obtenerUsuarios($conn);
                 </div>
             </div>
         </div>
-        <!-- Desarrollo de la interfaz, para visualizar lo usuarios existentes, modificarlos, o crear nuevos -->
-        
-        <div class="container pt-2" style="margin-bottom: 120px;">
-            <div style="margin-top: 8px; margin-left: 30px;">
-                <h3>Lista de usuarios</h3>
-            </div>
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"> Usuarios </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <!-- Colocaremos aquí dinámicamente los usuarios -->
-                <?php if (!empty($users)): ?>
-                    <?php foreach ($users as $usuario): ?>
-                        <?php if ($usuario['idUser'] !== $_SESSION['usuarioInt']): ?>
-                            <li><a class="dropdown-item" href="#" data-usuario-id="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></a></li>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <li><span class="dropdown-item">No hay usuarios registrados</span></li>
-                <?php endif; ?>
-            </ul>
-            <!-- Formulario donde se muestran los datos del usuario -->
-            <div class="container d-flex justify-content-center align-items-center" style="height: 80vh;">
-                <div class="row justify-content-center">
-                    <div class="col-md-8" style="margin-top: 15px;">
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="home">
-                                <form class="row g-3 needs-validation border border-grey rounded" style="margin-bottom: 65px;" action="" method="post" id="usersForm">
-                                    <!-- Nombre -->
-                                    <div class="col-md-4">
-                                        <label for="nombre">
-                                            <h5>Nombre*</h5>
-                                        </label>
-                                        <input type="text" class="form-control" name="nombre" id="nombre" value=""
-                                            placeholder="Nombre">
-                                    </div>
-                                    <!-- Apellidos -->
-                                    <div class="col-md-4">
-                                        <label for="direccion">
-                                            <h5>Apellidos*</h5>
-                                        </label>
-                                        <input type="text" class="form-control" name="apellidos" id="apellidos" value=""
-                                            placeholder="Apellidos">
-                                    </div>
-                                    <!-- Email -->
-                                    <div class="col-md-4">
-                                        <label for="email">
-                                            <h5>Email*</h5>
-                                        </label>
-                                        <input type="text" class="form-control" name="email" id="email" value=""
-                                            placeholder="Email">
-                                    </div>
-                                    <!-- Teléfono -->
-                                    <div class="col-md-4">
-                                        <label for="telefono">
-                                            <h5>Teléfono*</h5>
-                                        </label>
-                                        <input type="text" class="form-control" name="telefono" id="telefono" value=""
-                                            placeholder="Teléfono">
-                                    </div>
-                                    <!-- Fecha nacimiento -->
-                                    <div class="col-md-4">
-                                        <label for="fenac">
-                                            <h5>Fecha de Nacimiento*</h5>
-                                        </label>
-                                        <input type="fenac" class="form-control" name="fenac" id="fenac" value=""
-                                            placeholder="Fecha de Nacimiento">
-                                    </div>
-                                    <!-- Dirección -->
-                                    <div class="col-md-4">
-                                        <label for="direccion">
-                                            <h5>Dirección</h5>
-                                        </label>
-                                        <input type="text" class="form-control" name="direccion" id="direccion" value="" placeholder="Dirección">
-                                    </div>
-                                    <!-- Selector de Sexo -->
-                                    <div class="col-md-4">
-                                        <label for="sexo"><h5>Sexo</h5></label>
-                                        <select name="sexo" class="form-select" id="sexo">
-                                        <?php if ($data['sexo'] == "Masculino"): ?>
-                                        <!-- Si el valor recogido de la base de datos es "Masculino", muestra esa opción seleccionada -->
-                                        <option value="Masculino">Masculino</option>
-                                        <option value="Femenino">Femenino</option>
-                                        <option value="No indicado">No indicado</option>
-                                        <?php elseif($data['sexo'] == "Femenino"): ?>
-                                        <!-- Si el valor recogido de la base de datos no coincide con "Femenino", muestra solo estas opciones -->
-                                        <option selected value="Femenino">Femenino</option>
-                                        <option value="No indicado">No indicado</option>
-                                        <option value="Masculino">Masculino</option>
-                                        <?php else: ?>
-                                        <!-- Si el valor recogido de la base de datos no coincide con "Masculino" o "Femenino", muestra solo estas opciones -->
-                                        <option value="No indicado">No indicado</option>
-                                        <option value="Femenino">Femenino</option>
-                                        <option value="Masculino">Masculino</option>
-                                        <?php endif; ?>
-                                        </select>
-                                    </div>
-                                    <!-- Usuario -->
-                                    <div class="col-md-4">
-                                        <label for="usuario">
-                                            <h5>Usuario*</h5>
-                                        </label>
-                                        <input type="text" class="form-control" name="usuario" id="usuario" value="" 
-                                            placeholder="Usuario">
-                                    </div>
-                                    <!-- Contraseña -->
-                                    <div class="col-md-4">
-                                        <label for="contrasena">
-                                            <h5>Contraseña*</h5>
-                                        </label>
-                                        <div class="input-group">
-                                            <input type="password" class="form-control" name="contrasena" id="contrasena" value="" placeholder="Contraseña">
-                                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                                <i class="bi bi-eye-fill">Ver</i>
-                                            </button>
+        <section>
+            <!-- Desarrollo de la interfaz, para visualizar lo usuarios existentes, modificarlos, o crear nuevos -->
+            <div class="container pt-2" style="margin-bottom: 30px; margin-top: 50px; ">
+                <div style="margin-left: 80px;">
+                    <h3>Lista de usuarios</h3>
+                </div>
+                <!-- Botón desplegable, para mostrar los usuarios existentes -->
+                <button style="margin-left: 80px;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"> Usuarios </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <!-- Colocaremos aquí dinámicamente los usuarios -->
+                    <?php if (!empty($users)): ?>
+                        <?php foreach ($users as $usuario): ?>
+                            <?php if ($usuario['idUser'] !== $_SESSION['usuarioInt']): ?>
+                                <li><a class="dropdown-item" href="#" data-usuario-id="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></a></li>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <li><span class="dropdown-item">No hay usuarios registrados</span></li>
+                    <?php endif; ?>
+                </ul>
+                <!-- Formulario donde se muestran los datos del usuario -->
+                <div class="container d-flex justify-content-center align-items-center" style="height: 80vh;">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8" style="margin-top: 15px;">
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="home">
+                                    <form class="row g-3 needs-validation border border-grey rounded" style="margin-bottom: 65px;" action="" method="post" id="usersForm">
+                                        <!-- Nombre -->
+                                        <div class="col-md-4">
+                                            <label for="nombre">
+                                                <h5>Nombre*</h5>
+                                            </label>
+                                            <input type="text" class="form-control" name="nombre" id="nombre" value=""
+                                                placeholder="Nombre">
                                         </div>
-                                    </div>
-
-                                    <!-- Rol -->
-                                    <div class="col-md-4">
-                                        <label for="rol">
-                                            <h5>Rol</h5>
-                                        </label>
-                                        <select class="form-control" name="rol" id="rol">
-                                            <option value="user">Usuario</option>
-                                            <option value="admin">Administrador</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-xs-12" style="margin-bottom : 15px;">
-                                        <button class="btn btn-success" type="submit" name="submitSavedata" id="submitSavedata"><i
-                                                class="glyphicon glyphicon-ok-sign"></i> Guardar</button>
-                                        <button class="btn btn-warning" type="reset" name="resetPerfil" id="resetPerfil"><i
-                                                class="glyphicon glyphicon-repeat"></i> Limpiar</button>
-                                        <button class="btn btn-danger" type="button" name="deletePerfil" id="deletePerfil"><i
-                                                class="glyphicon glyphicon-repeat"></i> Eliminar Usuario</button>
-                                        <button class="btn btn-primary" type="submit" name="newUser" id="newUser"><i
-                                                class="glyphicon glyphicon-repeat"></i> Crear usuario</button>
-                                    </div>
-                                </form>
+                                        <!-- Apellidos -->
+                                        <div class="col-md-4">
+                                            <label for="direccion">
+                                                <h5>Apellidos*</h5>
+                                            </label>
+                                            <input type="text" class="form-control" name="apellidos" id="apellidos" value=""
+                                                placeholder="Apellidos">
+                                        </div>
+                                        <!-- Email -->
+                                        <div class="col-md-4">
+                                            <label for="email">
+                                                <h5>Email*</h5>
+                                            </label>
+                                            <input type="text" class="form-control" name="email" id="email" value=""
+                                                placeholder="Email">
+                                        </div>
+                                        <!-- Teléfono -->
+                                        <div class="col-md-4">
+                                            <label for="telefono">
+                                                <h5>Teléfono*</h5>
+                                            </label>
+                                            <input type="text" class="form-control" name="telefono" id="telefono" value=""
+                                                placeholder="Teléfono">
+                                        </div>
+                                        <!-- Fecha nacimiento -->
+                                        <div class="col-md-4">
+                                            <label for="fenac">
+                                                <h5>Fecha de Nacimiento*</h5>
+                                            </label>
+                                            <input type="fenac" class="form-control" name="fenac" id="fenac" value=""
+                                                placeholder="Fecha de Nacimiento">
+                                        </div>
+                                        <!-- Dirección -->
+                                        <div class="col-md-4">
+                                            <label for="direccion">
+                                                <h5>Dirección</h5>
+                                            </label>
+                                            <input type="text" class="form-control" name="direccion" id="direccion" value="" placeholder="Dirección">
+                                        </div>
+                                        <!-- Selector de Sexo -->
+                                        <div class="col-md-4">
+                                            <label for="sexo"><h5>Sexo</h5></label>
+                                            <select name="sexo" class="form-select" id="sexo">
+                                            <?php if ($data['sexo'] == "Masculino"): ?>
+                                            <!-- Si el valor recogido de la base de datos es "Masculino", muestra esa opción seleccionada -->
+                                            <option value="Masculino">Masculino</option>
+                                            <option value="Femenino">Femenino</option>
+                                            <option value="No indicado">No indicado</option>
+                                            <?php elseif($data['sexo'] == "Femenino"): ?>
+                                            <!-- Si el valor recogido de la base de datos no coincide con "Femenino", muestra solo estas opciones -->
+                                            <option selected value="Femenino">Femenino</option>
+                                            <option value="No indicado">No indicado</option>
+                                            <option value="Masculino">Masculino</option>
+                                            <?php else: ?>
+                                            <!-- Si el valor recogido de la base de datos no coincide con "Masculino" o "Femenino", muestra solo estas opciones -->
+                                            <option value="No indicado">No indicado</option>
+                                            <option value="Femenino">Femenino</option>
+                                            <option value="Masculino">Masculino</option>
+                                            <?php endif; ?>
+                                            </select>
+                                        </div>
+                                        <!-- Usuario -->
+                                        <div class="col-md-4">
+                                            <label for="usuario">
+                                                <h5>Usuario*</h5>
+                                            </label>
+                                            <input type="text" class="form-control" name="usuario" id="usuario" value="" 
+                                                placeholder="Usuario">
+                                        </div>
+                                        <!-- Contraseña -->
+                                        <div class="col-md-4">
+                                            <label for="contrasena">
+                                                <h5>Contraseña*</h5>
+                                            </label>
+                                            <div class="input-group">
+                                                <input type="password" class="form-control" name="contrasena" id="contrasena" value="" placeholder="Contraseña">
+                                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                                    <i class="bi bi-eye-fill">Ver</i>
+                                                </button>
+                                            </div>
+                                        </div>
+    
+                                        <!-- Rol -->
+                                        <div class="col-md-4">
+                                            <label for="rol">
+                                                <h5>Rol</h5>
+                                            </label>
+                                            <select class="form-control" name="rol" id="rol">
+                                                <option value="user">Usuario</option>
+                                                <option value="admin">Administrador</option>
+                                            </select>
+                                        </div>
+    
+                                        <div class="col-xs-12" style="margin-bottom : 15px;">
+                                            <button class="btn btn-success" type="submit" name="submitSavedata" id="submitSavedata"><i
+                                                    class="glyphicon glyphicon-ok-sign"></i> Guardar</button>
+                                            <button class="btn btn-warning" type="reset" name="resetPerfil" id="resetPerfil"><i
+                                                    class="glyphicon glyphicon-repeat"></i> Limpiar</button>
+                                            <button class="btn btn-danger" type="button" name="deletePerfil" id="deletePerfil"><i
+                                                    class="glyphicon glyphicon-repeat"></i> Eliminar Usuario</button>
+                                            <button class="btn btn-primary" type="submit" name="newUser" id="newUser"><i
+                                                    class="glyphicon glyphicon-repeat"></i> Crear usuario</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
               
     </main>
     <footer class="footer mt-auto py-3 bg-light">
@@ -327,13 +329,13 @@ $users = obtenerUsuarios($conn);
                 <?php elseif ($data && $data['rol'] === 'admin'): ?>
                     <!-- Menú para administradores logeados -->
                     <li class="nav-item">
-                        <a class="nav-link px-2 text-dark" href="./usuarios-administracion.php">Usuarios</a>
+                        <a class="nav-link px-2 text-dark" href="./usuarios-administracion.php">Usuarios-Administración</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-2 text-dark" href="./citas-administracion.php">Citas</a>
+                        <a class="nav-link px-2 text-dark" href="./citas-administracion.php">Citas-Administración</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-2 text-dark" href="./noticias-administracion.php">Noticias</a>
+                        <a class="nav-link px-2 text-dark" href="./noticias-administracion.php">Noticias-Administración</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link px-2 text-dark" href="./perfil.php">Perfil</a>

@@ -8,28 +8,6 @@ require_once '../views/login.php';
 require_once '../php/conexionDB.php';
 // Conectar a la base de datos
 $conn = conectarDB();
-// Manejar la carga de la imagen
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Verificar si se ha enviado una imagen
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-        // Leer la imagen en bytes
-        $imagen = file_get_contents($_FILES['imagen']['tmp_name']);
-        // Escapar los caracteres especiales
-        $imagen = $conn->real_escape_string($imagen);
-        // Insertar la imagen en la base de datos junto con otros detalles de la noticia
-        $titulo = $_POST['titulo'];
-        $texto = $_POST['texto'];
-        $fePublic = $_POST['fePublic'];
-        $query = "INSERT INTO noticias (titulo, imagen, texto, fecha, idUser) VALUES ('$titulo', '$imagen', '$texto', '$fePublic', 1)";
-        if ($conn->query($query) === TRUE) {
-            echo "La noticia se ha agregado correctamente.";
-        } else {
-            echo "Error al agregar la noticia: " . $conn->error;
-        }
-    } else {
-        echo "Error al cargar la imagen.";
-    }
-}
 // Obtener las noticias
 $noticias = obtenerNoticias($conn);
 // Obtener datos del usuario que se está logeando para saber su rol
@@ -101,13 +79,13 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                         <?php elseif ($data && $data['rol'] === 'admin'): ?>
                             <!-- Menú para administradores logeados -->
                             <li class="nav-item">
-                            <a class="nav-link" href="./usuarios-administracion.php">Usuarios</a>
+                            <a class="nav-link" href="./usuarios-administracion.php">Usuarios-Administración</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./citas-administracion.php">Citas</a>
+                                <a class="nav-link" href="./citas-administracion.php">Citas-Administración</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./noticias-administracion.php">Noticias</a>
+                                <a class="nav-link" href="./noticias-administracion.php">Noticias-Administración</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="./perfil.php">Perfil</a>
@@ -220,13 +198,13 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                 <?php elseif ($data && $data['rol'] === 'admin'): ?>
                     <!-- Menú para administradores logeados -->
                     <li class="nav-item">
-                        <a class="nav-link px-2 text-dark" href="./usuarios-administracion.php">Usuarios</a>
+                        <a class="nav-link px-2 text-dark" href="./usuarios-administracion.php">Usuarios-Administración</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-2 text-dark" href="./citas-administracion.php">Citas</a>
+                        <a class="nav-link px-2 text-dark" href="./citas-administracion.php">Citas-Administración</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-2 text-dark" href="./noticias-administracion.php">Noticias</a>
+                        <a class="nav-link px-2 text-dark" href="./noticias-administracion.php">Noticias-Administración</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link px-2 text-dark" href="./perfil.php">Perfil</a>
@@ -238,23 +216,6 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
             </ul>
         </div>
     </footer>
-    <!-- Script con la Función para mostrar el toast con los mensajes de login enviados desde la función Ajax que recoge los valores desde comprobarLogin-->
-    <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const submitLog = document.getElementById('submitLog');
-                const toastLiveExample = document.getElementById('liveToast');
-                // Función para mostrar el toast
-                function mostrarToast() {
-                    const toast = new bootstrap.Toast(toastLiveExample);
-                    toast.show();
-                }
-
-                if (submitLog){
-                    
-                    submitLog.addEventListener('click', mostrarToast);
-                }
-            });
-    </script>
     <!-- Script pora mostrar el toast de cierre de sesión -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {

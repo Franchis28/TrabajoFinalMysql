@@ -5,7 +5,6 @@ require './database.php';
 require '../php/conexionDB.php';
 // Conectar a la base de datos
 $conn = conectarDB();
-
  // Registro de un nuevo usuario en la base de datos (users_login)
 if(isset($_POST['nombre'])){
     // Validar Campos Formulario Registro Nuevo usuario

@@ -19,7 +19,8 @@ function compararFechas($a, $b) {
 
 // Ordenar las citas pendientes por fecha
 usort($citasPendientes, 'compararFechas');
-
+// Obtener datos del usuario que se está logeando para saber su rol
+$data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -41,22 +42,26 @@ usort($citasPendientes, 'compararFechas');
                 <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <!-- Menú de navegación para visitantes -->
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                        <a class="nav-link" href="../index.php">Portada</a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link" href="./noticias.php">Noticias</a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="./views/citaciones.php">Citas</a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link" href="./perfil.php">Perfil</a>
-                        </li>
-                        <li class="nav-item">
-                            <a id="cerrarSesionLink" class="nav-link" style="cursor: pointer;">Cerrar Sesión</a>
-                        </li>
+                        <?php if ($data && $data['rol'] === 'user'): ?>
+                            <!-- Menú de navegación para usuarios logeados -->
+                            <li class="nav-item">
+                            <a class="nav-link " href="../index.php">Portada</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link " href="./noticias.php">Noticias</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="page" href="./citaciones.php">Citas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="./perfil.php">Perfil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a id="cerrarSesionLink" class="nav-link" style="cursor: pointer;">Cerrar Sesión</a>
+                            </li>
+                        <?php endif; ?>
                     </ul>
                     <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
                     <div class=" px-2">
@@ -105,79 +110,80 @@ usort($citasPendientes, 'compararFechas');
                 </div>
             </div>
         </div>
-        <div style="margin-top: 8px; margin-left: 30px;"><h3>Citaciones</h3></div>
-        <div style="margin-top: 12px; margin-left: 60px;"><h4>Crear Nueva Cita</h4></div>
-        <!-- Formulario para crear nuevas citas -->
-        <div class="container" style="margin-top: 18px;">
-            <div class="row justify-content-center">
-                <div class="col-md-12" style="margin-top: 15px;">
-                    <div class="tab-content">
-                        <form class="row g-3 needs-validation border border-grey rounded" style="margin-bottom: 15px;" action="" method="post" id="citasForm">
-                            <!-- Fecha de la cita -->
-                            <div class="col-md-4">
-                                <label for="fechaCita">
-                                    <h5>Fecha de la Cita</h5>
-                                </label>
-                                <input type="fechaCita" class="form-control" name="fechaCita" id="fechaCita" 
-                                    placeholder="Fecha de la Cita"> 
-                            </div> 
-                            <!-- Motivo de la cita -->
-                            <div class="col-md-8">
-                                <label for="motivo">
-                                    <h5>Motivo de la Cita</h5>
-                                </label>
-                                <textarea class="form-control" name="motivo" id="motivo" 
-                                    placeholder="Motivo"></textarea>
-                            </div>
-                            <div class="col-xs-12" style="margin-bottom : 15px;">
-                                <br>
-                                <button class="btn btn-success" type="submit" name="submitCita" id="submitCita"><i
-                                        class="glyphicon glyphicon-ok-sign"></i> Crear</button>
-                                <button class="btn btn-danger" type="reset" name="resetCita" id="resetCita"><i
-                                        class="glyphicon glyphicon-repeat"></i> Limpiar</button>
-                            </div>
-                        </form>
+        <div class="container" style="margin-top: 8px; "><h3>Citaciones</h3>
+            <h5>Crear Nueva Cita</h5>
+            <!-- Formulario para crear nuevas citas -->
+            <div  style="margin-top: 18px;">
+                <div class="row justify-content-center">
+                    <div class="col-md-12" style="margin-top: 15px;">
+                        <div class="tab-content">
+                            <form class="row g-3 needs-validation border border-grey rounded" style="margin-bottom: 15px;" action="" method="post" id="citasForm">
+                                <!-- Fecha de la cita -->
+                                <div class="col-md-4">
+                                    <label for="fechaCita">
+                                        <h5>Fecha de la Cita</h5>
+                                    </label>
+                                    <input type="text" class="form-control" name="fechaCita" id="fechaCita" 
+                                        placeholder="Fecha de la Cita"> 
+                                </div> 
+                                <!-- Motivo de la cita -->
+                                <div class="col-md-8">
+                                    <label for="motivo">
+                                        <h5>Motivo de la Cita</h5>
+                                    </label>
+                                    <textarea class="form-control" name="motivo" id="motivo" 
+                                        placeholder="Motivo"></textarea>
+                                </div>
+                                <div class="col-xs-12" style="margin-bottom : 15px;">
+                                    <br>
+                                    <button class="btn btn-success" type="submit" name="submitCita" id="submitCita"><i
+                                            class="glyphicon glyphicon-ok-sign"></i> Crear</button>
+                                    <button class="btn btn-danger" type="reset" name="resetCita" id="resetCita"><i
+                                            class="glyphicon glyphicon-repeat"></i> Limpiar</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div style=" margin-left: 60px;"><h4>Citas Pendientes</h4></div>
-        <!-- Formulario para mostrar citas, modificarlas y borrarlas -->
-        <div class="container border border-grey rounded" style="margin-bottom: 165px;">
-            <div class="row justify-content-center">
-                <div class="container text-center my-4">
-                    <div class="row">
-                        <form class="row g-3 needs-validation" style="margin-bottom: 15px;" action="" method="post" id="citasPendientesForm">
-                            <?php foreach ($citasPendientes as $cita): ?>
-                                <div class="col-md-4">
-                                    <div class="card mb-4">
-                                        <div class="card-body">
-                                            <!-- Fecha de la cita -->
-                                            <div class="form-group">
-                                                <label for="fechaCita_<?php echo $cita['idCita']; ?>">Fecha de la Cita</label>
-                                                <input type="text" class="form-control" id="fechaCita_<?php echo $cita['idCita']; ?>" value="<?php echo $cita['fechaCita']; ?>" >
+            <h5>Citas Pendientes</h5>
+            <!-- Formulario para mostrar citas, modificarlas y borrarlas -->
+            <div class="container border border-grey rounded" style="margin-bottom: 165px;">
+                <div class="row justify-content-center">
+                    <div class="container text-center my-4">
+                        <div class="row">
+                            <form class="row g-3 needs-validation" style="margin-bottom: 15px;" action="" method="post" id="citasPendientesForm">
+                                <?php foreach ($citasPendientes as $cita): ?>
+                                    <div class="col-md-4">
+                                        <div class="card mb-4">
+                                            <div class="card-body">
+                                                <!-- Fecha de la cita -->
+                                                <div class="form-group">
+                                                    <label for="fechaCita_<?php echo $cita['idCita']; ?>">Fecha de la Cita</label>
+                                                    <input type="text" class="form-control" id="fechaCita_<?php echo $cita['idCita']; ?>" value="<?php echo $cita['fechaCita']; ?>" >
+                                                </div>
+                                                <!-- Motivo de la cita -->
+                                                <div class="form-group">
+                                                    <label for="motivo_<?php echo $cita['idCita']; ?>">Motivo de la Cita</label>
+                                                    <textarea class="form-control" id="motivo_<?php echo $cita['idCita']; ?>"><?php echo $cita['motivoCita']; ?></textarea>
+                                                </div>
                                             </div>
-                                            <!-- Motivo de la cita -->
-                                            <div class="form-group">
-                                                <label for="motivo_<?php echo $cita['idCita']; ?>">Motivo de la Cita</label>
-                                                <textarea class="form-control" id="motivo_<?php echo $cita['idCita']; ?>"><?php echo $cita['motivoCita']; ?></textarea>
-                                            </div>
+                                            <input type="checkbox" class="citaCheckbox" name="citaSeleccionada[]" value="<?php echo $cita['idCita']; ?>"> Seleccionar
+                                            <input type="hidden" name="idCita[]" value="<?php echo $cita['idCita']; ?>">
                                         </div>
-                                        <input type="checkbox" class="citaCheckbox" name="citaSeleccionada[]" value="<?php echo $cita['idCita']; ?>"> Seleccionar
-                                        <input type="hidden" name="idCita[]" value="<?php echo $cita['idCita']; ?>">
                                     </div>
+                                <?php endforeach; ?>
+                                <div class="card-footer">
+                                    <br>
+                                    <button class="btn btn-success" type="submit" name="modificarCita" id="modificarCita"><i class="glyphicon glyphicon-ok-sign"></i> Modificar</button>
+                                    <button class="btn btn-danger" type="submit" name="borrarCita" id="borrarCita" disabled><i class="glyphicon glyphicon-repeat"></i> Borrar</button>
                                 </div>
-                            <?php endforeach; ?>
-                            <div class="card-footer">
-                                <br>
-                                <button class="btn btn-success" type="submit" name="modificarCita" id="modificarCita"><i class="glyphicon glyphicon-ok-sign"></i> Modificar</button>
-                                <button class="btn btn-danger" type="submit" name="borrarCita" id="borrarCita" disabled><i class="glyphicon glyphicon-repeat"></i> Borrar</button>
-                            </div>
-                        </form>
-                    </div>
-                </div> 
-            </div>
-        </div> 
+                            </form>
+                        </div>
+                    </div> 
+                </div>
+            </div> 
+        </div>
     </main>
 
     <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top bg-light fixed-bottom">

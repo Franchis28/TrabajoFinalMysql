@@ -60,13 +60,13 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                         <?php elseif ($data && $data['rol'] === 'admin'): ?>
                             <!-- Menú para administradores logeados -->
                             <li class="nav-item">
-                            <a class="nav-link" href="./views/usuarios-administracion.php">Usuarios</a>
+                            <a class="nav-link" href="./views/usuarios-administracion.php">Usuarios-Administración</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./views/citas-administracion.php">Citas</a>
+                                <a class="nav-link" href="./views/citas-administracion.php">Citas-Administración</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./views/noticias-administracion.php">Noticias</a>
+                                <a class="nav-link" href="./views/noticias-administracion.php">Noticias-Administración</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="./views/perfil.php">Perfil</a>
@@ -194,13 +194,13 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                 <?php elseif ($data && $data['rol'] === 'admin'): ?>
                     <!-- Menú para administradores logeados -->
                     <li class="nav-item">
-                        <a class="nav-link px-2 text-dark" href="./usuarios-administracion.php">Usuarios</a>
+                        <a class="nav-link px-2 text-dark" href="./usuarios-administracion.php">Usuarios-Administración</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-2 text-dark" href="./citas-administracion.php">Citas</a>
+                        <a class="nav-link px-2 text-dark" href="./citas-administracion.php">Citas-Administración</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-2 text-dark" href="./noticias-administracion.php">Noticias</a>
+                        <a class="nav-link px-2 text-dark" href="./noticias-administracion.php">Noticias-Administración</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link px-2 text-dark" href="./perfil.php">Perfil</a>

@@ -1,4 +1,5 @@
 <?php
+session_start();
 //require para realizar la conexión con la base de datos
 require '../php/database.php';
 // Require para conectarse a la BD
