@@ -160,8 +160,6 @@ $('#citasFormAdmin').submit(function(event) {
         usuarioId : sessionStorage.getItem('usuarioId')
     };
 
-    console.log(citasData);
-
     // Enviar los datos al servidor utilizando AJAX
     $.ajax({
         type: 'POST',
@@ -169,10 +167,7 @@ $('#citasFormAdmin').submit(function(event) {
         data: citasData,
         dataType: 'json',
         success: function(response) {
-            console.log('Respuesta del servidor:', response);
-
             // Manejar la respuesta del servidor
-            console.log('Datos recibidos del servidor');
             if (response.success) {  
                 // Si el inicio de sesión es exitoso, mostrar un mensaje de éxito
                 $('#mensajeCitas').text(response.message).css('color', 'green');
@@ -238,7 +233,7 @@ $('#citasPendientesForm').submit(function(event) {
     // Enviar los datos al servidor utilizando AJAX
     $.ajax({
         type: 'POST',
-        url: '../php/eliminarCitas.php', // Ruta al archivo PHP que maneja la eliminación de citas
+        url: '../php/eliminar_ModificarCitas.php', // Ruta al archivo PHP que maneja la eliminación de citas
         data: citasData,
         dataType: 'json',
         success: function(response) {
@@ -343,7 +338,8 @@ $('#usersForm').submit(function(event){
 });
 // Ajax para eliminar un usuario desde la sección de administrador
 // Manejador de eventos para el botón "Eliminar Usuario"
-$('#deletePerfil').on('click', function() {
+$('#deletePerfil').on('click', function(event) {
+    event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
     let usuarioId = sessionStorage.getItem('usuarioId');
     console.log('Antes de la llamda ajax: ' + usuarioId);
     if (usuarioId > 0) {
@@ -377,7 +373,8 @@ $('#deletePerfil').on('click', function() {
 }
 });
 // Ajax para crear un nuevo usuario desde la sección de administrador
-$('#newUser').on('click', function(){
+$('#newUser').on('click', function(event){
+    event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
     // Obtener los datos del formulario
     var registerData = {
         nombre : $('#nombre').val(),
@@ -419,6 +416,119 @@ $('#newUser').on('click', function(){
         }
     });
 });
+// Ajax para crear noticias desde la parte de administrador
+$('#noticiasForm').on('submit', function(event) {
+    event.preventDefault();
+    var formData = new FormData();
+    formData.append('titulo_noticia', $('#titulo').val());
+    formData.append('texto', $('#texto').val());
+    formData.append('imagen', $('#imagen')[0].files[0]); // Selecciona el archivo de imagen
+    formData.append('fechaPublic', $('#fePublic').val());
+
+    // Añadir usuarioId desde sessionStorage
+    var usuarioId = sessionStorage.getItem('usuarioId');
+    formData.append('usuarioId', usuarioId);
+
+    $.ajax({
+        type: 'POST',
+        url: '../php/procesar_formulario.php',
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: 'json',
+        success: function(response) {
+            // Manejar la respuesta del servidor
+            if (response.success) {
+                $('#mensajeNoticias').text(response.message).css('color', 'green');
+                // Esperar 3 segundos antes de recargar la página
+                setTimeout(function() {
+                    window.location.reload(); // Recargar la página
+                }, 3000); // Tiempo de espera en milisegundos
+            } else {
+                $('#mensajeNoticias').text(response.message).css('color', 'red');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error en la solicitud AJAX:', xhr.responseText);
+            $('#mensajeNoticias').text("Error en la solicitud AJAX. Verifica la consola para más detalles.").css('color', 'red');
+        }
+    });
+});
+// Ajax para para eliminar las noticias seleccionadas de la bd
+$('#borrarNoticia').on('click', function(event){
+    event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
+    // Crear un array para almacenar los valores de los checkboxes seleccionados
+    var noticiasSeleccionadas = [];
+    // Iterar sobre los checkboxes seleccionados
+    $('input[name="noticiaSeleccionada[]"]:checked').each(function() {
+        noticiasSeleccionadas.push($(this).val());
+    });
+    // Verificar si hay noticias seleccionadas para eliminar
+    if (noticiasSeleccionadas.length > 0) {
+        // Enviar los datos al servidor utilizando AJAX
+        $.ajax({
+            type: 'POST',
+            url: '../php/eliminarNoticias.php', // Ruta al archivo PHP que maneja la eliminación de noticias
+            data: { noticiaSeleccionada: noticiasSeleccionadas }, // Enviar solo los IDs de las noticias seleccionadas
+            dataType: 'json',
+            success: function(response) {
+                console.log('Respuesta del servidor:', response);
+
+                if (response.success) {  
+                    // Si la eliminación de noticias es exitosa, mostrar un mensaje de éxito
+                    $('#mensajeNoticias').text(response.message).css('color', 'green');
+
+                    // Esperar 3 segundos antes de recargar la página
+                    setTimeout(function() {
+                        window.location.reload(); // Recargar la página
+                    }, 3000); // Tiempo de espera en milisegundos (2 segundos en este caso)
+                    
+                } else {
+                    // Si la eliminación de noticias falla, mostrar un mensaje de error
+                    $('#mensajeNoticias').text(response.message).css('color', 'red');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error en la solicitud AJAX:', xhr.responseText);
+            }
+        });
+    } else {
+        // Mostrar un mensaje si no se seleccionaron noticias para eliminar
+        $('#mensajeNoticias').text('No se han seleccionado noticias para eliminar').css('color', 'red');
+    }
+});
+// Ajax para modificar las noticias del usuario seleccionado
+$('#modificarNoticia').on('click', function(event) {
+    event.preventDefault(); // Evitar que el formulario se envíe de forma predeterminada
+
+    // Recoger los datos del formulario y almacenarlos para enviarlos por AJAX al servidor
+    var noticiasData = new FormData($('#noticiasDeleteUploadForm')[0]); // Usar FormData para manejar archivos
+
+    // Enviar datos al servidor utilizando AJAX
+    $.ajax({
+        type: 'POST',
+        url: '../php/modificarNoticias.php', // Ruta al archivo PHP que maneja la eliminación y modificación de noticias
+        data: noticiasData,
+        dataType: 'json',
+        processData: false, // No procesar datos (FormData maneja la carga de archivos)
+        contentType: false, // No configurar el tipo de contenido (FormData maneja la carga de archivos)
+        success: function(response) {
+            console.log('Respuesta del servidor:', response);
+
+            if (response.success) {
+                // Mostrar mensaje de éxito
+                $('#mensajeNoticias').text(response.message).css('color', 'green');
+            } else {
+                // Mostrar mensaje de error
+                $('#mensajeNoticias').text(response.message).css('color', 'red');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error en la solicitud AJAX:', xhr.responseText);
+        }
+    });
+});
+
 // Comprobación de que el DOM está cargado completamente
 $(document).ready(function() {
 });

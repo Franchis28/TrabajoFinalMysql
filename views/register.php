@@ -44,11 +44,11 @@ $conn = conectarDB();
                         </li>
                     </ul>
                     <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
-                    <div class=" px-2">
+                    <div class="px-2">
                     <?php
                         // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
                         if(!empty($_SESSION['usuarioStr'])) {
-                            echo  $_SESSION['usuarioStr'] ;
+                            echo $_SESSION['usuarioStr'];
                         } else {
                             echo '<p class="fs-6">Ningún usuario está conectado actualmente</p>';
                         } 
@@ -74,41 +74,36 @@ $conn = conectarDB();
             </div>
         </div>
         <!-- Formulario registro nuevos usuarios -->
-        <div style="margin-top: 8px; margin-left: 30px;"><h3>Registro para Nuevos Usuarios</h3></div>
         <div class="container my-4">
-            <div class="container d-flex justify-content-center align-items-center" style="height: 80vh;">
+            <h3>Registro para Nuevos Usuarios</h3>
+            <div class="row justify-content-center align-items-center" style="min-height: 80vh; margin-bottom: 140px;">
                 <!-- Diseño de la página de Registro datos de usuarios -->
-                <form class="row g-3 needs-validation justify-content-center border border-grey rounded" style="margin-bottom: 65px;" novalidate action="" method="post" id="register">
-                    <div class="col-md-4">
+                <form class="row g-3 needs-validation justify-content-center border border-grey rounded p-3" novalidate action="" method="post" id="register">
+                    <div class="col-md-6 col-lg-4">
                         <label for="nombre" class="form-label">Nombre*</label>
                         <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Nombre">
-                        
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6 col-lg-4">
                         <label for="apellidos" class="form-label">Apellidos*</label>
                         <input type="text" name="apellidos" class="form-control" id="apellidos" placeholder="Apellido1 Apellido2">
-                        
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6 col-lg-4">
                         <label for="email" class="form-label">Email*</label>
                         <input type="text" name="email" class="form-control" id="email" placeholder="email@.">
-                        
                     </div>  
-                    <div class="col-md-4">
+                    <div class="col-md-6 col-lg-4">
                         <label for="telefono" class="form-label">Teléfono*</label>
                         <input type="text" name="telefono" class="form-control" id="telefono" placeholder="Teléfono">
-                        
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6 col-lg-4">
                         <label for="fenac" class="form-label">Fecha de Nacimiento:*</label>
-                        <input type="text" name="fenac" class="form-control" id="fenac" placeholder="Fecha Nacimiento" autocomplete="off">
+                        <input type="date" name="fenac" class="form-control" id="fenac" placeholder="Fecha Nacimiento" autocomplete="off">
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6 col-lg-4">
                         <label for="direccion" class="form-label">Dirección</label>
                         <input type="text" name="direccion" class="form-control" id="direccion" placeholder="Calle-Bloque-Numero">
-                        
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6 col-lg-4">
                         <label for="sexo" class="form-label">Sexo</label>
                         <select name="sexo" class="form-select" id="sexo">
                         <option selected value="No indicado">No indicado</option>
@@ -116,7 +111,7 @@ $conn = conectarDB();
                         <option value="Femenino">Femenino</option>
                         </select>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6 col-lg-4">
                         <label for="usuario" class="form-label">Nombre de Usuario*</label>
                         <div class="input-group has-validation">
                         <input type="text" name="usuario" class="form-control" id="usuario" aria-describedby="inputGroupPrepend" placeholder="Correo Electrónico">
@@ -124,7 +119,7 @@ $conn = conectarDB();
                         </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6 col-lg-4">
                         <label for="contrasena" class="form-label">Contraseña*</label>
                         <div class="input-group">
                             <input type="password" name="contrasena" class="form-control" id="contrasena" placeholder="Rftghyse*!">
@@ -133,7 +128,6 @@ $conn = conectarDB();
                             </button>
                         </div>
                     </div>
-                    
                     <div class="col-12">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="1" id="terminosCondiciones" name="terminosCondiciones">
@@ -142,11 +136,10 @@ $conn = conectarDB();
                             </label>   
                             <!-- Campo oculto adicional para enviar el valor -->
                             <input type="hidden" id="terminosCondicionesHidden" name="terminosCondicionesHidden" value="0">
-        
                         </div>
                     </div>
                     <div class="col-12">
-                        <input class="btn btn-primary" type="submit"id="submitReg" name="submitReg"><br><br>
+                        <input class="btn btn-primary" type="submit" id="submitReg" name="submitReg"><br><br>
                         <p>En caso de ya estar registrad@, <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#exampleModal">haga click aquí.</a></p>
                     </div>
                 </form>
@@ -164,7 +157,7 @@ $conn = conectarDB();
             <li class="nav-item"><a href="../index.php" class="nav-link px-2 text-dark">Portada</a></li>
             <li class="nav-item"><a href="./noticias.php" class="nav-link px-2 text-dark">Noticias</a></li>
             <li class="nav-item"><a href="./register.php" class="nav-link px-2 text-dark">Registro</a></li>
-            <li class="nav-item"><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="nav-link px-2 text-dark">Inicio de Seción</a></li>
+            <li class="nav-item"><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="nav-link px-2 text-dark">Inicio de Sesión</a></li>
         </ul>
     </footer>
      <!-- Script con la Función para mostrar el toast con los mensajes de login enviados desde la función Ajax que recoge los valores desde comprobarLogin-->
@@ -185,10 +178,9 @@ $conn = conectarDB();
                 }
                 if(submitReg){
                     submitReg.addEventListener('click', mostrarToast);
-
                 }
             });
-        </script>
+    </script>
     <!-- Script para asignar valor al estado del checkbox de terminos y condiciones -->
     <script>
         // Espera a que se cargue completamente el contenido de la página
@@ -207,10 +199,6 @@ $conn = conectarDB();
     <!-- Enlaces con librerias externas -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- Bootstrap Datepicker JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-    <!-- Enlaces a JavaScript -->
-    <script src="../js/newScript.js"></script>
     <script src="../js/ajax.js"></script>
 
     <!-- Script para establecer el foco en el campo nombre -->

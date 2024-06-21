@@ -6,6 +6,7 @@ require '../php/database.php';
 require '../php/conexionDB.php';
 // Conectar a la base de datos
 $conn = conectarDB();
+// Verifica si hay datos en el $_POST
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
     // Obtener el usuario que está conectado actualmente
     $user_id = $_SESSION['usuarioInt'];

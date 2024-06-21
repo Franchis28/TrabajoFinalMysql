@@ -1,76 +1,65 @@
 <?php
+// Habilitar reporte de errores para depuración
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Conexión a la base de datos
 include './database.php';
-// Require para conectarse a la BD
 require '../php/conexionDB.php';
+
 // Conectar a la base de datos
 $conn = conectarDB();
-// Verificar si se ha enviado una imagen
-if (isset($_FILES['imagen'])) {
-    // Obtener los datos de la imagen
-    $nombre_imagen = $_FILES['imagen']['name'];
-    $tipo_imagen = $_FILES['imagen']['type'];
-    $ruta_imagen_temporal = $_FILES['imagen']['tmp_name'];
 
-    // Redimensionar la imagen
-    list($ancho_orig, $alto_orig) = getimagesize($ruta_imagen_temporal);
+// Verifica si hay datos en el $_POST
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Recoger los datos enviados por Ajax
+    if (!empty($_POST['titulo_noticia']) && !empty($_POST['texto']) && !empty($_FILES['imagen']['tmp_name']) && !empty($_POST['fechaPublic'])) {
+        
+        // Obtener los datos de la imagen y Sanitizar datos del formulario
+        $titulo_noticia = $conn->real_escape_string(strip_tags($_POST['titulo_noticia']));
+        $texto = $conn->real_escape_string(strip_tags($_POST['texto']));
+        $fechaPublic = $conn->real_escape_string(strip_tags($_POST['fechaPublic']));
+        $usuarioId = $conn->real_escape_string(strip_tags($_POST['usuarioId']));
 
-    $ancho_nuevo = 200; // Define el ancho deseado para todas las imágenes
-    $alto_nuevo = 200; // Define el alto deseado para todas las imágenes
-
-    $imagen_nueva = imagecreatetruecolor($ancho_nuevo, $alto_nuevo);
-
-    // Determinar el tipo de imagen y cargarla
-    switch ($tipo_imagen) {
-        case 'image/jpeg':
-            $imagen_orig = imagecreatefromjpeg($ruta_imagen_temporal);
-            break;
-        case 'image/png':
-            $imagen_orig = imagecreatefrompng($ruta_imagen_temporal);
-            break;
-        case 'image/gif':
-            $imagen_orig = imagecreatefromgif($ruta_imagen_temporal);
-            break;
-        default:
-            echo "Formato de imagen no soportado.";
+        // Manejar la imagen subida
+        if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
+            $imagen = file_get_contents($_FILES['imagen']['tmp_name']);
+        } else {
+            echo json_encode(['success' => false, 'message' => "Error al cargar la imagen."]);
             exit;
-    }
+        }
 
-    // Redimensionar la imagen
-    imagecopyresampled($imagen_nueva, $imagen_orig, 0, 0, 0, 0, $ancho_nuevo, $alto_nuevo, $ancho_orig, $alto_orig);
+        // Antes de intentar hacer la inserción de la nueva noticia en la bd, debemos verificar que ese título no está en uso por otra noticia
+        // Preparamos la consulta a ejecutar
+        $sqlTitulo = "SELECT titulo FROM noticias WHERE titulo = '$titulo_noticia'";
+        $result = $conn->query($sqlTitulo);
 
-    // Almacenar la imagen redimensionada en un búfer de salida
-    ob_start();
-    switch ($tipo_imagen) {
-        case 'image/jpeg':
-            imagejpeg($imagen_nueva);
-            break;
-        case 'image/png':
-            imagepng($imagen_nueva);
-            break;
-        case 'image/gif':
-            imagegif($imagen_nueva);
-            break;
-    }
-    $imagen_binaria = ob_get_clean(); // Obtener la imagen redimensionada del búfer de salida
+        // Ejecutamos la consulta y si se da el caso de que coincide algún registro, lo notificamos al usuario
+        if ($result->num_rows > 0) {
+            echo json_encode(['success' => false, 'message' => "Ese título ya está en uso en otra noticia, modifícalo por favor"]);
+        } else {
+            // Consultar para insertar los datos en la tabla noticias
+            $sql = "INSERT INTO noticias (idUser, imagen, titulo, texto, fecha) VALUES (?, ?, ?, ?, ?)";
 
-    // Insertar la imagen en la base de datos
-    $sql = "INSERT INTO noticias (idUser, imagen) VALUES (?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ib", $clave_externa, $imagen_binaria);
-    $stmt->execute();
+            // Preparar y ejecutar la consulta
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param('ibsss', $usuarioId, $imagen, $titulo_noticia, $texto, $fechaPublic);
+            $stmt->send_long_data(1, $imagen);
 
-    // Verificar si se insertó correctamente
-    if ($stmt->affected_rows > 0) {
-        echo "La imagen se ha subido correctamente a la base de datos.";
+            if ($stmt->execute()) {
+                echo json_encode(['success' => true, 'message' => "Noticia insertada correctamente"]);
+            } else {
+                echo json_encode(['success' => false, 'message' => "Error: " . $stmt->error]);
+            }
+
+            // Cerrar la declaración y la conexión
+            $stmt->close();
+        }
+        $conn->close();
     } else {
-        echo "Error al subir la imagen.";
+        echo json_encode(['success' => false, 'message' => "Por favor rellene todos los campos"]);
     }
-
-    // Cerrar la declaración y la conexión
-    $stmt->close();
-    $conn->close();
+} else {
+    echo json_encode(['success' => false, 'message' => 'Método de solicitud no válido']);
 }
 ?>
-
-

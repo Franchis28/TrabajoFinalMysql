@@ -213,7 +213,7 @@ $users = obtenerUsuarios($conn);
                                             <label for="fenac">
                                                 <h5>Fecha de Nacimiento*</h5>
                                             </label>
-                                            <input type="fenac" class="form-control" name="fenac" id="fenac" value=""
+                                            <input type="date" class="form-control" name="fenac" id="fenac" value=""
                                                 placeholder="Fecha de Nacimiento">
                                         </div>
                                         <!-- Dirección -->

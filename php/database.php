@@ -14,6 +14,39 @@ function obtenerNoticias($conn) {
     }
     return $noticias;
 }
+//Consulta SQL para recopilar los datos de las noticias de la tabla noticias
+function obtenerNoticiasAdmin($conn, $user) {
+    // Preparamos la consulta SQL
+    $sql = "SELECT noticias.*, users_data.nombre AS nombre_autor
+            FROM noticias
+            INNER JOIN users_data ON noticias.idUser = users_data.idUser
+            WHERE noticias.idUser = ?";
+    
+    // Preparamos la declaración
+    $stmt = $conn->prepare($sql);
+    
+    // Asignamos los parámetros
+    $stmt->bind_param("i", $user);
+
+    // Ejecutamos la consulta
+    $stmt->execute();
+
+    // Obtenemos el resultado
+    $resultado = $stmt->get_result();
+
+    $noticias = array();
+    if ($resultado && $resultado->num_rows > 0) {
+        while($fila = $resultado->fetch_assoc()) {
+            $noticias[] = $fila;
+        }
+    }
+
+    // Cerramos la declaración
+    $stmt->close();
+    
+    return $noticias;
+}
+
 // Consulta SQL para obtener los datos de un usuario ya registrado de la tabla users_data y mostrarlos en la página de perfil
 function obtenerDatos($conn) {
     // Si existe un usuario logeado, pasamos a realizar la consulta de los datos
@@ -80,4 +113,5 @@ function obtenerUsuarios($conn){
     // Retornamos el array con los usuarios
     return $users;
 }
+
 ?>

@@ -22,21 +22,28 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <style>
         .footer {
-        position: relative;
-        bottom: 0;
-        width: 100%;
-        display: flex;
-        flex-shrink: 0;
-    }
-    @media (max-width: 767.98px) {
-        .footer .container {
-            flex-direction: column;
-            align-items: center;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            display: flex;
+            flex-shrink: 0;
         }
-        .footer ul {
-            margin-top: 1rem;
+        @media (max-width: 767.98px) {
+            .footer .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .footer ul {
+                margin-top: 1rem;
+            }
         }
-    }
+        .card-text {
+            display: -webkit-box;
+            -webkit-line-clamp: 4; /* Limita el texto a 4 líneas */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     </style>
 </head>
 <body>
@@ -45,13 +52,13 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
             <div class="container-fluid">
                 <a class="navbar-brand" href="../index.php">FranPage</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+                    <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Menú de navegación para visitantes -->
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link "  href="../index.php">Portada</a>
+                            <a class="nav-link " href="../index.php">Portada</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="./noticias.php">Noticias</a>
@@ -79,7 +86,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                         <?php elseif ($data && $data['rol'] === 'admin'): ?>
                             <!-- Menú para administradores logeados -->
                             <li class="nav-item">
-                            <a class="nav-link" href="./usuarios-administracion.php">Usuarios-Administración</a>
+                                <a class="nav-link" href="./usuarios-administracion.php">Usuarios-Administración</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="./citas-administracion.php">Citas-Administración</a>
@@ -96,7 +103,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                         <?php endif; ?>
                     </ul>
                     <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
-                    <div class=" px-2">
+                    <div class="px-2">
                     <?php
                         // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
                         if(!empty($_SESSION['usuarioStr'])) {
@@ -147,10 +154,10 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                 <h3>Las últimas Noticias</h3>
                 <!-- Mostrar las noticias -->
                 <div class="container text-center my-4">
-                    <div class="row gap-3">
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
                         <?php foreach ($noticias as $noticia): ?>
                         <div class="col">
-                            <div class="card" style="width: 18rem;">
+                            <div class="card h-60">
                                 <!-- Mostrar la imagen de la noticia -->
                                 <img src="data:image/jpeg;base64,<?php echo base64_encode($noticia['imagen']); ?>" class="card-img-top" alt="Imagen Noticia">
                                 <div class="card-body">
@@ -216,6 +223,23 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
             </ul>
         </div>
     </footer>
+    <!-- Script con la Función para mostrar el toast con los mensajes de login enviados desde la función Ajax que recoge los valores desde comprobarLogin-->
+    <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const submitLog = document.getElementById('submitLog');
+                const toastLiveExample = document.getElementById('liveToast');
+                // Función para mostrar el toast
+                function mostrarToast() {
+                    const toast = new bootstrap.Toast(toastLiveExample);
+                    toast.show();
+                }
+
+                if (submitLog){
+                    
+                    submitLog.addEventListener('click', mostrarToast);
+                }
+            });
+    </script>
     <!-- Script pora mostrar el toast de cierre de sesión -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {

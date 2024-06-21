@@ -123,7 +123,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                                     <label for="fechaCita">
                                         <h5>Fecha de la Cita</h5>
                                     </label>
-                                    <input type="text" class="form-control" name="fechaCita" id="fechaCita" 
+                                    <input type="date" class="form-control" name="fechaCita" id="fechaCita" 
                                         placeholder="Fecha de la Cita"> 
                                 </div> 
                                 <!-- Motivo de la cita -->
@@ -153,26 +153,30 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                     <div class="container text-center my-4">
                         <div class="row">
                             <form class="row g-3 needs-validation" style="margin-bottom: 15px;" action="" method="post" id="citasPendientesForm">
-                                <?php foreach ($citasPendientes as $cita): ?>
-                                    <div class="col-md-4">
-                                        <div class="card mb-4">
-                                            <div class="card-body">
-                                                <!-- Fecha de la cita -->
-                                                <div class="form-group">
-                                                    <label for="fechaCita_<?php echo $cita['idCita']; ?>">Fecha de la Cita</label>
-                                                    <input type="text" class="form-control" id="fechaCita_<?php echo $cita['idCita']; ?>" value="<?php echo $cita['fechaCita']; ?>" >
+                                <?php if (!empty($citasPendientes)): ?>
+                                    <?php foreach ($citasPendientes as $cita): ?>
+                                        <div class="col-md-4">
+                                            <div class="card mb-4">
+                                                <div class="card-body">
+                                                    <!-- Fecha de la cita -->
+                                                    <div class="form-group">
+                                                        <label for="fechaCita_<?php echo $cita['idCita']; ?>">Fecha de la Cita</label>
+                                                        <input type="date" class="form-control" id="fechaCita_<?php echo $cita['idCita']; ?>" value="<?php echo $cita['fechaCita']; ?>" >
+                                                    </div>
+                                                    <!-- Motivo de la cita -->
+                                                    <div class="form-group">
+                                                        <label for="motivo_<?php echo $cita['idCita']; ?>">Motivo de la Cita</label>
+                                                        <textarea class="form-control" id="motivo_<?php echo $cita['idCita']; ?>"><?php echo $cita['motivoCita']; ?></textarea>
+                                                    </div>
                                                 </div>
-                                                <!-- Motivo de la cita -->
-                                                <div class="form-group">
-                                                    <label for="motivo_<?php echo $cita['idCita']; ?>">Motivo de la Cita</label>
-                                                    <textarea class="form-control" id="motivo_<?php echo $cita['idCita']; ?>"><?php echo $cita['motivoCita']; ?></textarea>
-                                                </div>
+                                                <input type="checkbox" class="citaCheckbox" name="citaSeleccionada[]" value="<?php echo $cita['idCita']; ?>"> Seleccionar
+                                                <input type="hidden" name="idCita[]" value="<?php echo $cita['idCita']; ?>">
                                             </div>
-                                            <input type="checkbox" class="citaCheckbox" name="citaSeleccionada[]" value="<?php echo $cita['idCita']; ?>"> Seleccionar
-                                            <input type="hidden" name="idCita[]" value="<?php echo $cita['idCita']; ?>">
                                         </div>
-                                    </div>
-                                <?php endforeach; ?>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <li><span class="dropdown-item">No hay citas registradas para este usuario</span></li>
+                                <?php endif; ?>
                                 <div class="card-footer">
                                     <br>
                                     <button class="btn btn-success" type="submit" name="modificarCita" id="modificarCita"><i class="glyphicon glyphicon-ok-sign"></i> Modificar</button>
@@ -265,10 +269,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
     <!-- Enlaces con librerias externas -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- Bootstrap Datepicker JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <!-- Enlaces a JavaScript -->
-    <script src="../js/newScript.js"></script>
     <script src="../js/ajax.js"></script>
     <!-- Script para habilitar el botón de borrar cita, si al menos hay un chackbox seleccionado -->
     <script>

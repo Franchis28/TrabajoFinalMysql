@@ -8,8 +8,6 @@ require '../php/conexionDB.php';
 $conn = conectarDB();
 // Obtener el usuario que está conectado actualmente
 $user_id = $_SESSION['usuarioInt'];
-// Llamada a la función para la obtención de los datos del usuario logeado
-$citasUser = obtenerDatos($conn);
 // Obtener los datos de los usuarios registrados
 $users = obtenerUsuarios($conn);
 // Inicializar variables para el usuario seleccionado
@@ -214,7 +212,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                                 <label for="fechaCita">
                                     <h5>Fecha de la Cita</h5>
                                 </label>
-                                <input type="text" class="form-control" name="fechaCita" id="fechaCita" 
+                                <input type="date" class="form-control" name="fechaCita" id="fechaCita" 
                                     placeholder="Fecha de la Cita"> 
                             </div> 
                             <!-- Motivo de la cita -->
@@ -251,7 +249,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                                                     <!-- Fecha de la cita -->
                                                     <div class="form-group">
                                                         <label for="fechaCita_<?php echo $cita['idCita']; ?>">Fecha de la Cita</label>
-                                                        <input type="text" class="form-control" id="fechaCita_<?php echo $cita['idCita']; ?>" value="<?php echo $cita['fechaCita']; ?>" >
+                                                        <input type="date" class="form-control" id="fechaCita_<?php echo $cita['idCita']; ?>" value="<?php echo $cita['fechaCita']; ?>" >
                                                     </div>
                                                     <!-- Motivo de la cita -->
                                                     <div class="form-group">
@@ -329,7 +327,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
             </ul>
         </div>
     </footer>
-    <!-- Script con la Función para mostrar el toast con los mensajes de login enviados desde la función Ajax que recoge los valores desde comprobarLogin-->
+    <!-- Script con la Función para mostrar el toast con los mensajes de login enviados desde la función Ajax -->
     <script>
             document.addEventListener('DOMContentLoaded', function() {
                 const submitCita = document.getElementById('submitCita');
@@ -381,16 +379,15 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
            
         });
     </script>
-    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>    
     <!-- Bootstrap Datepicker JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>  
     <script src="../js/newScript.js"></script>
     <script src="../js/ajax.js"></script>
-    <!-- Script para mostrar los datos del usuario en función del que haya sido seleccionado -->
-    <script>
-        $(document).ready(function() {
+    <!-- Scripts Varios Del documento -->
+    <script> 
+        // Script para mostrar los datos de la cita del usuario en función del que haya sido seleccionado
         $('.dropdown-item').on('click', function() {
             let usuarioId = $(this).data('usuario-id');
             let usuarioNombre = $(this).text();  // Obtener el nombre del usuario desde el texto del elemento
@@ -419,24 +416,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                 $('#borrarCita').prop('disabled', true);
             }
         });
-    });
-    </script>
-     <script>
         $(document).ready(function() {
-            // Deshabilitar el botón de Borrar inicialmente
-            $('#borrarCita').prop('disabled', true);
-
-            // Agregar controlador de eventos a los checkboxes
-            $('.citaCheckbox').change(function() {
-                // Verificar si al menos uno de los checkboxes está seleccionado
-                if ($('.citaCheckbox:checked').length > 0) {
-                    // Habilitar el botón de Borrar si hay al menos uno seleccionado
-                    $('#borrarCita').prop('disabled', false);
-                } else {
-                    // Deshabilitar el botón de Borrar si no hay ningún checkbox seleccionado
-                    $('#borrarCita').prop('disabled', true);
-                }
-            });
         });
     </script>
 </body>
