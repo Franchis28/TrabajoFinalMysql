@@ -126,14 +126,13 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                         <?php endif; ?>
                     </ul>
                     <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
-                    <div class=" px-2">
+                    <div class="d-flex">
                     <?php
-                        // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
                         if(!empty($_SESSION['usuarioStr'])) {
-                            echo  $_SESSION['usuarioStr'] ;
+                            echo $_SESSION['usuarioStr'];
                         } else {
-                            echo '<p class="fs-6">Ningún usuario está conectado actualmente</p>';
-                        } 
+                            echo '<p class="fs-6 mb-0">Ningún usuario está conectado actualmente</p>';
+                        }
                     ?>
                     </div>
                 </div>
@@ -172,30 +171,26 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                 </div>
             </div>
         </div>
-        <div class="container" style="margin-top: 55px;">
+        <div class="container" style="margin-top: 60px;">
             <h3>Citaciones</h3>
-            <div style="margin-left: 10px;">
-                <h6>Seleccione un usuario</h6>      
+            <div>    
                 <!-- Botón desplegable, para mostrar los usuarios existentes -->
                 <form method="post" action="">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"> Usuarios </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <?php if (!empty($users)): ?>
-                            <?php foreach ($users as $usuario): ?>
-                                <?php if ($usuario['idUser'] !== $_SESSION['usuarioInt']): ?>
-                                    <li><button class="dropdown-item" type="submit" name="usuarioSeleccionado"data-usuario-id="<?= $usuario['idUser'] ?>" value="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></button></li>
-                                <?php endif; ?>
+                            <?php foreach ($users as $usuario): ?><li><button class="dropdown-item" type="submit" name="usuarioSeleccionado"data-usuario-id="<?= $usuario['idUser'] ?>" value="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></button></li>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <li><span class="dropdown-item">No hay usuarios registrados</span></li>
                         <?php endif; ?>
                     </ul>
-                <!-- Mostrar el nombre del usuario seleccionado -->
-                <h5 id="nombreUsuarioSeleccionado" style="margin-left: 10px; display: <?= empty($selected_user_id) ? 'none' : 'inline-block' ?>;">
-                    <?php echo 'Usuario seleccionado: ' . htmlspecialchars($selected_user_nombre); ?>
-                </h5>
+                    <!-- Mostrar el nombre del usuario seleccionado -->
+                    <h5 id="nombreUsuarioSeleccionado" style="margin-left: 10px; display: <?= empty($selected_user_id) ? 'none' : 'inline-block' ?>;">
+                        <?php echo 'Usuario seleccionado: ' . htmlspecialchars($selected_user_nombre); ?>
+                    </h5>
                 </form>
-                
+            </div>
         </div>
         <!-- Incluir el formulario oculto -->
         <form id="usuarioSeleccionadoForm" method="POST" action="">

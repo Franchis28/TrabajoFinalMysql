@@ -2,8 +2,6 @@
 session_start();
 //Include para realizar la conexión con la base de datos
 require_once '../php/database.php';
-// Include para la modal de inicio de sesion (login)
-require_once '../views/login.php';
 // Require para conectarse a la BD
 require_once '../php/conexionDB.php';
 // Conectar a la base de datos
@@ -39,7 +37,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
         }
         .card-text {
             display: -webkit-box;
-            -webkit-line-clamp: 4; /* Limita el texto a 4 líneas */
+            -webkit-line-clamp: 8; /* Limita el texto a 4 líneas */
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -103,14 +101,13 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                         <?php endif; ?>
                     </ul>
                     <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
-                    <div class="px-2">
+                    <div class="d-flex">
                     <?php
-                        // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
                         if(!empty($_SESSION['usuarioStr'])) {
-                            echo  $_SESSION['usuarioStr'] ;
+                            echo $_SESSION['usuarioStr'];
                         } else {
-                            echo '<p class="fs-6">Ningún usuario está conectado actualmente</p>';
-                        } 
+                            echo '<p class="fs-6 mb-0">Ningún usuario está conectado actualmente</p>';
+                        }
                     ?>
                     </div>
                 </div>
@@ -173,6 +170,9 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
             </div>
         </section>
     </main>
+    <?php 
+    // Include para la modal de inicio de sesion (login)
+    include '../views/login.php'; ?>
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container d-flex flex-wrap justify-content-between align-items-center">
             <p class="col-12 col-md-6 mb-0 text-center text-md-start">© 2024 FranPage</p>

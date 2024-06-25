@@ -95,14 +95,13 @@ $datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                         <?php endif; ?>
                     </ul>
                     <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
-                    <div class=" px-2">
+                    <div class="d-flex">
                     <?php
-                        // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
                         if(!empty($_SESSION['usuarioStr'])) {
-                            echo  $_SESSION['usuarioStr'] ;
+                            echo $_SESSION['usuarioStr'];
                         } else {
-                            echo '<p class="fs-6">Ningún usuario está conectado actualmente</p>';
-                        } 
+                            echo '<p class="fs-6 mb-0">Ningún usuario está conectado actualmente</p>';
+                        }
                     ?>
                     </div>
                 </div>
@@ -233,9 +232,6 @@ $datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                                     </label>
                                     <div class="input-group">
                                         <input type="password" class="form-control" name="contrasena" id="contrasena" value="" placeholder="Contraseña">
-                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                            <i class="bi bi-eye-fill">Ver</i>
-                                        </button>
                                     </div>
                                 </div>
                                 <div class="col-xs-12" style="margin-bottom : 15px;">
@@ -350,21 +346,5 @@ $datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Enlaces a JavaScript -->
     <script src="../js/ajax.js"></script>
-    <!-- Script para que el usuario pueda ver la contraseña si lo desea -->
-    <script>
-        $(document).ready(function() {
-            $('#togglePassword').on('click', function() {
-                const passwordField = $('#password');
-                const passwordFieldType = passwordField.attr('type');
-                if (passwordFieldType === 'password') {
-                    passwordField.attr('type', 'text');
-                    $('#togglePassword').html('<i class="bi bi-eye-slash-fill">Ocultar</i>');
-                } else {
-                    passwordField.attr('type', 'password');
-                    $('#togglePassword').html('<i class="bi bi-eye-fill">Ver</i>');
-                }
-            });
-        });
-    </script>
 </body>
 </html>

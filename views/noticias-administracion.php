@@ -57,6 +57,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                 margin-top: 1rem;
             }
         }
+        
     </style>
 </head>
 <body>
@@ -110,14 +111,15 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                             </li>
                         <?php endif; ?>
                     </ul>
-                    <div class="px-2">
-                        <?php
+                    <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
+                    <div class="d-flex">
+                    <?php
                         if(!empty($_SESSION['usuarioStr'])) {
                             echo $_SESSION['usuarioStr'];
                         } else {
-                            echo '<p class="fs-6">Ningún usuario está conectado actualmente</p>';
+                            echo '<p class="fs-6 mb-0">Ningún usuario está conectado actualmente</p>';
                         }
-                        ?>
+                    ?>
                     </div>
                 </div>
             </div>
@@ -164,9 +166,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <?php if (!empty($users)): ?>
                             <?php foreach ($users as $usuario): ?>
-                                <?php if ($usuario['idUser'] !== $_SESSION['usuarioInt']): ?>
-                                    <li><button class="dropdown-item" type="submit" name="usuarioSeleccionado"data-usuario-id="<?= $usuario['idUser'] ?>" value="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></button></li>
-                                <?php endif; ?>
+                                <li><button class="dropdown-item" type="submit" name="usuarioSeleccionado"data-usuario-id="<?= $usuario['idUser'] ?>" value="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></button></li>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <li><span class="dropdown-item">No hay usuarios registrados</span></li>

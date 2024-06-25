@@ -10,12 +10,29 @@ require '../php/conexionDB.php';
 // Conectar a la base de datos
 $conn = conectarDB();
 
+// Función para redimensionar imagen
+function redimensionarImagen($file, $width, $height) {
+    list($originalWidth, $originalHeight) = getimagesize($file);
+    $src = imagecreatefromstring(file_get_contents($file));
+    $dst = imagecreatetruecolor($width, $height);
+
+    imagecopyresampled($dst, $src, 0, 0, 0, 0, $width, $height, $originalWidth, $originalHeight);
+    ob_start();
+    imagejpeg($dst);
+    $data = ob_get_clean();
+
+    imagedestroy($src);
+    imagedestroy($dst);
+
+    return $data;
+}
+
 // Verifica si hay datos en el $_POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recoger los datos enviados por Ajax
     if (!empty($_POST['titulo_noticia']) && !empty($_POST['texto']) && !empty($_FILES['imagen']['tmp_name']) && !empty($_POST['fechaPublic'])) {
         
-        // Obtener los datos de la imagen y Sanitizar datos del formulario
+        // Obtener los datos de la imagen y sanitizar datos del formulario
         $titulo_noticia = $conn->real_escape_string(strip_tags($_POST['titulo_noticia']));
         $texto = $conn->real_escape_string(strip_tags($_POST['texto']));
         $fechaPublic = $conn->real_escape_string(strip_tags($_POST['fechaPublic']));
@@ -23,25 +40,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Manejar la imagen subida
         if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
-            $imagen = file_get_contents($_FILES['imagen']['tmp_name']);
+            // Redimensionar la imagen a 350x350 píxeles
+            $imagen = redimensionarImagen($_FILES['imagen']['tmp_name'], 350, 350);
         } else {
             echo json_encode(['success' => false, 'message' => "Error al cargar la imagen."]);
             exit;
         }
 
-        // Antes de intentar hacer la inserción de la nueva noticia en la bd, debemos verificar que ese título no está en uso por otra noticia
-        // Preparamos la consulta a ejecutar
+        // Verificar que el título no está en uso por otra noticia
         $sqlTitulo = "SELECT titulo FROM noticias WHERE titulo = '$titulo_noticia'";
         $result = $conn->query($sqlTitulo);
 
-        // Ejecutamos la consulta y si se da el caso de que coincide algún registro, lo notificamos al usuario
         if ($result->num_rows > 0) {
             echo json_encode(['success' => false, 'message' => "Ese título ya está en uso en otra noticia, modifícalo por favor"]);
         } else {
-            // Consultar para insertar los datos en la tabla noticias
+            // Insertar los datos en la tabla noticias
             $sql = "INSERT INTO noticias (idUser, imagen, titulo, texto, fecha) VALUES (?, ?, ?, ?, ?)";
 
-            // Preparar y ejecutar la consulta
             $stmt = $conn->prepare($sql);
             $stmt->bind_param('ibsss', $usuarioId, $imagen, $titulo_noticia, $texto, $fechaPublic);
             $stmt->send_long_data(1, $imagen);
@@ -52,7 +67,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo json_encode(['success' => false, 'message' => "Error: " . $stmt->error]);
             }
 
-            // Cerrar la declaración y la conexión
             $stmt->close();
         }
         $conn->close();

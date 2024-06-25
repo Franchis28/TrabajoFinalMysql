@@ -17,11 +17,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
             if(mysqli_query($conn, $consultaData)){
                 $response = array("success" => true, "message" => "El usuario ha sido eliminado");
                 echo json_encode($response);
-            }
-                
-            } else {
+            } else{
                 $response = array("success" => false, "message" => "Error al eliminar el usuario");
                 echo json_encode($response);
+            }
+                
+        } else {
+            $response = array("success" => false, "message" => "Error al eliminar el usuario");
+            echo json_encode($response);
         }
     }else{
         // Si no se recibe un usuario, indicamos al admin que seleccione un usuario

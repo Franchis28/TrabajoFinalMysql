@@ -353,7 +353,6 @@ $('#deletePerfil').on('click', function(event) {
             success: function(response) {
                 // Maneja la respuesta del servidor
                 if (response.success) {
-                    console.log('Dentro de la respuesta ajax, de forma satisfactoria: ' + usuarioId);
                     $('#mensajePerfil').text(response.message).css('color', 'green');
                     // Recargar la página o actualizar la lista de usuarios
                     // Esperar 2 segundos antes de recargar la página
@@ -431,7 +430,7 @@ $('#noticiasForm').on('submit', function(event) {
 
     $.ajax({
         type: 'POST',
-        url: '../php/procesar_formulario.php',
+        url: '../php/crearNoticias.php',
         data: formData,
         processData: false,
         contentType: false,

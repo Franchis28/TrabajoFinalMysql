@@ -1,9 +1,9 @@
 <?php
 //Consulta SQL para recopilar los datos de las noticias de la tabla noticias
 function obtenerNoticias($conn) {
-    $sql = "SELECT noticias.*, users_data.nombre AS nombre_autor
+    $sql = "SELECT noticias.*, users_login.usuario AS nombre_autor
             FROM noticias
-            INNER JOIN users_data ON noticias.idUser = users_data.idUser";
+            INNER JOIN users_login ON noticias.idUser = users_login.idUser";
     $resultado = mysqli_query($conn, $sql);
 
     $noticias = array();

@@ -1,8 +1,6 @@
 <?php
 //require para realizar la conexión con la base de datos
 require '../php/database.php';
-// Include para la modal de inicio de sesion (login)
-include '../views/login.php';
 // Require para conectarse a la BD
 require '../php/conexionDB.php';
 // Conectar a la base de datos
@@ -19,9 +17,9 @@ $conn = conectarDB();
 </head>
 <body>
     <!-- Colocar todo el encabezado de la pagina -->
-    <header>
+    <header style="margin-bottom: 60px;">
         <!-- Menú de navegación -->
-        <nav class="navbar navbar-expand-lg bg-light">
+        <nav class="navbar navbar-expand-lg bg-light fixed-top">
             <div class="container-fluid">
                 <a class="navbar-brand" href="../index.php">FranPage</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,14 +42,13 @@ $conn = conectarDB();
                         </li>
                     </ul>
                     <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
-                    <div class="px-2">
+                    <div class="d-flex">
                     <?php
-                        // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
                         if(!empty($_SESSION['usuarioStr'])) {
                             echo $_SESSION['usuarioStr'];
                         } else {
-                            echo '<p class="fs-6">Ningún usuario está conectado actualmente</p>';
-                        } 
+                            echo '<p class="fs-6 mb-0">Ningún usuario está conectado actualmente</p>';
+                        }
                     ?>
                     </div>
                 </div>
@@ -76,7 +73,7 @@ $conn = conectarDB();
         <!-- Formulario registro nuevos usuarios -->
         <div class="container my-4">
             <h3>Registro para Nuevos Usuarios</h3>
-            <div class="row justify-content-center align-items-center" style="min-height: 80vh; margin-bottom: 140px;">
+            <div class="row justify-content-center align-items-center" style="margin-bottom: 100px;">
                 <!-- Diseño de la página de Registro datos de usuarios -->
                 <form class="row g-3 needs-validation justify-content-center border border-grey rounded p-3" novalidate action="" method="post" id="register">
                     <div class="col-md-6 col-lg-4">
@@ -146,6 +143,9 @@ $conn = conectarDB();
             </div>
         </div>
     </main>
+    <?php 
+    // Include para la modal de inicio de sesion (login)
+    include '../views/login.php'; ?>
     <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top bg-light fixed-bottom">
         <p class="col-md-4 mb-0 ">© 2024 FranPage</p>
         

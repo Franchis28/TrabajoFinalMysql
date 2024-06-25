@@ -14,15 +14,17 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
 ?>
 <!DOCTYPE html>
 <html lang="es">
+<!-- configuración del encabezado -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portada</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <!-- Estilos CSS  -->
     <style>
         .card-text {
             display: -webkit-box;
-            -webkit-line-clamp: 4;
+            -webkit-line-clamp: 1;
             -webkit-box-orient: vertical;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -30,6 +32,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
     </style>
 </head>
 <body>
+    <!-- Menú de Navegación -->
     <header style="margin-bottom: 60px;">
         <nav class="navbar navbar-expand-lg bg-light fixed-top">
             <div class="container-fluid">
@@ -91,9 +94,11 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                     </div>
                 </div>
             </div>
-        </nav>        
+        </nav>
     </header>
+    <!-- Cuerpo de la página -->
     <main>
+        <!-- Desarrollo del toast, para modificaciones, inicio de sesión, etc -->
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
             <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
@@ -106,6 +111,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                 </div>
             </div>
         </div>
+        <!-- Desarrollo del toast, para el cierre de sesión -->
         <div class="toast-container position-fixed bottom-0 end-0 p-3">
             <div id="liveToastSesion" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
@@ -120,6 +126,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                 </div>
             </div>
         </div>
+        <!-- Section 1. Explación de la página web en general -->
         <section>
             <div class="container">
                 <h3>¿Qué es FranPage?</h3>
@@ -129,10 +136,12 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                 </p>
             </div>
         </section>
+        <!-- Section 2. Foreach para mostrar todas las noticias que hay creadas en la web -->
         <section>
             <div class="container">
                 <h3>Algo de lo que vas a encontrar en FranPage</h3>
                 <div class="container text-center row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                    <!-- Foreach, para recorrer el array $noticias, para mostrar todas las noticias creadas -->
                     <?php foreach ($noticias as $noticia): ?>
                     <div class="col">
                         <div class="card h-60">
@@ -152,7 +161,9 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
             </div>
         </section>
     </main>
-    <?php include './views/login.php'; ?>
+    <?php 
+    // Include para la modal de inicio de sesion (login)
+    include './views/login.php'; ?>
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container d-flex flex-wrap justify-content-between align-items-center">
             <p class="col-12 col-md-6 mb-0 text-center text-md-start">© 2024 FranPage</p>
@@ -232,7 +243,7 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
             document.getElementById('cancelButton').addEventListener('click', ocultarToast);
         });
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <script src="./js/newScript.js"></script>
