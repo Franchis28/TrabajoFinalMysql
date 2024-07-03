@@ -163,8 +163,6 @@ $users = obtenerUsuarios($conn);
                                 <?php foreach ($users as $usuario): ?>
                                     <?php if ($usuario['idUser'] !== $_SESSION['usuarioInt']):?>
                                         <li><a class="dropdown-item" href="#" data-usuario-id="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></a></li>
-                                    <?php elseif (($usuario['idUser'] == $_SESSION['usuarioInt']) && (!empty($users))):?>
-                                        <li><span class="dropdown-item">No hay usuarios registrados</span></li>
                                     <?php endif; ?>
                                 <?php endforeach; ?>
                             <?php else: ?>
@@ -180,31 +178,37 @@ $users = obtenerUsuarios($conn);
                                 <div class="col-md-6">
                                     <label for="nombre" class="form-label"><h5>Nombre*</h5></label>
                                     <input type="text" class="form-control" name="nombre" id="nombre" placeholder="Nombre">
+                                    <input type="hidden" name="original_nombre" id="original_nombre">
                                 </div>
                                 <!-- Apellidos -->
                                 <div class="col-md-6">
                                     <label for="apellidos" class="form-label"><h5>Apellidos*</h5></label>
                                     <input type="text" class="form-control" name="apellidos" id="apellidos" placeholder="Apellidos">
+                                    <input type="hidden" name="original_apellidos" id="original_apellidos">
                                 </div>
                                 <!-- Email -->
                                 <div class="col-md-6">
                                     <label for="email" class="form-label"><h5>Email*</h5></label>
                                     <input type="email" class="form-control" name="email" id="email" placeholder="Email">
+                                    <input type="hidden" name="original_email" id="original_email">
                                 </div>
                                 <!-- Teléfono -->
                                 <div class="col-md-6">
                                     <label for="telefono" class="form-label"><h5>Teléfono*</h5></label>
                                     <input type="tel" class="form-control" name="telefono" id="telefono" placeholder="Teléfono">
+                                    <input type="hidden" name="original_telefono" id="original_telefono">
                                 </div>
                                 <!-- Fecha de Nacimiento -->
                                 <div class="col-md-6">
                                     <label for="fenac" class="form-label"><h5>Fecha de Nacimiento*</h5></label>
                                     <input type="date" class="form-control" name="fenac" id="fenac">
+                                    <input type="hidden" name="original_fenac" id="original_fenac">
                                 </div>
                                 <!-- Dirección -->
                                 <div class="col-md-6">
                                     <label for="direccion" class="form-label"><h5>Dirección</h5></label>
                                     <input type="text" class="form-control" name="direccion" id="direccion" placeholder="Dirección">
+                                    <input type="hidden" name="original_direccion" id="original_direccion">
                                 </div>
                                 <!-- Sexo -->
                                 <div class="col-md-6">
@@ -214,6 +218,7 @@ $users = obtenerUsuarios($conn);
                                         <option value="Femenino">Femenino</option>
                                         <option value="No indicado">No indicado</option>
                                     </select>
+                                    <input type="hidden" name="original_sexo" id="original_sexo">
                                 </div>
                                 <!-- Usuario -->
                                 <div class="col-md-6">
@@ -237,10 +242,11 @@ $users = obtenerUsuarios($conn);
                                         <option value="user">Usuario</option>
                                         <option value="admin">Administrador</option>
                                     </select>
+                                    <input type="hidden" name="original_rol" id="original_rol">
                                 </div>
 
                                 <!-- Botones -->
-                                <div class="col-12 ">
+                                <div class="col-12">
                                     <button class="btn btn-success" type="submit" name="submitSavedata" id="submitSavedata"><i class="glyphicon glyphicon-ok-sign"></i> Guardar</button>
                                     <button class="btn btn-warning" type="reset" name="resetPerfil" id="resetPerfil"><i class="glyphicon glyphicon-repeat"></i> Limpiar</button>
                                     <button class="btn btn-danger" type="button" name="deletePerfil" id="deletePerfil"><i class="glyphicon glyphicon-trash"></i> Eliminar Usuario</button>
@@ -397,7 +403,7 @@ $users = obtenerUsuarios($conn);
                 }
             });
         });
-        
+
         // Habilitar el campo de usuario cuando no haya ningún usuario seleccionado
         if (!sessionStorage.getItem('usuarioId')) {
             $('#usuario').prop('disabled', false);

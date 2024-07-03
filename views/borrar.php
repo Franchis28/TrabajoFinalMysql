@@ -1,49 +1,79 @@
 <?php
 session_start();
 //Include para realizar la conexión con la base de datos
-require_once '../php/database.php';
+require '../php/database.php';
 // Require para conectarse a la BD
-require_once '../php/conexionDB.php';
+require '../php/conexionDB.php';
 // Conectar a la base de datos
 $conn = conectarDB();
-// Obtener datos del usuario que se está logeando para saber su rol
-$data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
+// Obtener el usuario que está conectado actualmente
+$user_id = $_SESSION['usuarioInt'];
 // Obtener los datos de los usuarios registrados
 $users = obtenerUsuarios($conn);
+// Inicializar variables para el usuario seleccionado
+$selected_user_id = null;
+$selected_user_nombre = "";
+// Llamada a la consulta que solicita las citas que tiene cada usuario creadas, una vez se haya seleccionado un usuario
+// Verificar si se ha seleccionado un usuario desde el desplegable
+if (isset($_POST['usuarioSeleccionado'])) {
+    $usuarioSeleccionado = $_POST['usuarioSeleccionado'];
+    $usuarioSeleccionadoInt = intval($usuarioSeleccionado); // Convertir a entero
+    // Buscar el nombre del usuario seleccionado
+    foreach ($users as $usuario) {
+        $idUser = intval($usuario['idUser']); // Convertir idUser a entero si no lo es ya
+        if ($idUser === $usuarioSeleccionadoInt) {
+            $selected_user_id = $idUser;
+            $selected_user_nombre = $usuario['usuario'];
+            break;
+        }
+    }
+} else {
+   
+}
+
+// Lógica para obtener citas pendientes del usuario seleccionado
+$citasPendientes = [];
+if (!empty($selected_user_id)) {
+    $citasPendientes = obtenerCitasAdmin($conn, $selected_user_id);
+    
+}
+
+
+// Función para comparar las fechas de las citas
+function compararFechas($a, $b) {
+    return strtotime($a['fechaCita']) - strtotime($b['fechaCita']);
+}
+
+// Ordenar las citas pendientes por fecha
+usort($citasPendientes, 'compararFechas');
+// Obtener datos del usuario que se está logeando para saber su rol
+$data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
+$currentDate = date('Y-m-d'); // Obtener la fecha actual
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuarios</title>
+    <title>Citas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <style>
-        .dropdown-container {
-            display: flex;
-            justify-content: center;
-            margin-top: 120px;
-            }
-        .container {
-            max-width: 1300px; /* Ancho máximo opcional */
-        }
-
         .footer {
         position: relative;
         bottom: 0;
         width: 100%;
         display: flex;
         flex-shrink: 0;
-    }
-    @media (max-width: 767.98px) {
-        .footer .container {
-            flex-direction: column;
-            align-items: center;
+        } 
+        @media (max-width: 767.98px) {
+            .footer .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .footer ul {
+                margin-top: 1rem;
+            }
         }
-        .footer ul {
-            margin-top: 1rem;
-        }
-    }
     </style>
 </head>
 <body>
@@ -75,21 +105,21 @@ $users = obtenerUsuarios($conn);
                         <?php elseif ($data && $data['rol'] === 'user'): ?>
                             <!-- Menú de navegación para usuarios logeados -->
                             <li class="nav-item">
-                                <a class="nav-link" href="./citaciones.php">Citas</a>
+                                <a class="nav-link active" aria-current="page" href="./citaciones.php">Citas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="./perfil.php">Perfil</a>
+                                <a class="nav-link " href="./perfil.php">Perfil</a>
                             </li>
                             <li class="nav-item">
                                 <a id="cerrarSesionLink" class="nav-link" style="cursor: pointer;">Cerrar Sesión</a>
                             </li>
                         <?php elseif ($data && $data['rol'] === 'admin'): ?>
                             <!-- Menú para administradores logeados -->
+                            <a class="nav-link" href="./usuarios-administracion.php">Usuarios-Administración</a>
                             <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="./usuarios-administracion.php">Usuarios-Administración</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="./citas-administracion.php">Citas-Administración</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="./citas-administracion.php">Citas-Administración</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="./noticias-administracion.php">Noticias-Administración</a>
@@ -103,14 +133,13 @@ $users = obtenerUsuarios($conn);
                         <?php endif; ?>
                     </ul>
                     <!-- Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida -->
-                    <div class=" px-2">
+                    <div class="d-flex">
                     <?php
-                        // Verificar si la sesión está iniciada y la variable de sesión 'usuario' está definida
                         if(!empty($_SESSION['usuarioStr'])) {
-                            echo  $_SESSION['usuarioStr'] ;
+                            echo $_SESSION['usuarioStr'];
                         } else {
-                            echo '<p class="fs-6">Ningún usuario está conectado actualmente</p>';
-                        } 
+                            echo '<p class="fs-6 mb-0">Ningún usuario está conectado actualmente</p>';
+                        }
                     ?>
                     </div>
                 </div>
@@ -118,9 +147,9 @@ $users = obtenerUsuarios($conn);
         </nav>        
     </header>
     <main>
-        <!-- Diseño del toast para mostrar los mensajes -->
+        <!-- Diseño del toast para mostrar los mensajes --> 
         <!-- Comprobar al final del documento, que la configuración del script para lanzar el toast esté correcta -->
-        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div class="toast-container position-fixed bottom-0  end-0 p-3" >
             <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                 <strong class="me-auto">FranPage</strong>
@@ -128,7 +157,7 @@ $users = obtenerUsuarios($conn);
                 <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
                 </div>
                 <div class="toast-body">
-                    <div id="mensajePerfil"> </div>
+                    <div id="mensajeCitas"> </div>
                 </div>
             </div>
         </div>
@@ -149,153 +178,118 @@ $users = obtenerUsuarios($conn);
                 </div>
             </div>
         </div>
-        <section>
-            <!-- Desarrollo de la interfaz, para visualizar lo usuarios existentes, modificarlos, o crear nuevos -->
-            <div class="container pt-2" style="margin-bottom: 30px; margin-top: 50px; ">
-                <div style="margin-left: 80px;">
-                    <h3>Lista de usuarios</h3>
-                </div>
+        <div class="container" style="margin-top: 60px;">
+            <h3>Citaciones</h3>
+            <h5>Selecciona un usuario, por favor</h5>
+            <div>    
                 <!-- Botón desplegable, para mostrar los usuarios existentes -->
-                <button style="margin-left: 80px;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"> Usuarios </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <!-- Colocaremos aquí dinámicamente los usuarios -->
-                    <?php if (!empty($users)): ?>
-                        <?php foreach ($users as $usuario): ?>
-                            <?php if ($usuario['idUser'] !== $_SESSION['usuarioInt']): ?>
-                                <li><a class="dropdown-item" href="#" data-usuario-id="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></a></li>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <li><span class="dropdown-item">No hay usuarios registrados</span></li>
-                    <?php endif; ?>
-                </ul>
-                <!-- Formulario donde se muestran los datos del usuario -->
-                <div class="container d-flex justify-content-center align-items-center" style="height: 80vh;">
-                    <div class="row justify-content-center">
-                        <div class="col-md-8" style="margin-top: 15px;">
-                            <div class="tab-content">
-                                <div class="tab-pane active" id="home">
-                                    <form class="row g-3 needs-validation border border-grey rounded" style="margin-bottom: 65px;" action="" method="post" id="usersForm">
-                                        <!-- Nombre -->
-                                        <div class="col-md-4">
-                                            <label for="nombre">
-                                                <h5>Nombre*</h5>
-                                            </label>
-                                            <input type="text" class="form-control" name="nombre" id="nombre" value=""
-                                                placeholder="Nombre">
-                                        </div>
-                                        <!-- Apellidos -->
-                                        <div class="col-md-4">
-                                            <label for="direccion">
-                                                <h5>Apellidos*</h5>
-                                            </label>
-                                            <input type="text" class="form-control" name="apellidos" id="apellidos" value=""
-                                                placeholder="Apellidos">
-                                        </div>
-                                        <!-- Email -->
-                                        <div class="col-md-4">
-                                            <label for="email">
-                                                <h5>Email*</h5>
-                                            </label>
-                                            <input type="text" class="form-control" name="email" id="email" value=""
-                                                placeholder="Email">
-                                        </div>
-                                        <!-- Teléfono -->
-                                        <div class="col-md-4">
-                                            <label for="telefono">
-                                                <h5>Teléfono*</h5>
-                                            </label>
-                                            <input type="text" class="form-control" name="telefono" id="telefono" value=""
-                                                placeholder="Teléfono">
-                                        </div>
-                                        <!-- Fecha nacimiento -->
-                                        <div class="col-md-4">
-                                            <label for="fenac">
-                                                <h5>Fecha de Nacimiento*</h5>
-                                            </label>
-                                            <input type="date" class="form-control" name="fenac" id="fenac" value=""
-                                                placeholder="Fecha de Nacimiento">
-                                        </div>
-                                        <!-- Dirección -->
-                                        <div class="col-md-4">
-                                            <label for="direccion">
-                                                <h5>Dirección</h5>
-                                            </label>
-                                            <input type="text" class="form-control" name="direccion" id="direccion" value="" placeholder="Dirección">
-                                        </div>
-                                        <!-- Selector de Sexo -->
-                                        <div class="col-md-4">
-                                            <label for="sexo"><h5>Sexo</h5></label>
-                                            <select name="sexo" class="form-select" id="sexo">
-                                            <?php if ($data['sexo'] == "Masculino"): ?>
-                                            <!-- Si el valor recogido de la base de datos es "Masculino", muestra esa opción seleccionada -->
-                                            <option value="Masculino">Masculino</option>
-                                            <option value="Femenino">Femenino</option>
-                                            <option value="No indicado">No indicado</option>
-                                            <?php elseif($data['sexo'] == "Femenino"): ?>
-                                            <!-- Si el valor recogido de la base de datos no coincide con "Femenino", muestra solo estas opciones -->
-                                            <option selected value="Femenino">Femenino</option>
-                                            <option value="No indicado">No indicado</option>
-                                            <option value="Masculino">Masculino</option>
-                                            <?php else: ?>
-                                            <!-- Si el valor recogido de la base de datos no coincide con "Masculino" o "Femenino", muestra solo estas opciones -->
-                                            <option value="No indicado">No indicado</option>
-                                            <option value="Femenino">Femenino</option>
-                                            <option value="Masculino">Masculino</option>
-                                            <?php endif; ?>
-                                            </select>
-                                        </div>
-                                        <!-- Usuario -->
-                                        <div class="col-md-4">
-                                            <label for="usuario">
-                                                <h5>Usuario*</h5>
-                                            </label>
-                                            <input type="text" class="form-control" name="usuario" id="usuario" value="" 
-                                                placeholder="Usuario">
-                                        </div>
-                                        <!-- Contraseña -->
-                                        <div class="col-md-4">
-                                            <label for="contrasena">
-                                                <h5>Contraseña*</h5>
-                                            </label>
-                                            <div class="input-group">
-                                                <input type="password" class="form-control" name="contrasena" id="contrasena" value="" placeholder="Contraseña">
-                                                <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                                    <i class="bi bi-eye-fill">Ver</i>
-                                                </button>
-                                            </div>
-                                        </div>
-    
-                                        <!-- Rol -->
-                                        <div class="col-md-4">
-                                            <label for="rol">
-                                                <h5>Rol</h5>
-                                            </label>
-                                            <select class="form-control" name="rol" id="rol">
-                                                <option value="user">Usuario</option>
-                                                <option value="admin">Administrador</option>
-                                            </select>
-                                        </div>
-    
-                                        <div class="col-xs-12" style="margin-bottom : 15px;">
-                                            <button class="btn btn-success" type="submit" name="submitSavedata" id="submitSavedata"><i
-                                                    class="glyphicon glyphicon-ok-sign"></i> Guardar</button>
-                                            <button class="btn btn-warning" type="reset" name="resetPerfil" id="resetPerfil"><i
-                                                    class="glyphicon glyphicon-repeat"></i> Limpiar</button>
-                                            <button class="btn btn-danger" type="button" name="deletePerfil" id="deletePerfil"><i
-                                                    class="glyphicon glyphicon-repeat"></i> Eliminar Usuario</button>
-                                            <button class="btn btn-primary" type="submit" name="newUser" id="newUser"><i
-                                                    class="glyphicon glyphicon-repeat"></i> Crear usuario</button>
-                                        </div>
-                                    </form>
-                                </div>
+                <form method="post" action="">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"> Usuarios </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <?php if (!empty($users)): ?>
+                            <?php foreach ($users as $usuario): ?>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-usuario-id="<?= $usuario['idUser'] ?>" value="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></button>
+                                </li>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <li><span class="dropdown-item">No hay usuarios registrados</span></li>
+                        <?php endif; ?>
+                    </ul>
+                    <!-- Mostrar el nombre del usuario seleccionado -->
+                    <h5 id="nombreUsuarioSeleccionado" style="margin-left: 10px; display: <?= empty($selected_user_id) ? 'none' : 'inline-block' ?>;">
+                        <?php echo 'Usuario seleccionado: ' . htmlspecialchars($selected_user_nombre); ?>
+                    </h5>
+                </form>
+            </div>
+        </div>
+        <!-- Incluir el formulario oculto -->
+        <form id="usuarioSeleccionadoForm" method="POST" action="">
+            <input type="hidden" name="usuarioSeleccionadoId" id="usuarioSeleccionadoId">
+        </form>
+        <!-- Formulario para crear nuevas citas -->
+        <div class="container" style="margin-top: 18px;">
+            <div class="row justify-content-center">
+                <div class="col-md-12" style="margin-top: 15px;">
+                    <div class="tab-content">
+                        <form class="row g-3 needs-validation border border-grey rounded" style="margin-bottom: 15px;" action="" method="post" id="citasFormAdmin">
+                            <!-- Fecha de la cita -->
+                            <div class="col-md-4">
+                                <label for="fechaCita">
+                                    <h5>Fecha de la Cita</h5>
+                                </label>
+                                <input type="date" class="form-control" name="fechaCita" id="fechaCita" 
+                                    placeholder="Fecha de la Cita"> 
+                            </div> 
+                            <!-- Motivo de la cita -->
+                            <div class="col-md-8">
+                                <label for="motivo">
+                                    <h5>Motivo de la Cita</h5>
+                                </label>
+                                <textarea class="form-control" name="motivo" id="motivo" 
+                                    placeholder="Motivo"></textarea>
                             </div>
-                        </div>
+                            <div class="col-xs-12" style="margin-bottom : 15px;">
+                                <br>
+                                <button class="btn btn-success" type="submit" name="submitCita" id="submitCita"><i
+                                        class="glyphicon glyphicon-ok-sign"></i> Crear</button>
+                                <button class="btn btn-danger" type="reset" name="resetCita" id="resetCita"><i
+                                        class="glyphicon glyphicon-repeat"></i> Limpiar</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-        </section>
-              
+            <h5>Citas Pendientes</h5>
+            <!-- Formulario para mostrar citas, modificarlas y borrarlas -->
+            <div class="container border border-grey rounded" style="margin-bottom: 100px;">
+                <div class="row justify-content-center">
+                    <div class="container text-center my-4">
+                        <div class="row">
+                            <form class="row g-3 needs-validation" style="margin-bottom: 15px;" action="" method="post" id="citasPendientesForm">
+                                <?php if (!empty($citasPendientes)): ?>
+                                    <?php foreach ($citasPendientes as $cita): ?>
+                                        <?php
+                                            // Verificar si la cita es pasada
+                                            $isLastDate = $cita['fechaCita'] < $currentDate;
+                                        ?>
+                                        <div class="col-md-4">
+                                            <div class="card mb-4">
+                                                <div class="card-body">
+                                                    <!-- Fecha de la cita -->
+                                                    <div class="form-group">
+                                                        <label for="fechaCita_<?php echo $cita['idCita']; ?>">Fecha de la Cita</label>
+                                                        <input type="date" class="form-control" id="fechaCita_<?php echo $cita['idCita']; ?>" value="<?php echo $cita['fechaCita']; ?>" <?php echo $isLastDate ? 'readonly' : ''; ?>>
+                                                    </div>
+                                                    <!-- Motivo de la cita -->
+                                                    <div class="form-group">
+                                                        <label for="motivo_<?php echo $cita['idCita']; ?>">Motivo de la Cita</label>
+                                                        <textarea class="form-control" id="motivo_<?php echo $cita['idCita']; ?>" <?php echo $isLastDate ? 'readonly' : ''; ?>><?php echo $cita['motivoCita']; ?></textarea>
+                                                    </div>
+                                                </div>
+                                                <?php if (!$isLastDate): ?>
+                                                    <input type="checkbox" class="citaCheckbox" name="citaSeleccionada[]" value="<?php echo $cita['idCita']; ?>"> Seleccionar
+                                                    <input type="hidden" name="idCita[]" value="<?php echo $cita['idCita']; ?>">
+                                                <?php else: ?>
+                                                <span class="badge bg-info text-dark">Cita pasada</span>   
+                                                <?php endif; ?> 
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <li><span class="dropdown-item">No hay citas registradas para este usuario</span></li>
+                                <?php endif; ?>
+                                <div class="card-footer">
+                                    <br>
+                                    <button class="btn btn-success" type="submit" name="modificarCita" id="modificarCita"><i class="glyphicon glyphicon-ok-sign"></i> Modificar</button>
+                                    <button class="btn btn-danger" type="submit" name="borrarCita" id="borrarCita" disabled><i class="glyphicon glyphicon-repeat"></i> Borrar</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div> 
+                </div>
+            </div> 
+        </div>
     </main>
     <footer class="footer mt-auto py-3 bg-light">
         <div class="container d-flex flex-wrap justify-content-between align-items-center">
@@ -347,34 +341,32 @@ $users = obtenerUsuarios($conn);
             </ul>
         </div>
     </footer>
-    <!-- Script con la Función para mostrar el toast con los mensajes de login enviados desde la función Ajax que recoge los valores desde comprobarLogin-->
+    <!-- Script con la Función para mostrar el toast con los mensajes de login enviados desde la función Ajax -->
     <script>
             document.addEventListener('DOMContentLoaded', function() {
-                const submitSavedata = document.getElementById('submitSavedata');
-                const deletePerfil = document.getElementById('deletePerfil');
-                const newUser = document.getElementById('newUser');
-
+                const submitCita = document.getElementById('submitCita');
+                const modificarCita = document.getElementById('modificarCita');
+                const borrarCita = document.getElementById('borrarCita');
                 const toastLiveExample = document.getElementById('liveToast');
                 // Función para mostrar el toast
                 function mostrarToast() {
                     const toast = new bootstrap.Toast(toastLiveExample);
                     toast.show();
                 }
-
-                if (submitSavedata){
+                if (submitCita){
                     
-                    submitSavedata.addEventListener('click', mostrarToast);
+                    submitCita.addEventListener('click', mostrarToast);
                 }
 
-                if (deletePerfil){
+                if (modificarCita){
                     
-                    deletePerfil.addEventListener('click', mostrarToast);
+                    modificarCita.addEventListener('click', mostrarToast);
                 }
 
-                if (newUser){
-                    
-                    newUser.addEventListener('click', mostrarToast);
-                }
+                if(borrarCita){
+                borrarCita.addEventListener('click', mostrarToast);
+
+            }
             });
     </script>
     <!-- Script pora mostrar el toast de cierre de sesión -->
@@ -398,81 +390,129 @@ $users = obtenerUsuarios($conn);
             document.getElementById('cerrarSesionLink1').addEventListener('click', mostrarToast);
             // Evento para ocultar el toast si pulsa cancelar 
             document.getElementById('cancelButton').addEventListener('click', ocultarToast);
-           
         });
     </script>
-
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>    
     <!-- Bootstrap Datepicker JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>  
-    <script src="../js/newScript.js"></script>
     <script src="../js/ajax.js"></script>
-    <!-- Script para mostrar los datos del usuario en función del que haya sido seleccionado -->
     <script>
-        $(document).ready(function() {
+        document.addEventListener('DOMContentLoaded', function() {
+            // Función para habilitar el formulario
+            function habilitarFormulario() {
+                const formElements = document.querySelectorAll('#citasFormAdmin input, #citasFormAdmin textarea, #citasFormAdmin button');
+                formElements.forEach(element => {
+                    element.disabled = false;
+                });
+            }
+
+            // Función para deshabilitar el formulario
+            function deshabilitarFormulario() {
+                const formElements = document.querySelectorAll('#citasFormAdmin input, #citasFormAdmin textarea, #citasFormAdmin button');
+                formElements.forEach(element => {
+                    element.disabled = true;
+                });
+            }
+            // Escucha el evento click en los elementos del desplegable
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function(event) {
+                    event.preventDefault(); // Evitar el comportamiento por defecto del botón
+                    let usuarioId = this.getAttribute('data-usuario-id');
+                    let usuarioNombre = this.textContent;  // Obtener el nombre del usuario desde el texto del elemento
+                    // Actualizar el contenedor con el nombre del usuario seleccionado
+                    document.getElementById('nombreUsuarioSeleccionado').style.display = 'inline-block';
+                    document.getElementById('nombreUsuarioSeleccionado').textContent = 'Usuario seleccionado: ' + usuarioNombre;
+                    
+                    // Almacenar el ID del usuario seleccionado en el almacenamiento de sesión
+                    sessionStorage.setItem('usuarioId', usuarioId);
+                    // Habilitar el formulario
+                    habilitarFormulario(); 
+                    usuarioIdInt = parseInt(usuarioId);
+                    // Enviar el ID del usuario seleccionado mediante AJAX
+                    enviarUsuarioSeleccionado(usuarioIdInt);
+                    
+                });
+            });
+            // Función para enviar el ID del usuario seleccionado mediante AJAX
+            function enviarUsuarioSeleccionado(usuarioId) {
+                // Objeto con los datos a enviar
+                
+                let data = {
+                    usuarioSeleccionado: usuarioId
+                };
+                // Configurar la petición AJAX
+                let xhr = new XMLHttpRequest();
+                xhr.open('POST', 'citas-administracion.php', true); // Llama al mismo archivo PHP
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+                // Función que se ejecutará cuando la solicitud AJAX se complete
+                xhr.onload = function() {
+                    if (xhr.status >= 200 && xhr.status < 400) {
+                        // Éxito en la solicitud
+                        console.log('Respuesta del servidor:', xhr.responseText);
+
+                        // Puedes manejar la respuesta del servidor si es necesario
+                        // Por ejemplo, actualizar la interfaz con nuevas citas pendientes, etc.
+                    } else {
+                        // Error en la solicitud
+                        console.error('Error en la solicitud AJAX:', xhr.status, xhr.statusText);
+                    }
+                };
+
+                // Función que se ejecutará en caso de error
+                xhr.onerror = function() {
+                    console.error('Error de red al enviar la solicitud AJAX');
+                };
+
+                // Convertir el objeto 'data' a formato URL-encoded
+                let params = Object.keys(data).map(function(key) {
+                    return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
+                }).join('&');
+
+                // Enviar la petición AJAX con los datos
+                xhr.send(params);
+            }
+            // Limpiar el ID del usuario seleccionado del almacenamiento de sesión al cargar la página
+            sessionStorage.removeItem('usuarioId');
+            
+            // Deshabilitar el formulario inicialmente
+            deshabilitarFormulario();
+        });
+    </script>
+    <!-- Scripts Varios Del documento -->
+    <!-- <script> 
+        // Script para mostrar los datos de la cita del usuario en función del que haya sido seleccionado
         $('.dropdown-item').on('click', function() {
             let usuarioId = $(this).data('usuario-id');
+            let usuarioNombre = $(this).text();  // Obtener el nombre del usuario desde el texto del elemento
+            // Actualizar el contenedor con el nombre del usuario seleccionado
+            $('#nombreUsuarioSeleccionado').text('Usuario seleccionado: ' + usuarioNombre);
+
+            // Asignar el ID del usuario seleccionado al campo oculto del formulario
+            $('#usuarioSeleccionadoId').val(usuarioId);
+
+            // Enviar el formulario automáticamente
+            $('#usuarioSeleccionadoForm').submit();
+
+            // Almacenar el ID del usuario seleccionado en el almacenamiento de sesión
             sessionStorage.setItem('usuarioId', usuarioId);
+
             
-            // Deshabilitar el campo de usuario
-            $('#usuario').prop('disabled', true);
-
-            // Llamada AJAX para mostrar los datos del usuario
-            $.ajax({
-                url: '../php/get_user_data.php',
-                type: 'POST',
-                data: { id: usuarioId },
-                success: function(response) {
-                    let userData = JSON.parse(response);
-                    if (!userData.error) {
-                        $('#nombre').val(userData.nombre);
-                        $('#apellidos').val(userData.apellidos);
-                        $('#email').val(userData.email);
-                        $('#telefono').val(userData.telefono);
-                        $('#fenac').val(userData.fenac);
-                        $('#direccion').val(userData.direccion);
-                        $('#sexo').val(userData.sexo);
-                        $('#usuario').val(userData.usuario);
-                        $('#rol').val(userData.rol);
-                    } else {
-                        alert('Error: ' + userData.error);
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('Error al obtener los datos del usuario:', error);
-                }
-            });
         });
+        // Deshabilitar el botón de Borrar inicialmente
+        $('#borrarCita').prop('disabled', true);
 
-        // Habilitar el campo de usuario cuando no haya ningún usuario seleccionado
-        if (!sessionStorage.getItem('usuarioId')) {
-            $('#usuario').prop('disabled', false);
-        }
-
-        // Restablecer el estado al inicial
-        $('#resetPerfil').on('click', function() {
-            sessionStorage.removeItem('usuarioId');
-            $('#usuario').prop('disabled', false);
+        // Agregar controlador de eventos a los checkboxes
+        $('.citaCheckbox').change(function() {
+            if ($('.citaCheckbox:checked').length > 0) {
+                $('#borrarCita').prop('disabled', false);
+            } else {
+                $('#borrarCita').prop('disabled', true);
+            }
         });
-    });
-    </script>
-    <!-- Script para que el usuario pueda ver la contraseña si lo desea -->
-    <script>
         $(document).ready(function() {
-            $('#togglePassword').on('click', function() {
-                const passwordField = $('#contrasena');
-                const passwordFieldType = passwordField.attr('type');
-                if (passwordFieldType === 'password') {
-                    passwordField.attr('type', 'text');
-                    $('#togglePassword').html('<i class="bi bi-eye-slash-fill">Ocultar</i>');
-                } else {
-                    passwordField.attr('type', 'password');
-                    $('#togglePassword').html('<i class="bi bi-eye-fill">Ver</i>');
-                }
-            });
         });
-
-    </script>
+    </script> -->
 </body>
 </html>

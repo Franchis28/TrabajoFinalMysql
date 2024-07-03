@@ -111,7 +111,7 @@ $datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
     <main>
         <!-- Diseño del toast para mostrar los mensajes --> 
         <!-- Comprobar al final del documento, que la configuración del script para lanzar el toast esté correcta -->
-        <div class="toast-container position-fixed bottom-0 end-0 p-3" style="transform: translateY(-60px);">
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
             <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                 <strong class="me-auto">FranPage</strong>
@@ -155,6 +155,7 @@ $datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                                     </label>
                                     <input type="text" class="form-control" name="nombre" id="nombre" value="<?php echo $datosUser['nombre']; ?>"
                                         placeholder="nombre">
+                                        <input type="hidden" name="original_nombre" id="original_nombre">
                                 </div>
                                 <!-- Apellidos -->
                                 <div class="col-md-4">
@@ -163,6 +164,7 @@ $datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                                     </label>
                                     <input type="text" class="form-control" name="apellidos" id="apellidos" value="<?php echo $datosUser['apellidos']; ?>"
                                         placeholder="">
+                                        <input type="hidden" name="original_apellidos" id="original_apellidos">
                                 </div>
                                 <!-- Email -->
                                 <div class="col-md-4">
@@ -171,6 +173,7 @@ $datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                                     </label>
                                     <input type="text" class="form-control" name="email" id="email" value="<?php echo $datosUser['email']; ?>"
                                         placeholder="">
+                                        <input type="hidden" name="original_email" id="original_email">
                                 </div>
                                 <!-- Teléfono -->
                                 <div class="col-md-4">
@@ -179,6 +182,7 @@ $datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                                     </label>
                                     <input type="text" class="form-control" name="telefono" id="telefono" value="<?php echo $datosUser['telefono']; ?>"
                                         placeholder="">
+                                        <input type="hidden" name="original_telefono" id="original_telefono">
                                 </div>
                                 <!-- Fecha nacimiento -->
                                 <div class="col-md-4">
@@ -187,6 +191,7 @@ $datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                                     </label>
                                     <input type="date" class="form-control" name="fenac" id="fenac" value="<?php echo $datosUser['fenac']; ?>"
                                         placeholder="Fecha de Nacimiento">
+                                        <input type="hidden" name="original_fenac" id="original_fenac">
                                 </div>
                                 <!-- Dirección -->
                                 <div class="col-md-4">
@@ -194,6 +199,7 @@ $datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                                         <h5>Dirección</h5>
                                     </label>
                                     <input type="text" class="form-control" name="direccion" id="direccion" value="<?php echo $datosUser['direccion']; ?>" placeholder="Dirección">
+                                    <input type="hidden" name="original_direccion" id="original_direccion">
                                 </div>
                                 <!-- Selector de Sexo -->
                                 <div class="col-md-4">
@@ -216,6 +222,7 @@ $datosUser = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                                     <option value="Masculino">Masculino</option>
                                     <?php endif; ?>
                                     </select>
+                                    <input type="hidden" name="original_sexo" id="original_sexo">
                                 </div>
                                 <!-- Usuario -->
                                 <div class="col-md-4">

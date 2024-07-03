@@ -25,7 +25,7 @@ if (isset($_POST['usuarioSeleccionado'])) {
         }
     }
 }
-// Lógica para obtener citas pendientes del usuario seleccionado
+// Lógica para obtener noticias del usuario seleccionado
 $noticiasUser = [];
 if (!empty($selected_user_id)) {
     $noticiasUser = obtenerNoticiasAdmin($conn, $selected_user_id);
@@ -158,47 +158,55 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
             </div>
         </div>
         <section>
-            <div class="container my-4">
-                <h3>Crea tus Propias Noticias</h3>
-                <!-- Botón desplegable, para mostrar los usuarios existentes -->
-                <form method="post" action="">
-                    <button style="margin-bottom: 20px;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"> Usuarios </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                        <?php if (!empty($users)): ?>
-                            <?php foreach ($users as $usuario): ?>
-                                <li><button class="dropdown-item" type="submit" name="usuarioSeleccionado"data-usuario-id="<?= $usuario['idUser'] ?>" value="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></button></li>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <li><span class="dropdown-item">No hay usuarios registrados</span></li>
-                        <?php endif; ?>
-                    </ul>
+        <div class="container my-4">
+            <h3>Crea tus Propias Noticias</h3>
+            <h5>Selecciona un usuario, por favor</h5>
+            <!-- Botón desplegable, para mostrar los usuarios existentes -->
+            <form id="usuarioSeleccionadoForm" method="post" action="" onsubmit="return false;">
+                <button style="margin-bottom: 20px;" class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"> Usuarios </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <?php if (!empty($users)): ?>
+                        <?php foreach ($users as $usuario): ?>
+                            <li><button class="dropdown-item" type="button" data-usuario-id="<?= $usuario['idUser'] ?>" value="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></button></li>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <li><span class="dropdown-item">No hay usuarios registrados</span></li>
+                    <?php endif; ?>
+                </ul>
                 <!-- Mostrar el nombre del usuario seleccionado -->
                 <h5 id="nombreUsuarioSeleccionado" style="margin-left: 10px; display: <?= empty($selected_user_id) ? 'none' : 'inline-block' ?>;">
-                    <?php echo 'Usuario seleccionado: ' . htmlspecialchars($selected_user_nombre); ?>
+                    <?php if (!empty($selected_user_nombre)) echo 'Usuario seleccionado: ' . htmlspecialchars($selected_user_nombre); ?>
                 </h5>
-                </form>
-                <form class="row needs-validation justify-content-center border border-grey rounded" action="" method="post" enctype="multipart/form-data" id="noticiasForm">
-                    <div class="col-md-6 mb-3">
-                        <label for="titulo" class="form-label">Título:</label>
-                        <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Título de la noticia" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="texto" class="form-label">Texto:</label>
-                        <textarea class="form-control" id="texto" name="texto" rows="2" placeholder="Texto de la noticia" required></textarea>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="imagen" class="form-label">Imagen:</label>
-                        <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*" required>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label for="fePublic" class="form-label">Fecha de Publicación:</label>
-                        <input type="date" name="fePublic" class="form-control" id="fePublic" placeholder="Fecha de Publicación" autocomplete="off" required>
-                    </div>
-                    <div class="col-md-15 mb-3">
-                        <button type="submit" id="submitNotice" name="submitNotice" class="btn btn-primary">Subir Noticia</button>
-                    </div>
-                </form>
-            </div>
+                <input type="hidden" name="usuarioSeleccionado" id="usuarioSeleccionadoId">
+            </form>
+
+            <!-- Formulario oculto
+            <form id="usuarioSeleccionadoForm" method="POST" action="">
+                <input type="hidden" name="usuarioSeleccionado" id="usuarioSeleccionadoId">
+            </form> -->
+
+            <form class="row needs-validation justify-content-center border border-grey rounded" action="" method="post" enctype="multipart/form-data" id="noticiasForm">
+                <div class="col-md-6 mb-3">
+                    <label for="titulo" class="form-label">Título:</label>
+                    <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Título de la noticia" required disabled>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="texto" class="form-label">Texto:</label>
+                    <textarea class="form-control" id="texto" name="texto" rows="2" placeholder="Texto de la noticia" required disabled></textarea>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="imagen" class="form-label">Imagen:</label>
+                    <input type="file" class="form-control" id="imagen" name="imagen" accept="image/*" required disabled>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="fePublic" class="form-label">Fecha de Publicación:</label>
+                    <input type="date" name="fePublic" class="form-control" id="fePublic" placeholder="Fecha de Publicación" autocomplete="off" required disabled>
+                </div>
+                <div class="col-md-15 mb-3">
+                    <button type="submit" id="submitNotice" name="submitNotice" class="btn btn-primary">Subir Noticia</button>
+                </div>
+            </form>
+        </div>
         </section>
         <section>
             <div class="container my-4">
@@ -347,27 +355,57 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
             document.getElementById('cerrarSesionLink1').addEventListener('click', mostrarToast);
             // Evento para ocultar el toast si pulsa cancelar 
             document.getElementById('cancelButton').addEventListener('click', ocultarToast);
-           
+            
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Función para habilitar el formulario
+            function habilitarFormulario() {
+                const formElements = document.querySelectorAll('#noticiasForm input, #noticiasForm textarea, #noticiasForm button');
+                formElements.forEach(element => {
+                    element.disabled = false;
+                });
+            }
+
+            // Función para deshabilitar el formulario
+            function deshabilitarFormulario() {
+                const formElements = document.querySelectorAll('#noticiasForm input, #noticiasForm textarea, #noticiasForm button');
+                formElements.forEach(element => {
+                    element.disabled = true;
+                });
+            }
+
+            // Escucha el evento click en los elementos del desplegable
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function(event) {
+                    event.preventDefault(); // Evitar el comportamiento por defecto del botón
+                    let usuarioId = this.getAttribute('data-usuario-id');
+                    let usuarioNombre = this.textContent;  // Obtener el nombre del usuario desde el texto del elemento
+                    // Actualizar el contenedor con el nombre del usuario seleccionado
+                    document.getElementById('nombreUsuarioSeleccionado').style.display = 'inline-block';
+                    document.getElementById('nombreUsuarioSeleccionado').textContent = 'Usuario seleccionado: ' + usuarioNombre;
+                    // Asignar el ID del usuario seleccionado al campo oculto del formulario
+                    document.getElementById('usuarioSeleccionadoId').value = usuarioId;
+                    // Almacenar el ID del usuario seleccionado en el almacenamiento de sesión
+                    sessionStorage.setItem('usuarioId', usuarioId);
+                    // Habilitar el formulario
+                    habilitarFormulario();
+                    // No enviar el formulario automáticamente
+                });
+            });
+            // Limpiar el ID del usuario seleccionado del almacenamiento de sesión al cargar la página
+            sessionStorage.removeItem('usuarioId');
+            
+            // Deshabilitar el formulario inicialmente
+            deshabilitarFormulario();
         });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="../js/ajax.js"></script>
     <!-- Scripts Varios Del documento -->
-    <script> 
-        // Script para mostrar los datos del usuario en función del que haya sido seleccionado
-        $('.dropdown-item').on('click', function() {
-            let usuarioId = $(this).data('usuario-id');
-            let usuarioNombre = $(this).text();  // Obtener el nombre del usuario desde el texto del elemento
-            // Actualizar el contenedor con el nombre del usuario seleccionado
-            $('#nombreUsuarioSeleccionado').text('Usuario seleccionado: ' + usuarioNombre);
-            // Asignar el ID del usuario seleccionado al campo oculto del formulario
-            $('#usuarioSeleccionadoId').val(usuarioId);
-            // Enviar el formulario automáticamente
-            $('#usuarioSeleccionadoForm').submit();
-            // Almacenar el ID del usuario seleccionado en el almacenamiento de sesión
-            sessionStorage.setItem('usuarioId', usuarioId); 
-        });
+    <script>
         // Deshabilitar el botón de Borrar inicialmente
         $('#borrarNoticia').prop('disabled', true);
 

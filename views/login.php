@@ -11,7 +11,7 @@
                 <form id="login" action="" method="post" >
                     <div class="mb-3">
                         <label for="userLogin" class="col-form-label" name="userLogin">Usuario:</label> 
-                        <input type="text" class="form-control" id="userLogin" name="userLogin" placeholder="Correo Electrónico">
+                        <input type="text" class="form-control" id="userLogin" name="userLogin" placeholder="Usuario">
                         
                     </div>
                     <div class="mb-3">

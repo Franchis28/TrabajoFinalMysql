@@ -71,7 +71,7 @@ function obtenerCitas($conn){
     // Recuperamos el usuario que esté logeado en el momento
     $user_id = $_SESSION['usuarioInt'];
     $sql = "SELECT citas.* FROM citas INNER JOIN users_data ON citas.idUser = users_data.idUser
-    WHERE citas.fechaCita >= CURDATE() && citas.idUser = '$user_id'";
+    WHERE citas.idUser = '$user_id'";
     $resultado = mysqli_query($conn, $sql);
     $citas = array();
     if($resultado && mysqli_num_rows($resultado) > 0){
@@ -86,7 +86,7 @@ function obtenerCitasAdmin($conn, $user){
     // Recuperamos el usuario que esté logeado en el momento
     $user_id = $user;
     $sql = "SELECT citas.* FROM citas INNER JOIN users_data ON citas.idUser = users_data.idUser
-    WHERE citas.fechaCita >= CURDATE() && citas.idUser = '$user_id'";
+    WHERE citas.idUser = '$user_id'";
     $resultado = mysqli_query($conn, $sql);
     $citas = array();
     if($resultado && mysqli_num_rows($resultado) > 0){

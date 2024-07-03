@@ -1,4 +1,5 @@
 <?php
+session_start();
 //require para realizar la conexión con la base de datos
 require '../php/database.php';
 // Require para conectarse a la BD
@@ -9,6 +10,16 @@ $conn = conectarDB();
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
     // Obtener el usuario que está conectado actualmente
     $user_id = $_POST['usuarioId'];
+
+    $original_nombre = isset($_POST['original_nombre']) ? $_POST['original_nombre'] : '';
+    $original_apellidos = isset($_POST['original_apellidos']) ? $_POST['original_apellidos'] : '';
+    $original_email = isset($_POST['original_email']) ? $_POST['original_email'] : '';
+    $original_telefono = isset($_POST['original_telefono']) ? $_POST['original_telefono'] : '';
+    $original_fenac = isset($_POST['original_fenac']) ? $_POST['original_fenac'] : '';
+    $original_direccion = isset($_POST['original_direccion']) ? $_POST['original_direccion'] : '';
+    $original_sexo = isset($_POST['original_sexo']) ? $_POST['original_sexo'] : '';
+    $original_rol = isset($_POST['original_rol']) ? $_POST['original_rol'] : '';
+
     // Obtener los datos del formulario y los filtramos
     // Validar Campos Formulario Perfil
     // Empezamos recogiendo los datos a evaluar/comprobar del formulario
@@ -93,38 +104,55 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $query_check_email = "SELECT COUNT(*) as count FROM users_data WHERE email = '$email' AND idUser != '$user_id'";
         $result_check_email = mysqli_query($conn, $query_check_email);
         $row = mysqli_fetch_assoc($result_check_email);
+    
 
-        if ($row['count'] > 0) {
-            // El correo electrónico ya existe para otro usuario
-            $response = array("success" => false, "message" => "El correo electrónico ya está en uso por otro usuario");
-            echo json_encode($response);
-        } else {
-            // Ejecutar la consulta SQL para actualizar los datos
+        $campos_modificados = [];
+
+        if ($nombre !== $original_nombre) {
+            $campos_modificados[] = "u.nombre='$nombre'";
+        }
+        if ($apellidos !== $original_apellidos) {
+            $campos_modificados[] = "u.apellidos='$apellidos'";
+        }
+        if ($email !== $original_email) {
+            $campos_modificados[] = "u.email='$email'";
+        }
+        if ($telefono !== $original_telefono) {
+            $campos_modificados[] = "u.telefono='$telefono'";
+        }
+        if ($fenac !== $original_fenac) {
+            $fenac = date('Y-m-d', strtotime($fenac));
+            $campos_modificados[] = "u.fenac='$fenac'";
+        }
+        if ($direccion !== $original_direccion) {
+            $campos_modificados[] = "u.direccion='$direccion'";
+        }
+        if ($sexo !== $original_sexo) {
+            $campos_modificados[] = "u.sexo='$sexo'";
+        }
+        if ($rol !== $original_rol) {
+            $campos_modificados[] = "ul.rol='$rol'";
+        }
+        if (!empty($contrasena)) {
+            $campos_modificados[] = "ul.contraseña='$contrasena_encriptada'";
+        }
+
+        if ((count($campos_modificados) > 0 ) && (!$row['count'] > 0)) {
             $query = "UPDATE users_data u
-            INNER JOIN users_login ul ON u.idUser = ul.idUser
-            SET u.nombre='$nombre',
-                u.apellidos='$apellidos', 
-                u.email='$email', 
-                u.telefono='$telefono', 
-                u.fenac='$fenac', 
-                u.direccion='$direccion', 
-                u.sexo='$sexo',
-                u.email='$email', 
-                ul.contraseña ='$contrasena_encriptada',
-                ul.rol = '$rol'
-            WHERE ul.idUser ='$user_id'";
-            // Se ejecuta la consulta
+                    INNER JOIN users_login ul ON u.idUser = ul.idUser
+                    SET " . implode(', ', $campos_modificados) . "
+                    WHERE ul.idUser='$user_id'";
             $result = mysqli_query($conn, $query);
             if ($result) {
-                // La actualización fue exitosa
                 $response = array("success" => true, "message" => "Los datos han sido actualizados de forma correcta");
-                echo json_encode($response);
             } else {
-                // Error al ejecutar la consulta
                 $response = array("success" => false, "message" => "Los datos no han sido actualizados");
-                echo json_encode($response);
             }
+        } else {
+            $response = array("success" => true, "message" => "No se realizaron cambios");
         }
+
+        echo json_encode($response);
     }
 }
 ?>

@@ -21,6 +21,7 @@ function compararFechas($a, $b) {
 usort($citasPendientes, 'compararFechas');
 // Obtener datos del usuario que se está logeando para saber su rol
 $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
+$currentDate = date('Y-m-d'); // Obtener la fecha actual
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -154,22 +155,30 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                             <form class="row g-3 needs-validation" style="margin-bottom: 15px;" action="" method="post" id="citasPendientesForm">
                                 <?php if (!empty($citasPendientes)): ?>
                                     <?php foreach ($citasPendientes as $cita): ?>
+                                        <?php
+                                            // Verificar si la cita es pasada
+                                            $isLastDate = $cita['fechaCita'] < $currentDate;
+                                        ?>
                                         <div class="col-md-4">
                                             <div class="card mb-4">
                                                 <div class="card-body">
                                                     <!-- Fecha de la cita -->
                                                     <div class="form-group">
                                                         <label for="fechaCita_<?php echo $cita['idCita']; ?>">Fecha de la Cita</label>
-                                                        <input type="date" class="form-control" id="fechaCita_<?php echo $cita['idCita']; ?>" value="<?php echo $cita['fechaCita']; ?>" >
+                                                        <input type="date" class="form-control" id="fechaCita_<?php echo $cita['idCita']; ?>" value="<?php echo $cita['fechaCita']; ?>" <?php echo $isLastDate ? 'readonly' : ''; ?>>
                                                     </div>
                                                     <!-- Motivo de la cita -->
                                                     <div class="form-group">
                                                         <label for="motivo_<?php echo $cita['idCita']; ?>">Motivo de la Cita</label>
-                                                        <textarea class="form-control" id="motivo_<?php echo $cita['idCita']; ?>"><?php echo $cita['motivoCita']; ?></textarea>
+                                                        <textarea class="form-control" id="motivo_<?php echo $cita['idCita']; ?> <?php echo $isLastDate ? 'readonly' : ''; ?>"><?php echo $cita['motivoCita']; ?></textarea>
                                                     </div>
                                                 </div>
-                                                <input type="checkbox" class="citaCheckbox" name="citaSeleccionada[]" value="<?php echo $cita['idCita']; ?>"> Seleccionar
-                                                <input type="hidden" name="idCita[]" value="<?php echo $cita['idCita']; ?>">
+                                                <?php if (!$isLastDate): ?>
+                                                    <input type="checkbox" class="citaCheckbox" name="citaSeleccionada[]" value="<?php echo $cita['idCita']; ?>"> Seleccionar
+                                                    <input type="hidden" name="idCita[]" value="<?php echo $cita['idCita']; ?>">
+                                                <?php else: ?>
+                                                <span class="badge bg-info text-dark">Cita pasada</span>   
+                                                <?php endif; ?> 
                                             </div>
                                         </div>
                                     <?php endforeach; ?>

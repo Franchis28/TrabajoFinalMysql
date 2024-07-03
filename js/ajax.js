@@ -98,9 +98,9 @@ $('#perfilForm').submit(function(event) {
                 // Si el inicio de sesión es exitoso, mostrar un mensaje de éxito
                 $('#mensajePerfil').text(response.message).css('color', 'green');
                 // Esperar 3 segundos antes de recargar la página
-                // setTimeout(function() {
-                //     window.location.reload(); // Recargar la página
-                // }, 3000); // Tiempo de espera en milisegundos (2 segundos en este caso)
+                setTimeout(function() {
+                    window.location.reload(); // Recargar la página
+                }, 3000); // Tiempo de espera en milisegundos (3 segundos en este caso)
             } else {
                 // Si el inicio de sesión falla, mostrar un mensaje de error
                 $('#mensajePerfil').text(response.message).css('color', 'red');
@@ -311,7 +311,7 @@ $('#usersForm').submit(function(event){
         contrasena: $('#contrasena').val(),
         rol: $('#rol').val(),
         usuarioId : sessionStorage.getItem('usuarioId'),
-    };//$(this).serialize();
+    };
     // Enviar los datos al servidor utilizando AJAX
     $.ajax({
         type: 'POST',
@@ -324,10 +324,14 @@ $('#usersForm').submit(function(event){
             // Manejar la respuesta del servidor
             console.log('Datos recibidos del servidor');
             if (response.success) {  
-                // Si el inicio de sesión es exitoso, mostrar un mensaje de éxito
+                // Si la modificación de los datos es exitoso, mostrar un mensaje de éxito
                 $('#mensajePerfil').text(response.message).css('color', 'green');
+                // Esperar 3 segundos antes de recargar la página
+                setTimeout(function() {
+                    window.location.reload(); // Recargar la página
+                }, 3000); // Tiempo de espera en milisegundos (3 segundos en este caso)
             } else {
-                // Si el inicio de sesión falla, mostrar un mensaje de error
+                // Si la modificación de los datos falla, mostrar un mensaje de error
                 $('#mensajePerfil').text(response.message).css('color', 'red');
             }
         },

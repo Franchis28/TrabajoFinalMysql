@@ -16,20 +16,26 @@ $selected_user_nombre = "";
 // Llamada a la consulta que solicita las citas que tiene cada usuario creadas, una vez se haya seleccionado un usuario
 // Verificar si se ha seleccionado un usuario desde el desplegable
 if (isset($_POST['usuarioSeleccionado'])) {
-    $selected_user_id = $_POST['usuarioSeleccionado'];
+    $usuarioSeleccionado = $_POST['usuarioSeleccionado'];
+    $usuarioSeleccionadoInt = intval($usuarioSeleccionado); // Convertir a entero
     // Buscar el nombre del usuario seleccionado
     foreach ($users as $usuario) {
-        if ($usuario['idUser'] == $selected_user_id) {
+        $idUser = intval($usuario['idUser']); // Convertir idUser a entero si no lo es ya
+        if ($idUser === $usuarioSeleccionadoInt) {
+            $selected_user_id = $idUser;
             $selected_user_nombre = $usuario['usuario'];
             break;
         }
     }
+} else {
+   
 }
 
 // Lógica para obtener citas pendientes del usuario seleccionado
 $citasPendientes = [];
 if (!empty($selected_user_id)) {
     $citasPendientes = obtenerCitasAdmin($conn, $selected_user_id);
+    
 }
 
 
@@ -42,6 +48,7 @@ function compararFechas($a, $b) {
 usort($citasPendientes, 'compararFechas');
 // Obtener datos del usuario que se está logeando para saber su rol
 $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
+$currentDate = date('Y-m-d'); // Obtener la fecha actual
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -173,13 +180,17 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
         </div>
         <div class="container" style="margin-top: 60px;">
             <h3>Citaciones</h3>
+            <h5>Selecciona un usuario, por favor</h5>
             <div>    
                 <!-- Botón desplegable, para mostrar los usuarios existentes -->
                 <form method="post" action="">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"> Usuarios </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <?php if (!empty($users)): ?>
-                            <?php foreach ($users as $usuario): ?><li><button class="dropdown-item" type="submit" name="usuarioSeleccionado"data-usuario-id="<?= $usuario['idUser'] ?>" value="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></button></li>
+                            <?php foreach ($users as $usuario): ?>
+                                <li>
+                                    <button class="dropdown-item" type="button" data-usuario-id="<?= $usuario['idUser'] ?>" value="<?= $usuario['idUser'] ?>"><?= htmlspecialchars($usuario['usuario']) ?></button>
+                                </li>
                             <?php endforeach; ?>
                         <?php else: ?>
                             <li><span class="dropdown-item">No hay usuarios registrados</span></li>
@@ -238,22 +249,30 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
                             <form class="row g-3 needs-validation" style="margin-bottom: 15px;" action="" method="post" id="citasPendientesForm">
                                 <?php if (!empty($citasPendientes)): ?>
                                     <?php foreach ($citasPendientes as $cita): ?>
+                                        <?php
+                                            // Verificar si la cita es pasada
+                                            $isLastDate = $cita['fechaCita'] < $currentDate;
+                                        ?>
                                         <div class="col-md-4">
                                             <div class="card mb-4">
                                                 <div class="card-body">
                                                     <!-- Fecha de la cita -->
                                                     <div class="form-group">
                                                         <label for="fechaCita_<?php echo $cita['idCita']; ?>">Fecha de la Cita</label>
-                                                        <input type="date" class="form-control" id="fechaCita_<?php echo $cita['idCita']; ?>" value="<?php echo $cita['fechaCita']; ?>" >
+                                                        <input type="date" class="form-control" id="fechaCita_<?php echo $cita['idCita']; ?>" value="<?php echo $cita['fechaCita']; ?>" <?php echo $isLastDate ? 'readonly' : ''; ?>>
                                                     </div>
                                                     <!-- Motivo de la cita -->
                                                     <div class="form-group">
                                                         <label for="motivo_<?php echo $cita['idCita']; ?>">Motivo de la Cita</label>
-                                                        <textarea class="form-control" id="motivo_<?php echo $cita['idCita']; ?>"><?php echo $cita['motivoCita']; ?></textarea>
+                                                        <textarea class="form-control" id="motivo_<?php echo $cita['idCita']; ?>" <?php echo $isLastDate ? 'readonly' : ''; ?>><?php echo $cita['motivoCita']; ?></textarea>
                                                     </div>
                                                 </div>
-                                                <input type="checkbox" class="citaCheckbox" name="citaSeleccionada[]" value="<?php echo $cita['idCita']; ?>"> Seleccionar
-                                                <input type="hidden" name="idCita[]" value="<?php echo $cita['idCita']; ?>">
+                                                <?php if (!$isLastDate): ?>
+                                                    <input type="checkbox" class="citaCheckbox" name="citaSeleccionada[]" value="<?php echo $cita['idCita']; ?>"> Seleccionar
+                                                    <input type="hidden" name="idCita[]" value="<?php echo $cita['idCita']; ?>">
+                                                <?php else: ?>
+                                                <span class="badge bg-info text-dark">Cita pasada</span>   
+                                                <?php endif; ?> 
                                             </div>
                                         </div>
                                     <?php endforeach; ?>
@@ -371,17 +390,98 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
             document.getElementById('cerrarSesionLink1').addEventListener('click', mostrarToast);
             // Evento para ocultar el toast si pulsa cancelar 
             document.getElementById('cancelButton').addEventListener('click', ocultarToast);
-           
         });
     </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>    
     <!-- Bootstrap Datepicker JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>  
-    <script src="../js/newScript.js"></script>
     <script src="../js/ajax.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Función para habilitar el formulario
+            function habilitarFormulario() {
+                const formElements = document.querySelectorAll('#citasFormAdmin input, #citasFormAdmin textarea, #citasFormAdmin button');
+                formElements.forEach(element => {
+                    element.disabled = false;
+                });
+            }
+
+            // Función para deshabilitar el formulario
+            function deshabilitarFormulario() {
+                const formElements = document.querySelectorAll('#citasFormAdmin input, #citasFormAdmin textarea, #citasFormAdmin button');
+                formElements.forEach(element => {
+                    element.disabled = true;
+                });
+            }
+            // Escucha el evento click en los elementos del desplegable
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', function(event) {
+                    event.preventDefault(); // Evitar el comportamiento por defecto del botón
+                    let usuarioId = this.getAttribute('data-usuario-id');
+                    let usuarioNombre = this.textContent;  // Obtener el nombre del usuario desde el texto del elemento
+                    // Actualizar el contenedor con el nombre del usuario seleccionado
+                    document.getElementById('nombreUsuarioSeleccionado').style.display = 'inline-block';
+                    document.getElementById('nombreUsuarioSeleccionado').textContent = 'Usuario seleccionado: ' + usuarioNombre;
+                    
+                    // Almacenar el ID del usuario seleccionado en el almacenamiento de sesión
+                    sessionStorage.setItem('usuarioId', usuarioId);
+                    // Habilitar el formulario
+                    habilitarFormulario(); 
+                    usuarioIdInt = parseInt(usuarioId);
+                    // Enviar el ID del usuario seleccionado mediante AJAX
+                    enviarUsuarioSeleccionado(usuarioIdInt);
+                    
+                });
+            });
+            // Función para enviar el ID del usuario seleccionado mediante AJAX
+            function enviarUsuarioSeleccionado(usuarioId) {
+                // Objeto con los datos a enviar
+                
+                let data = {
+                    usuarioSeleccionado: usuarioId
+                };
+                // Configurar la petición AJAX
+                let xhr = new XMLHttpRequest();
+                xhr.open('POST', 'citas-administracion.php', true); // Llama al mismo archivo PHP
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+                // Función que se ejecutará cuando la solicitud AJAX se complete
+                xhr.onload = function() {
+                    if (xhr.status >= 200 && xhr.status < 400) {
+                        // Éxito en la solicitud
+                        console.log('Respuesta del servidor:', xhr.responseText);
+
+                        // Puedes manejar la respuesta del servidor si es necesario
+                        // Por ejemplo, actualizar la interfaz con nuevas citas pendientes, etc.
+                    } else {
+                        // Error en la solicitud
+                        console.error('Error en la solicitud AJAX:', xhr.status, xhr.statusText);
+                    }
+                };
+
+                // Función que se ejecutará en caso de error
+                xhr.onerror = function() {
+                    console.error('Error de red al enviar la solicitud AJAX');
+                };
+
+                // Convertir el objeto 'data' a formato URL-encoded
+                let params = Object.keys(data).map(function(key) {
+                    return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
+                }).join('&');
+
+                // Enviar la petición AJAX con los datos
+                xhr.send(params);
+            }
+            // Limpiar el ID del usuario seleccionado del almacenamiento de sesión al cargar la página
+            sessionStorage.removeItem('usuarioId');
+            
+            // Deshabilitar el formulario inicialmente
+            deshabilitarFormulario();
+        });
+    </script>
     <!-- Scripts Varios Del documento -->
-    <script> 
+    <!-- <script> 
         // Script para mostrar los datos de la cita del usuario en función del que haya sido seleccionado
         $('.dropdown-item').on('click', function() {
             let usuarioId = $(this).data('usuario-id');
@@ -413,6 +513,6 @@ $data = isset($_SESSION['usuarioInt']) ? obtenerDatos($conn) : null;
         });
         $(document).ready(function() {
         });
-    </script>
+    </script> -->
 </body>
 </html>

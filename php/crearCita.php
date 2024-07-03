@@ -21,24 +21,30 @@ if(isset($_POST['fecha_cita']) && isset($_POST['motivo'])){
         $fechaCita = null;
     }
     $motivo = mysqli_real_escape_string($conn, $_POST['motivo']);// Evitamos que puedan inyectar código SQL 
-     
-    // Preparamos la consulta SQL para insertar los datos en la tabla citas
-    $sql_citas = "INSERT INTO citas (idUser, fechaCita, motivoCita) VALUES ('$user_id', '$fechaCita_Fil', '$motivo')";
-    // Comprobamos que los campos no vienen vacíos, para no insertar datos vacíos en la BD
-    if(!empty($fechaCita_Fil) && !empty($motivo)){
-        // Cuando se ejecute la consulta de forma exitosa, se mandará un mensaje por json al cliente ajax para que muestre al usuario por el toast la info
-        if(mysqli_query($conn, $sql_citas)){
-            // Indicamos que la consulta ha sido realizada correctamente
-            $response = array("success" => true, "message" => "La cita a sido creada correctamente");
-            echo json_encode($response);
+     // Verificación de que la fecha no es anterior a la fecha actual
+    $fechaActual = date('Y-m-d');
+    if ($fechaCita < $fechaActual) {
+        $response = array("success" => false, "message" => "La fecha debe ser para el día actual o en adelante");
+        echo json_encode($response);
+    }else{
+        // Preparamos la consulta SQL para insertar los datos en la tabla citas
+        $sql_citas = "INSERT INTO citas (idUser, fechaCita, motivoCita) VALUES ('$user_id', '$fechaCita_Fil', '$motivo')";
+        // Comprobamos que los campos no vienen vacíos, para no insertar datos vacíos en la BD
+        if(!empty($fechaCita_Fil) && !empty($motivo)){
+            // Cuando se ejecute la consulta de forma exitosa, se mandará un mensaje por json al cliente ajax para que muestre al usuario por el toast la info
+            if(mysqli_query($conn, $sql_citas)){
+                // Indicamos que la consulta ha sido realizada correctamente
+                $response = array("success" => true, "message" => "La cita a sido creada correctamente");
+                echo json_encode($response);
+            }else{
+                // Indicamos que la consulta no ha sido realizada correctamente
+                $response = array("success" => false, "message" => "La cita a no sido creada");
+                echo json_encode($response);
+            }
         }else{
-            // Indicamos que la consulta no ha sido realizada correctamente
-            $response = array("success" => false, "message" => "La cita a no sido creada");
+            $response = array("success" => false, "message" => "No se pueden enviar campos vacíos, revisa el formulario por favor");
             echo json_encode($response);
         }
-    }else{
-        $response = array("success" => false, "message" => "No se pueden enviar campos vacíos, revisa el formulario por favor");
-        echo json_encode($response);
     }
 // Si los datos no han sido recibidos correctamente se le solicita al usuario que los vuelva a enviar
 }else{

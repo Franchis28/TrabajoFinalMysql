@@ -111,7 +111,7 @@ $conn = conectarDB();
                     <div class="col-md-6 col-lg-4">
                         <label for="usuario" class="form-label">Nombre de Usuario*</label>
                         <div class="input-group has-validation">
-                        <input type="text" name="usuario" class="form-control" id="usuario" aria-describedby="inputGroupPrepend" placeholder="Correo Electrónico">
+                        <input type="text" name="usuario" class="form-control" id="usuario" aria-describedby="inputGroupPrepend" placeholder="Usuario">
                         <div class="invalid-feedback">
                         </div>
                         </div>
